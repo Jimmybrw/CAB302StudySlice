@@ -1,4 +1,1 @@
-package com.example.cab302studyslice.View;
-
-public class DashboardView {
-}
+// Nothing here yet

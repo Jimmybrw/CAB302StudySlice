@@ -1,4 +1,1 @@
-package com.example.cab302studyslice.Model;
-
-public class AiAPI {
-}
+// Nothing here yet

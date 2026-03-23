@@ -1,4 +1,1 @@
-package com.example.cab302studyslice.Controller;
-
-public class HistoryController {
-}
+//nothing yet
