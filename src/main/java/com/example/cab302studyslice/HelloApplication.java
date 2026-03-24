@@ -11,17 +11,17 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
     }
 }
-testjijis
+//testjijis
 
-another test chsiuvhson
+//another test chsiuvhson
 
 
-tesst 3
+//tesst 3
 
-test 4 and again
+//test 4 and again
