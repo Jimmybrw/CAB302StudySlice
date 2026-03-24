@@ -10,14 +10,13 @@ public class StudyController {
     @FXML private TextArea statusTextArea;
     @FXML private Button toggleButton;
 
-    // Static ensures the engine survives scene changes if you add more pages later
     private static TrackingEngine engine = new TrackingEngine();
     private static boolean isTracking = false;
 
     @FXML
     public void initialize() {
         if (statusTextArea != null) {
-            // Connects the engine's background data to the UI text area
+
             engine.setUiUpdater(data -> Platform.runLater(() -> statusTextArea.setText(data)));
 
             if (isTracking) {

@@ -14,7 +14,6 @@ public class ViewManager {
 
     public static void switchScene(String fxmlFile) {
         try {
-            // Corrected path resolution
             String resourcePath = "/com/example/cab302studyslice/FXML/" + fxmlFile;
             URL resource = ViewManager.class.getResource(resourcePath);
 

@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public class TrackingEngine {
     private Map<String, Integer> timeSpent = new LinkedHashMap<>();
     private String lastSavedApp = "Desktop";
-    private boolean isRunning = false; // Starts as false now
+    private boolean isRunning = false;
     private Consumer<String> uiUpdater;
 
     private static final Map<String, String> APP_KEYWORDS = new HashMap<>() {{
@@ -22,7 +22,7 @@ public class TrackingEngine {
     }
 
     public void startTracking() {
-        if (isRunning) return; // Prevent multiple threads from starting
+        if (isRunning) return;
         isRunning = true;
 
         new Thread(() -> {

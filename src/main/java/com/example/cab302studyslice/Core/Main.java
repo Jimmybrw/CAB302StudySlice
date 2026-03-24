@@ -9,15 +9,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         ViewManager.setStage(stage);
-
-        // Launches the PowerShell script in the background
         try {
             Runtime.getRuntime().exec("powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File tracker.ps1");
         } catch (Exception e) {
             System.err.println("Could not launch tracker.ps1. Ensure it is in the project root.");
         }
-
-        // Fix: Launch directly into the dashboard instead of home
         ViewManager.switchScene("dashboard-view.fxml");
         stage.setTitle("StudySlice - Dashboard");
 
