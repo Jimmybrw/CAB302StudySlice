@@ -7,6 +7,7 @@
       fx:controller="com.example.cab302studyslice.Controller.StudyController">
 
     <Label text="Study Tracker" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <Label fx:id="timerLabel" text="Total Study Time: 00:00:00" style="-fx-font-size: 18px;" />
 
     <TextArea fx:id="statusTextArea" editable="false" VBox.vgrow="ALWAYS"
               promptText="Activity log will appear here once tracking starts..." />

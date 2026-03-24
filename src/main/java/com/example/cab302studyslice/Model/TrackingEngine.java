@@ -10,6 +10,7 @@ public class TrackingEngine {
     private String lastSavedApp = "Desktop";
     private boolean isRunning = false;
     private Consumer<String> uiUpdater;
+    private int totalSeconds = 0;
 
     private static final Map<String, String> APP_KEYWORDS = new HashMap<>() {{
         put("WINWORD", "WORD");
@@ -41,6 +42,7 @@ public class TrackingEngine {
                                 lastSavedApp = currentApp;
                                 int newTime = timeSpent.getOrDefault(lastSavedApp, 0) + 1;
                                 timeSpent.put(lastSavedApp, newTime);
+                                totalSeconds++;
 
                                 StringBuilder displayData = new StringBuilder("Currently Tracking: " + lastSavedApp + "\n\n");
                                 displayData.append("--- ACTIVITY LOG ---\n");
@@ -58,6 +60,10 @@ public class TrackingEngine {
                 try { Thread.sleep(1000); } catch (Exception e) {}
             }
         }).start();
+    }
+
+    public int getTotalSeconds() {
+        return totalSeconds;
     }
 
     // New method to stop the loop
