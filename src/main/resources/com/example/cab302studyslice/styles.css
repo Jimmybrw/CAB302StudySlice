@@ -2,3 +2,30 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+.header {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.main-button {
+    -fx-background-color: #A7D8FF;
+    -fx-background-radius: 12;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20;
+}
+
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.session-tile {
+    -fx-background-color: #F7C7A3;
+    -fx-background-radius: 15;
+    -fx-alignment: center;
+}
+
+.session-tile-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
