@@ -27,7 +27,7 @@ public class StudyController {
             }
         }
     }
-
+// testing commit
     @FXML
     private void handleToggleTracking() {
         if (!isTracking) {
