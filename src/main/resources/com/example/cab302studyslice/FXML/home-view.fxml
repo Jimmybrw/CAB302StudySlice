@@ -2,9 +2,45 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="20.0" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.cab302studyslice.Controller.ViewController">
-    <Label text="StudySlice" style="-fx-font-size: 32px; -fx-font-weight: bold;" />
-    <Button text="Enter Dashboard" onAction="#goToDashboard" prefWidth="200" prefHeight="40" />
-    <Button text="View History" onAction="#goToHistory" prefWidth="200" prefHeight="40" />
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.cab302studyslice.Controller.ViewController"
+           style="-fx-background-color: linear-gradient(to bottom, #F59A2A, #657972);">
+
+    <VBox spacing="25" alignment="CENTER">
+        <Label text="Welcome to Study Slice"
+               style="-fx-font-size: 36px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+        <Label text="Track your study sessions. Understand your habits. Improve your focus."
+               wrapText="true"
+               style="-fx-font-size: 16px; -fx-text-fill: #E3F2FD;"
+               maxWidth="400"/>
+
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Enter Dashboard"
+                    onAction="#goToDashboard"
+                    style="-fx-background-color: #FFFFFF; -fx-text-fill: #145DA0;
+                           -fx-font-size: 16px; -fx-padding: 10 25; -fx-background-radius: 8;"/>
+
+            <Button text="View History"
+                    onAction="#goToHistory"
+                    style="-fx-background-color: #1E487A; -fx-text-fill: white;
+                           -fx-font-size: 16px; -fx-padding: 10 25; -fx-background-radius: 8;"/>
+        </HBox>
+    </VBox>
+
+</StackPane>
+
+
+        <!--
+        <?xml version="1.0" encoding="UTF-8"?>
+        <?import javafx.scene.control.*?>
+        <?import javafx.scene.layout.*?>
+
+        <VBox alignment="CENTER" spacing="20.0" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+              fx:controller="com.example.cab302studyslice.Controller.ViewController">
+            <Label text="StudySlice" style="-fx-font-size: 32px; -fx-font-weight: bold;" />
+            <Button text="Enter Dashboard" onAction="#goToDashboard" prefWidth="200" prefHeight="40" />
+            <Button text="View History" onAction="#goToHistory" prefWidth="200" prefHeight="40" />
+        </VBox>
+        -->

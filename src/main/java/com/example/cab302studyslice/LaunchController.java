@@ -3,7 +3,7 @@ package com.example.cab302studyslice;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class LaunchController {
 
     @FXML
     private void handleSignIn() {
