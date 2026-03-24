@@ -7,9 +7,12 @@ import java.net.URL;
 
 public class ViewManager {
     private static Stage stage;
+    private static final int WIDTH = 900;
+    private static final int HEIGHT = 600;
 
     public static void setStage(Stage primaryStage) {
         stage = primaryStage;
+        stage.setResizable(false);
     }
 
     public static void switchScene(String fxmlFile) {
@@ -22,7 +25,7 @@ public class ViewManager {
             }
 
             FXMLLoader loader = new FXMLLoader(resource);
-            stage.setScene(new Scene(loader.load(), 500, 500));
+            stage.setScene(new Scene(loader.load(), WIDTH, HEIGHT));
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
