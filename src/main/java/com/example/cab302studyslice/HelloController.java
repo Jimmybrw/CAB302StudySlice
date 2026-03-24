@@ -4,11 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class HelloController {
-    @FXML
-    private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    private void handleSignIn() {
+        System.out.println("Sign In clicked");
+        // To do: load sign-in page
+    }
+
+    @FXML
+    private void handleSignUp() {
+        System.out.println("Sign Up clicked");
+        // To do : load sign-up page
     }
 }
