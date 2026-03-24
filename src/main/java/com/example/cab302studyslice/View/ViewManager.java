@@ -25,7 +25,9 @@ public class ViewManager {
             }
 
             FXMLLoader loader = new FXMLLoader(resource);
-            stage.setScene(new Scene(loader.load(), WIDTH, HEIGHT));
+            Scene scene = new Scene(loader.load(), WIDTH, HEIGHT);
+            scene.getStylesheets().add(ViewManager.class.getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
+            stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
