@@ -14,8 +14,8 @@ public class Main extends Application {
         } catch (Exception e) {
             System.err.println("Could not launch tracker.ps1. Ensure it is in the project root.");
         }
-        ViewManager.switchScene("dashboard-view.fxml");
-        stage.setTitle("StudySlice - Dashboard");
+        ViewManager.switchScene("home-view.fxml");
+        stage.setTitle("StudySlice");
 
         stage.setOnCloseRequest(e -> {
             Platform.exit();
