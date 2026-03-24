@@ -1,15 +1,17 @@
 module com.example.cab302studyslice {
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
+    requires javafx.graphics;
+    requires java.desktop;
+    requires java.sql;
 
-    requires org.controlsfx.controls;
-    requires com.dlsc.formsfx;
-    requires net.synedra.validatorfx;
-    requires org.kordamp.ikonli.javafx;
-    requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
+    // Export and Open packages to allow JavaFX to run the UI
+    opens com.example.cab302studyslice.Core to javafx.fxml;
+    exports com.example.cab302studyslice.Core;
 
-    opens com.example.cab302studyslice to javafx.fxml;
-    exports com.example.cab302studyslice;
+    opens com.example.cab302studyslice.Controller to javafx.fxml;
+    exports com.example.cab302studyslice.Controller;
+
+    exports com.example.cab302studyslice.Model;
+    exports com.example.cab302studyslice.View;
 }
