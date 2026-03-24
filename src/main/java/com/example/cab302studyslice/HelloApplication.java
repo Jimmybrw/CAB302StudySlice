@@ -12,12 +12,16 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("launch-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle("Hello!");
+        stage.setTitle("hello!");
         stage.setScene(scene);
         stage.show();
     }
 }
+<<<<<<< HEAD
+testjijisfsddfd
+=======
 //testjijis
+>>>>>>> origin/master
 
 //another test chsiuvhson
 
