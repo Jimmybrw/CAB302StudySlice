@@ -4,6 +4,8 @@ import com.example.cab302studyslice.View.ViewManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+
 
 public class Main extends Application {
     @Override
@@ -18,6 +20,7 @@ public class Main extends Application {
 
         ViewManager.switchScene("login-view.fxml");
         stage.setTitle("StudySlice");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/cab302studyslice/Images/CAB302_StudySliceFullSize.png")));
 
         stage.setOnCloseRequest(e -> {
             Platform.exit();
