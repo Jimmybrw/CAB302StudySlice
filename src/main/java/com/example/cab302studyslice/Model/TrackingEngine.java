@@ -44,7 +44,8 @@ public class TrackingEngine {
                                 timeSpent.put(lastSavedApp, newTime);
                                 totalSeconds++;
 
-                                StringBuilder displayData = new StringBuilder("Currently Tracking: " + lastSavedApp + "\n\n");
+                                StringBuilder displayData = new StringBuilder("Total Study Time: " + formatTime(totalSeconds) + "\n");
+                                displayData.append("Currently Tracking: " + lastSavedApp + "\n\n");
                                 displayData.append("--- ACTIVITY LOG ---\n");
                                 for (Map.Entry<String, Integer> entry : timeSpent.entrySet()) {
                                     displayData.append(entry.getKey()).append(" : ").append(entry.getValue()).append("s\n");
@@ -69,6 +70,13 @@ public class TrackingEngine {
     // New method to stop the loop
     public void stopTracking() {
         isRunning = false;
+    }
+
+    private String formatTime(int totalSeconds) {
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     private static String simplifyTitle(String title) {

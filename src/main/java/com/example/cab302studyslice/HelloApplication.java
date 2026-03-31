@@ -17,11 +17,3 @@ public class HelloApplication extends Application {
         stage.show();
     }
 }
-//testjijis
-
-//another test chsiuvhson
-
-
-//tesst 3
-
-//test 4 and again
