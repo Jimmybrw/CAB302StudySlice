@@ -37,4 +37,5 @@ public class StudyController {
             isTracking = false;
         }
     }
+
 }

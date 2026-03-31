@@ -19,12 +19,12 @@
         <HBox spacing="20" alignment="CENTER">
             <Button text="Enter Dashboard"
                     onAction="#goToDashboard"
-                    style="-fx-background-color: #FFFFFF; -fx-text-fill: #145DA0;
+                    style="-fx-background-color: #FBCC92; -fx-text-fill: white;
                            -fx-font-size: 16px; -fx-padding: 10 25; -fx-background-radius: 8;"/>
 
             <Button text="View History"
                     onAction="#goToHistory"
-                    style="-fx-background-color: #1E487A; -fx-text-fill: white;
+                    style="-fx-background-color: #7B4141; -fx-text-fill: white;
                            -fx-font-size: 16px; -fx-padding: 10 25; -fx-background-radius: 8;"/>
         </HBox>
     </VBox>

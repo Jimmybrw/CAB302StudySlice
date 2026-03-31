@@ -1,9 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
 
-<VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="TIMER PAGE" style="-fx-font-size: 24px;" />
-    <Label text="This is where your countdown will live." />
-</VBox>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.cab302studyslice.Controller.TimerController"
+            prefWidth="900" prefHeight="600">
+
+    <!-- Menu Sidebar / will probably work on making this pop out rahter than constant -->
+    <left>
+        <VBox spacing="20" prefWidth="180" styleClass="sidebar">
+            <Label text="STUDY SLICE" styleClass="sidebar-title"/>
+
+            <Button text="Dashboard" fx:id="dashboardButton" onAction="#goToDashboard" styleClass="sidebar-button"/>
+            <Button text="Timer" styleClass="sidebar-button-selected"/>
+            <Button text="Explore" fx:id="exploreButton" onAction="#goToExplore" styleClass="sidebar-button"/>
+            <Button text="Settings" styleClass="sidebar-button"/>
+            <Button text="Log Out" styleClass="sidebar-button"/>
+
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </VBox>
+    </left>
+
+    <!--  MAIN CONTENT  -->
+    <center>
+        <HBox spacing="40" alignment="CENTER" style="-fx-padding: 30;">
+
+            <!-- LEFT: space for logo / fun graphic -->
+            <VBox alignment="CENTER">
+                <Circle radius="140" styleClass="timer-circle"/>
+            </VBox>
+
+            <!-- RIGHT: Timer Options -->
+            <VBox spacing="40" alignment="CENTER">
+
+                <!-- SET TIMER SECTION -->
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="Set Timer" styleClass="section-title"/>
+
+                    <Label fx:id="setTimerDisplay"
+                           text="02:30:00"
+                           styleClass="timer-display"/>
+
+                    <Button text="SET"
+                            fx:id="setTimerButton"
+                            onAction="#openSetTimerDialog"
+                            styleClass="main-button"/>
+                </VBox>
+
+                <!-- LIVE TIMER SECTION -->
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="Live Timer" styleClass="section-title"/>
+
+                    <Label fx:id="liveTimerDisplay"
+                           text="00:00:00"
+                           styleClass="timer-display"/>
+
+                    <Button text="START"
+                            fx:id="startLiveTimerButton"
+                            onAction="#startLiveTimer"
+                            styleClass="main-button"/>
+                </VBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>
