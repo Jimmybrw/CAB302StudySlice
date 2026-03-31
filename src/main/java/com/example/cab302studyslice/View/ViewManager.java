@@ -32,5 +32,5 @@ public class ViewManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    } 
+    }
 }
