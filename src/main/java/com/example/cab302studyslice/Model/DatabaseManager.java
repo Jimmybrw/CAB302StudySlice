@@ -7,12 +7,11 @@ import java.sql.ResultSet;
 
 public class DatabaseManager {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/studyslice";
-    private static final String USER = "root";
-    // Look at later
-    private static final String PASSWORD = "cab302root123";
+    private static final String URL = "jdbc:mysql://studyslice-studyslice.d.aivencloud.com:27251/studyslice?sslMode=REQUIRED";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_dH9MQkrjlY36qW9GWBe";
 
-    // Opens a connection to the database
+    // Opens a connection to the hosted database
     public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
