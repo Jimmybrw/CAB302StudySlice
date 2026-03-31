@@ -9,8 +9,8 @@
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.example.cab302studyslice.HelloController"
-           style="-fx-background-color: #ADD8E6;">
+           fx:controller="com.example.cab302studyslice.LaunchController"
+           style="-fx-background-color: linear-gradient(to bottom, #F59A2A, #657972);">
 
 <VBox spacing="25" alignment="CENTER">
     <Label text="Welcome to Study Slice"

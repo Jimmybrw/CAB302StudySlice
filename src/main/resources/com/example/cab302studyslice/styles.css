@@ -2,3 +2,110 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+.header {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.main-button {
+    -fx-background-color: #A7D8FF;
+    -fx-background-radius: 12;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20;
+}
+
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.session-tile {
+    -fx-background-color: #F7C7A3;
+    -fx-background-radius: 15;
+    -fx-alignment: center;
+}
+
+.session-tile-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.auth-root {
+    -fx-background-color: #FFFFFF;
+}
+
+.auth-left-panel {
+    -fx-background-color: linear-gradient(to bottom, #819D93, #FBCC92);
+}
+
+.auth-right-panel {
+    -fx-background-color: #FFFFFF;
+}
+
+.auth-brand-title {
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+.auth-brand-subtitle {
+    -fx-font-size: 18px;
+    -fx-text-fill: #FFFFFF;
+    -fx-wrap-text: true;
+}
+
+.auth-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7B4141;
+}
+
+.auth-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #819D93;
+}
+
+.auth-field {
+    -fx-pref-width: 280px;
+    -fx-pref-height: 42px;
+    -fx-background-color: #D9D9D9;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+}
+
+.auth-primary-button {
+    -fx-pref-width: 280px;
+    -fx-pref-height: 42px;
+    -fx-background-color: #819D93;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+
+.auth-primary-button:hover {
+    -fx-background-color: #6f8a81;
+}
+
+.auth-secondary-button {
+    -fx-pref-width: 280px;
+    -fx-pref-height: 42px;
+    -fx-background-color: #FBCC92;
+    -fx-text-fill: #7B4141;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+
+.auth-secondary-button:hover {
+    -fx-background-color: #efbe82;
+}
+
+.auth-message {
+    -fx-font-size: 13px;
+    -fx-min-height: 20px;
+}

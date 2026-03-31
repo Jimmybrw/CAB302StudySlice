@@ -12,6 +12,8 @@ module com.example.cab302studyslice {
     opens com.example.cab302studyslice.Controller to javafx.fxml;
     exports com.example.cab302studyslice.Controller;
 
-    exports com.example.cab302studyslice.Model;
+    opens com.example.cab302studyslice.View to javafx.fxml;
     exports com.example.cab302studyslice.View;
+
+    exports com.example.cab302studyslice.Model;
 }

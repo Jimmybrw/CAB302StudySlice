@@ -1,1 +1,1 @@
-CAB302 StudySlice ? hello-view.fxml
+CAB302StudySlice ? login-view.fxml
