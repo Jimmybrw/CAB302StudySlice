@@ -8,32 +8,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
 public class StudyController {
-    @FXML private TextArea statusTextArea;
     @FXML private Button toggleButton;
-    @FXML private Label timerLabel;
 
     private static TrackingEngine engine = new TrackingEngine();
     private static boolean isTracking = false;
 
     @FXML
     public void initialize() {
-        if (statusTextArea != null && timerLabel != null) {
+        // The dashboard-view.fxml does not contain timerLabel or statusTextArea,
+        // so the UI updater for the TrackingEngine is not set here.
+        // If these elements are needed, they should be added to the FXML or
+        // this controller should be used with a different FXML that contains them.
 
-            engine.setUiUpdater(data -> Platform.runLater(() -> {
-                String[] parts = data.split("\n", 2);
-                if (parts.length > 0) {
-                    timerLabel.setText(parts[0]);
-                }
-                if (parts.length > 1) {
-                    statusTextArea.setText(parts[1]);
-                } else {
-                    statusTextArea.setText("");
-                }
-            }));
-
-            if (isTracking) {
-                toggleButton.setText("Stop Tracking");
-            }
+        if (isTracking) {
+            toggleButton.setText("Stop Tracking");
         }
     }
 
