@@ -1,85 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.cab302studyslice.Controller.ViewController"
-            prefWidth="900" prefHeight="600">
 
-    <!-- ========== SIDEBAR ========== -->
-    <left>
-        <VBox spacing="20" prefWidth="180" styleClass="sidebar">
-            <Label text="STUDY SLICE" styleClass="sidebar-title"/>
+<VBox alignment="CENTER" spacing="15.0" prefHeight="500.0" prefWidth="500.0" style="-fx-padding: 20;"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.cab302studyslice.Controller.DashboardController">
 
-            <Button text="Dashboard" styleClass="sidebar-button"/>
-            <Button text="Timer" fx:id="timerButton" onAction="#goToTimer" styleClass="sidebar-button"/>
-            <Button text="Explore" fx:id="exploreButton" styleClass="sidebar-button"/>
-            <Button text="Settings" styleClass="sidebar-button"/>
-            <Button text="Log Out" styleClass="sidebar-button"/>
+    <!-- HEADER -->
+    <Label text="STUDY SLICE" styleClass="header"/>
 
-            <VBox.margin>
-                <Insets top="20"/>
-            </VBox.margin>
-        </VBox>
-    </left>
+    <!-- MAIN BUTTONS -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button text="start tracking"
+                fx:id="toggleButton"
+                onAction="#handleToggleTracking"
+                styleClass="main-button"/>
 
-    <!-- ========== MAIN CONTENT ========== -->
-    <center>
-        <VBox spacing="25" alignment="TOP_CENTER" style="-fx-padding: 20;">
+        <Button text="explore sessions"
+                fx:id="exploreButton"
+                onAction="#onExploreClicked"
+                styleClass="main-button"/>
+    </HBox>
 
-            <!-- WELCOME -->
-            <Label text="Welcome, User" styleClass="header"/>
+    <!-- TRACKING DISPLAY -->
+    <VBox spacing="5" alignment="CENTER" prefWidth="500">
+        <Label fx:id="timerLabel"
+               text="Total Study Time: 00:00:00"
+               style="-fx-font-size: 18px;" />
 
-            <!-- MAIN BUTTONS -->
-            <HBox spacing="20" alignment="CENTER">
-                <Button text="timer"
-                        fx:id="timerButtonMain"
-                        onAction="#goToTimer"
-                        styleClass="main-button"/>
+        <TextArea fx:id="statusTextArea"
+                  editable="false"
+                  VBox.vgrow="ALWAYS"
+                  promptText="Activity log will appear here once tracking starts..."
+                  prefHeight="300" prefWidth="400"/>
+    </VBox>
 
-                <Button text="explore sessions"
-                        fx:id="exploreButtonMain"
-                        onAction="#goToHistory"
-                        styleClass="main-button"/>
-            </HBox>
-
-            <!-- RECENT SESSIONS -->
-            <VBox spacing="10" alignment="TOP_CENTER" prefWidth="600">
-                <Label text="Recent Sessions" styleClass="section-title"/>
-
-                <HBox fx:id="recentSessionsContainer"
-                      spacing="15"
-                      alignment="CENTER"
-                      prefHeight="120"
-                      styleClass="session-box-container"/>
-            </VBox>
-
-            <!-- STATS RECAP -->
-            <VBox spacing="10" alignment="TOP_CENTER" prefWidth="600">
-                <Label text="Stats Recap" styleClass="section-title"/>
-
-                <HBox spacing="30" alignment="CENTER">
-                    <PieChart fx:id="pieChart"
-                              prefWidth="220"
-                              prefHeight="220"/>
-
-                    <BarChart fx:id="barChart"
-                              prefWidth="300"
-                              prefHeight="220">
-                        <xAxis>
-                            <CategoryAxis label="Week"/>
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis label="Hours"/>
-                        </yAxis>
-                    </BarChart>
-                </HBox>
-            </VBox>
-
-        </VBox>
-    </center>
-
-</BorderPane>
+</VBox>
