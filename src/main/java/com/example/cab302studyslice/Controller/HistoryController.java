@@ -35,10 +35,10 @@ public class HistoryController {
         card.getStyleClass().add("session-title");
 
         Label timeLabel = new Label(sessionTime);
-        timeLabel.getStyleClass().add("session-title-text");
+        timeLabel.getStyleClass().add("history-time");
 
         Label label = new Label(sessionLabel);
-        label.getStyleClass().add("session-title-text");
+        label.getStyleClass().add("history-label");
 
         card.getChildren().addAll(timeLabel, label);
         historyContainer.getChildren().add(card);

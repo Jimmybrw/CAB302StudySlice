@@ -109,3 +109,15 @@
     -fx-font-size: 13px;
     -fx-min-height: 20px;
 }
+
+.history-time {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7B4141;
+}
+
+.history-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #819D93;
+}
