@@ -16,6 +16,8 @@ public class TrackingEngine {
         put("WINWORD", "WORD");
         put("CODE", "VS CODE");
         put("POWERPNT", "POWERPOINT");
+        put("OUTLOOK", "OUTLOOK");
+        put("IDEA", "INTELLIJ IDEA");
     }};
 
     public void setUiUpdater(Consumer<String> uiUpdater) {
@@ -38,21 +40,19 @@ public class TrackingEngine {
                             String rawTitle = lines.get(0).trim();
                             String currentApp = simplifyTitle(rawTitle);
 
-                            if (!currentApp.isEmpty() && !currentApp.contains("STUDY TRACKER") && !currentApp.contains("CAB302")) {
+                            if (!currentApp.isEmpty()) {
                                 lastSavedApp = currentApp;
                                 int newTime = timeSpent.getOrDefault(lastSavedApp, 0) + 1;
                                 timeSpent.put(lastSavedApp, newTime);
                                 totalSeconds++;
 
-                                StringBuilder displayData = new StringBuilder("Total Study Time: " + formatTime(totalSeconds) + "\n");
-                                displayData.append("Currently Tracking: " + lastSavedApp + "\n\n");
-                                displayData.append("--- ACTIVITY LOG ---\n");
+                                StringBuilder displayData = new StringBuilder();
                                 for (Map.Entry<String, Integer> entry : timeSpent.entrySet()) {
-                                    displayData.append(entry.getKey()).append(" : ").append(entry.getValue()).append("s\n");
+                                    displayData.append(entry.getKey()).append(" : ").append(formatTime(entry.getValue())).append("\n");
                                 }
 
                                 if (uiUpdater != null) {
-                                    uiUpdater.accept(displayData.toString());
+                                    uiUpdater.accept("Total Study Time: " + formatTime(totalSeconds) + "\n" + displayData.toString());
                                 }
                             }
                         }
@@ -67,7 +67,6 @@ public class TrackingEngine {
         return totalSeconds;
     }
 
-    // New method to stop the loop
     public void stopTracking() {
         isRunning = false;
     }
@@ -82,12 +81,25 @@ public class TrackingEngine {
     private static String simplifyTitle(String title) {
         if (title == null || title.isEmpty() || title.equalsIgnoreCase("Desktop")) return "DESKTOP";
         String upperTitle = title.toUpperCase();
+        
+        // Handle Browsers
         if (upperTitle.contains("CHROME") || upperTitle.contains("EDGE") || upperTitle.contains("FIREFOX")) {
-            return "WEB: " + title.split(" - ")[0].trim();
+            String cleanTitle = title.split(" - ")[0].trim();
+            
+            // Remove "and X more page(s)" suffix
+            if (cleanTitle.contains(" and ") && (cleanTitle.contains(" more page") || cleanTitle.contains(" other page"))) {
+                cleanTitle = cleanTitle.replaceAll(" and \\d+ more page.*", "");
+                cleanTitle = cleanTitle.replaceAll(" and \\d+ other page.*", "");
+            }
+            
+            return "WEB: " + cleanTitle.trim();
         }
+
+        // Handle specific keywords
         for (Map.Entry<String, String> entry : APP_KEYWORDS.entrySet()) {
             if (upperTitle.contains(entry.getKey())) return entry.getValue();
         }
+
         return upperTitle.trim();
     }
 }

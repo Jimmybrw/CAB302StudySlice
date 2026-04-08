@@ -3,10 +3,6 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
@@ -14,7 +10,7 @@
 
 <VBox alignment="CENTER" spacing="15.0" prefHeight="500.0" prefWidth="500.0" style="-fx-padding: 20;"
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.cab302studyslice.Controller.StudyController">
+      fx:controller="com.example.cab302studyslice.Controller.DashboardController">
 
     <!-- HEADER -->
     <Label text="STUDY SLICE" styleClass="header"/>
@@ -22,64 +18,27 @@
     <!-- MAIN BUTTONS -->
     <HBox spacing="20" alignment="CENTER">
         <Button text="start tracking"
-                fx:id="timerButton"
+                fx:id="toggleButton"
                 onAction="#handleToggleTracking"
                 styleClass="main-button"/>
 
         <Button text="explore sessions"
                 fx:id="exploreButton"
-
+                onAction="#onExploreClicked"
                 styleClass="main-button"/>
     </HBox>
 
-    <!-- RECENT SESSIONS -->
-    <VBox spacing="10" alignment="TOP_CENTER" prefWidth="500">
-        <Label text="Recent Sessions" styleClass="section-title"/>
-        <HBox fx:id="recentSessionsContainer"
-              spacing="15"
-              alignment="CENTER"/>
-    </VBox>
-    <!-- STATS RECAP -->
-    <VBox spacing="10" alignment="TOP_CENTER" prefWidth="500">
-        <Label text="Stats Recap" styleClass="section-title"/>
+    <!-- TRACKING DISPLAY -->
+    <VBox spacing="5" alignment="CENTER" prefWidth="500">
+        <Label fx:id="timerLabel"
+               text="Total Study Time: 00:00:00"
+               style="-fx-font-size: 18px;" />
 
-        <HBox spacing="20" alignment="CENTER">
-            <PieChart fx:id="pieChart"
-                      prefWidth="200"
-                      prefHeight="200"/>
-
-            <BarChart fx:id="barChart"
-                      prefWidth="250"
-                      prefHeight="200">
-                <xAxis>
-                    <CategoryAxis label="Week"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis label="Hours"/>
-                </yAxis>
-            </BarChart>
-        </HBox>
+        <TextArea fx:id="statusTextArea"
+                  editable="false"
+                  VBox.vgrow="ALWAYS"
+                  promptText="Activity log will appear here once tracking starts..."
+                  prefHeight="300" prefWidth="400"/>
     </VBox>
 
 </VBox>
-
-
-<!--
-    <Label text="Study Tracker"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-    <Label fx:id="timerLabel"
-           text="Total Study Time: 00:00:00"
-           style="-fx-font-size: 18px;" />
-
-    <TextArea fx:id="statusTextArea"
-              editable="false"
-              VBox.vgrow="ALWAYS"
-              promptText="Activity log will appear here once tracking starts..." />
-
-    <Button fx:id="toggleButton"
-            text="Start Tracking"
-            onAction="#handleToggleTracking"
-            prefWidth="250" prefHeight="50" style="-fx-font-size: 16px;" />
-</VBox>
-
--->
