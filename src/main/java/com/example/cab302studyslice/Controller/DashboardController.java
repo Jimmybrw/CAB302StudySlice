@@ -2,6 +2,7 @@ package com.example.cab302studyslice.Controller;
 
 import com.example.cab302studyslice.Model.TrackingEngine;
 import com.example.cab302studyslice.View.ViewManager;
+import com.example.cab302studyslice.Model.HistoryStore;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +11,8 @@ import javafx.scene.control.TextArea;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+
+
 
 public class DashboardController {
 
@@ -53,8 +56,27 @@ public class DashboardController {
             isTracking = true;
         } else {
             engine.stopTracking();
+
+            //Save the completed session into  history store
+            String sessionText = buildSessionText();
+            System.out.println("Saving session to history...");
+            System.out.println(sessionText);
+
+            HistoryStore.addSession(sessionText);
+            // Reset tracker so the next study session starts fresh
+            engine.reset();
+
+            // Clear dashboard display after session ends
+            if (timerLabel != null) {
+                timerLabel.setText("Total Study Time: 00:00:00");
+            }
+            if (statusTextArea != null) {
+                statusTextArea.clear();
+            }
+
             toggleButton.setText("Start Tracking");
             isTracking = false;
+
         }
     }
 
