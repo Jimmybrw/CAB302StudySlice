@@ -9,7 +9,7 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.cab302studyslice.Controller.HistoryController">
 
-    <Label text="HISTORY PAGE" style="-fx-font-size: 24px;" />
+    <Label text="HISTORY PAGE" style="-fx-font-size: 24px; " />
 
     <TextArea fx:id="historyTextArea"
               editable="false"

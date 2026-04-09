@@ -10,7 +10,7 @@ public class HistoryController {
     private TextArea historyTextArea;
 
 
-     //Replaces all current history text with new content.
+     // Replaces all current history text with new content.
     public void setHistoryText(String historyText) {
         if (historyTextArea != null) {
             historyTextArea.setText(historyText);
@@ -18,7 +18,7 @@ public class HistoryController {
     }
 
 
-     //Adds one session entry to the history page.
+     // Adds one session entry to the history page.
     public void appendSession(String sessionText) {
         if (historyTextArea != null) {
             historyTextArea.appendText("\n\n" + sessionText);
