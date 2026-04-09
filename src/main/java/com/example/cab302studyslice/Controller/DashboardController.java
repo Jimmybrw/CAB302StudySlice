@@ -7,6 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class DashboardController {
 
@@ -53,6 +56,37 @@ public class DashboardController {
             toggleButton.setText("Start Tracking");
             isTracking = false;
         }
+    }
+
+
+    //Will format the completed tracking session into text for the history page
+    private String buildSessionText() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Session Date: ")
+                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
+                .append("\n");
+
+        builder.append("Total Study Time: ")
+                .append(formatTime(engine.getTotalSeconds()))
+                .append("\n\n");
+
+        for (Map.Entry<String, Integer> entry : engine.getTimeSpent().entrySet()) {
+            builder.append(entry.getKey())
+                    .append(" : ")
+                    .append(formatTime(entry.getValue()))
+                    .append("\n");
+        }
+
+        return builder.toString();
+    }
+
+    //Converts seconds into HH:MM:SS format
+    private String formatTime(int totalSeconds) {
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     // -----------------------------

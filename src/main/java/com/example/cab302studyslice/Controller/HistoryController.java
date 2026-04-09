@@ -1,24 +1,28 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.HistoryStore;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
 public class HistoryController {
 
-    // Linked to  TextArea in history-view.fxml
     @FXML
     private TextArea historyTextArea;
 
+    //When history page opens all the current saved session history will be loaded
+    @FXML
+    public void initialize() {
+        if (historyTextArea != null) {
+            historyTextArea.setText(HistoryStore.getHistoryText());
+        }
+    }
 
-     // Replaces all current history text with new content.
     public void setHistoryText(String historyText) {
         if (historyTextArea != null) {
             historyTextArea.setText(historyText);
         }
     }
 
-
-     // Adds one session entry to the history page.
     public void appendSession(String sessionText) {
         if (historyTextArea != null) {
             historyTextArea.appendText("\n\n" + sessionText);
