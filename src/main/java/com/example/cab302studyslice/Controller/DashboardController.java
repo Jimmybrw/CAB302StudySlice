@@ -57,7 +57,7 @@ public class DashboardController {
         } else {
             engine.stopTracking();
 
-            //Save the completed session into HistoryStore
+            //Save the completed session into HistoryStore.
             String sessionText = buildSessionText();
             System.out.println("Saving session to history...");
             System.out.println(sessionText);
