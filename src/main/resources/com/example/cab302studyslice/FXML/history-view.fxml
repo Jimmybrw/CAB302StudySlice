@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="450.0"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.cab302studyslice.Controller.HistoryController">
+
     <Label text="HISTORY PAGE" style="-fx-font-size: 24px;" />
-    <Label text="This is where your SQLite data will be displayed." />
+
+    <TextArea fx:id="historyTextArea"
+              editable="false"
+              wrapText="true"
+              prefHeight="300.0"
+              prefWidth="350.0"
+              text="No study history available yet." />
 </VBox>
