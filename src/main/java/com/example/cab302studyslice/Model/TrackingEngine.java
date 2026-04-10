@@ -6,12 +6,22 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class TrackingEngine {
+    //Stores the amount of time spend on each detected activity
     private Map<String, Integer> timeSpent = new LinkedHashMap<>();
+
+    // Remembers the last valid app detected
     private String lastSavedApp = "Desktop";
+
+    // Controls whether the tracking loop is running
     private boolean isRunning = false;
+
+    // Sends updated tracking text back to the UI
     private Consumer<String> uiUpdater;
+
+    // Total study time for the current session in seconds
     private int totalSeconds = 0;
 
+    // Maps raw app keywords to cleaner display names
     private static final Map<String, String> APP_KEYWORDS = new HashMap<>() {{
         put("WINWORD", "WORD");
         put("CODE", "VS CODE");
@@ -50,7 +60,7 @@ public class TrackingEngine {
                                 for (Map.Entry<String, Integer> entry : timeSpent.entrySet()) {
                                     displayData.append(entry.getKey()).append(" : ").append(formatTime(entry.getValue())).append("\n");
                                 }
-
+                                //sends updated session data to the UI
                                 if (uiUpdater != null) {
                                     uiUpdater.accept("Total Study Time: " + formatTime(totalSeconds) + "\n" + displayData.toString());
                                 }
@@ -67,8 +77,20 @@ public class TrackingEngine {
         return totalSeconds;
     }
 
+    //returns the tracked activity data
+    public Map<String, Integer> getTimeSpent() {
+        return new LinkedHashMap<>(timeSpent);
+    }
+
     public void stopTracking() {
         isRunning = false;
+    }
+
+    //Will clear the current session data so a new tracking session can begin clearly
+    public void reset() {
+        timeSpent.clear();
+        totalSeconds = 0;
+        lastSavedApp = "Desktop";
     }
 
     private String formatTime(int totalSeconds) {
