@@ -19,11 +19,16 @@
             <padding>
                 <Insets top="20" right="20" bottom="10" left="20"/>
             </padding>
+
             <HBox alignment="CENTER_LEFT" maxWidth="800">
-                <Button text="Back" onAction="#onBackClick" styleClass="main-button"/>
+                <Button text="Back" onAction="#onBackClick" styleClass="back-button"/>
             </HBox>
 
-            <Label text="STUDY SLICE" styleClass="header"/>
+            <Label text="STUDY SLICE" styleClass="auth-title"/>
+            <HBox alignment="CENTER_LEFT" spacing="30">
+                <Label text="Your total hours logged:" styleClass="auth-brand-title"/>
+                <Label fx:id="totalHoursLabel" text="00:00:00" styleClass="history-totalTime"/>
+            </HBox>
 
             <Separator prefWidth="800"/>
         </VBox>
@@ -72,18 +77,19 @@
 </VBox> -->
 
     <center>
-        <VBox alignment="CENTER" spacing="20">
-            <padding>
-                <Insets top="20" right="40" bottom="20" left="40"/>
-            </padding>
-
-            <TextArea fx:id="historyTextArea"
-                      editable="false"
-                      wrapText="true"
-                      prefHeight="350.0"
-                      prefWidth="700.0"
-                      text="No study history available yet." />
-        </VBox>
+        <ScrollPane fitToWidth="true">
+            <content>
+                <TilePane fx:id="historyContainer"
+                        prefColumns="3"
+                        hgap="25"
+                        vgap="25"
+                        alignment="TOP_CENTER">
+                    <padding>
+                        <Insets top="25" right="25" bottom="25" left="25"/>
+                    </padding>
+                </TilePane>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>
