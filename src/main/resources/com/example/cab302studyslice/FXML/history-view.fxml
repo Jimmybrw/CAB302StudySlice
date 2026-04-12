@@ -24,6 +24,7 @@
                 <Button text="Back" onAction="#onBackClick" styleClass="back-button"/>
             </HBox>
 
+            <!-- Title and Total time  -->
             <Label text="STUDY SLICE" styleClass="auth-title"/>
             <HBox alignment="CENTER_LEFT" spacing="30">
                 <Label text="Your total hours logged:" styleClass="auth-brand-title"/>
@@ -35,22 +36,7 @@
     </top>
 
     <!-- CENTER: Content -->
-    <!-- <center>
-        <ScrollPane fitToWidth="true">
-                <content>
-                        <TilePane fx:id="historyContainer"
-                                  prefColumns="3"
-                                  hgap="25"
-                                  vgap="25"
-                                  alignment="TOP_CENTER">
-                            <padding>
-                                <Insets top="25" right="25" bottom="25" left="25"/>
-                            </padding>
-                        </TilePane>
-                </content>
-        </ScrollPane>
-    </center>
-</BorderPane>
+    <!--
 
  <VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cab302studyslice.Controller.HistoryController">
 

@@ -1,4 +1,3 @@
-// Nothing here yet
 package com.example.cab302studyslice.View;
 
 import javafx.fxml.FXMLLoader;
