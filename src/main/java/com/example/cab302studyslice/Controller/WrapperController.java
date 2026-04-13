@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class WrapperController {
-    // Temporary labels, will update once session or wrapped data is done
+    // Temporary labels, will update according to processed data.
     @FXML
     private Label sessionLabel;
 
@@ -32,10 +32,10 @@ public class WrapperController {
         totalTimeLabel.setText("total time(00:00:00)");
         mostUsedAppLabel.setText("Most Used App");
         focusScoreLabel.setText("Focus Score");
-        insightLabel.setText("Spent most of your time on this app?");
+        insightLabel.setText("something");
     }
 
-    // Ensure user navigates back to dashboard
+    // Navigation back to dashboard
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("dashboard-view.fxml");

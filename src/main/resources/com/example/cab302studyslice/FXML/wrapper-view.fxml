@@ -37,7 +37,7 @@
         </VBox>
     </top>
 
-    <!-- Place for the processed data. Layout not permanent, will change once features for wrapped page is finalised -->
+    <!-- Place for the processed data. Layout not permanent, will change once data for wrapped page is finalised -->
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
             <content>
