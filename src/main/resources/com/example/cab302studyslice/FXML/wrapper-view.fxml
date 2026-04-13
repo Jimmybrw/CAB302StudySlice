@@ -32,50 +32,65 @@
                 <Button text="Back" onAction="#onBackClick" styleClass="back-button"/>
             </HBox>
 
-            <Label text="STUDY WRAPPED" styleClass="header"/>
-            <Label fx:id="sessionLabel" text="Session Summary" styleClass="section-title"/>
+            <Label text="YOUR STUDY WRAPPED" styleClass="header"/>
+            <!-- <Label fx:id="sessionLabel" text="Session Summary" styleClass="section-title"/> -->
         </VBox>
     </top>
 
+    <!-- Place for the processed data. Layout not permanent, will change once features for wrapped page is finalised -->
     <center>
-        <VBox alignment="TOP_CENTER" spacing="25">
-            <padding>
-                <Insets top="20" right="30" bottom="30" left="30"/>
-            </padding>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <content>
 
-            <VBox alignment="CENTER" spacing="12" styleClass="wrapped-hero-card">
-                <Label text="Your session summary" styleClass="wrapped-hero-title"/>
-                <Label fx:id="summaryLabel"
-                       text="<summary of the session will go here>"
-                       wrapText="true"
-                       styleClass="wrapped-hero-text"/>
-            </VBox>
-
-            <TilePane alignment="CENTER" hgap="20" vgap="20" prefColumns="3">
-                <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
+                <VBox alignment="TOP_CENTER" spacing="25">
                     <padding>
-                        <Insets top="20" right="25" bottom="20" left="25"/>
+                        <Insets top="20" right="30" bottom="30" left="30"/>
                     </padding>
-                    <Label text="Total Time" styleClass="wrapped-card-title"/>
-                    <Label fx:id="totalTimeLabel" text="00:00:00" styleClass="wrapped-card-value"/>
-                </VBox>
 
-                <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
-                    <padding>
-                        <Insets top="20" right="25" bottom="20" left="25"/>
-                    </padding>
-                    <Label text="Most Used App" styleClass="wrapped-card-title"/>
-                    <Label fx:id="mostUsedAppLabel" text="Word" styleClass="wrapped-card-value"/>
-                </VBox>
+                    <VBox alignment="CENTER" spacing="12" styleClass="wrapped-hero-card">
+                        <Label text="Your session summary" styleClass="wrapped-hero-title"/>
+                        <Label fx:id="summaryLabel"
+                            text="summary of the session will go here"
+                            wrapText="true"
+                            styleClass="wrapped-hero-text"/>
+                    </VBox>
 
-                <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
-                    <padding>
-                        <Insets top="20" right="25" bottom="20" left="25"/>
-                    </padding>
-                    <Label text="Focus Score" styleClass="wrapped-card-title"/>
-                    <Label fx:id="focusScoreLabel" text="81%" styleClass="wrapped-card-value"/>
+                    <TilePane alignment="CENTER" hgap="20" vgap="20" prefColumns="3">
+                        <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
+                            <padding>
+                                <Insets top="20" right="25" bottom="20" left="25"/>
+                            </padding>
+                            <Label text="Total Time" styleClass="wrapped-card-title"/>
+                            <Label fx:id="totalTimeLabel" text="00:00:00" styleClass="wrapped-card-value"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
+                            <padding>
+                                <Insets top="20" right="25" bottom="20" left="25"/>
+                            </padding>
+                            <Label text="Most Used App" styleClass="wrapped-card-title"/>
+                            <Label fx:id="mostUsedAppLabel" text="Word" styleClass="wrapped-card-value"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
+                            <padding>
+                                <Insets top="20" right="25" bottom="20" left="25"/>
+                            </padding>
+                            <Label text="Focus Score" styleClass="wrapped-card-title"/>
+                            <Label fx:id="focusScoreLabel" text="81%" styleClass="wrapped-card-value"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="8" styleClass="session-tile">
+                            <padding>
+                                <Insets top="20" right="25" bottom="20" left="25"/>
+                            </padding>
+                            <Label text="Insight" styleClass="wrapped-card-title"/>
+                            <Label fx:id="insightLabel" text="81%" styleClass="wrapped-card-value"/>
+                        </VBox>
+
+                    </TilePane>
                 </VBox>
-            </TilePane>
-        </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

@@ -123,4 +123,8 @@ public class DashboardController {
     private void onExploreClicked() {
         ViewManager.switchScene("history-view.fxml");
     }
+
+    // Temporary button placement, will update once timer page or history page finalised
+    @FXML
+    private void onWrappedClicked() {ViewManager.switchScene("wrapper-view.fxml"); }
 }

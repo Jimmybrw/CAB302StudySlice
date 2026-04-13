@@ -26,6 +26,12 @@
                 fx:id="exploreButton"
                 onAction="#onExploreClicked"
                 styleClass="main-button"/>
+
+        <!-- Temporary placing of the Wrapped button -->
+        <Button text="Unwrap?"
+                fx:id="wrappedButton"
+                onAction="#onWrappedClicked"
+                styleClass="main-button"/>
     </HBox>
 
     <!-- TRACKING DISPLAY -->
