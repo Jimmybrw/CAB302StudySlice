@@ -5,11 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.ListView;
 import com.example.cab302studyslice.View.ViewManager;
 import com.example.cab302studyslice.Model.HistoryStore;
-import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
 
 public class HistoryController {
 
