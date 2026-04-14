@@ -1,1 +1,1 @@
-StudySlice ? styles.css
+StudySlice ? dashboard-view.fxml
