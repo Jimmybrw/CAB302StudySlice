@@ -25,14 +25,19 @@
                 <Insets top="20" right="20" bottom="10" left="20"/>
             </padding>
 
-            <HBox alignment="CENTER_LEFT">
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
-                <Button text="Back" onAction="#onBackClick" styleClass="back-button"/>
-            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
 
-            <Label text="YOUR STUDY WRAPPED" styleClass="header"/>
+                <Button text="Back" onAction="#onBackClick" styleClass="back-button"/>
+
+                <!-- Spacer to push session info to the right -->
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="sessionLabel"
+                       text="Session Date"
+                       styleClass="session-title"/>
+            </HBox>
+            <!--Title-->
+            <Label text="YOUR STUDY WRAPPED" styleClass="auth-title"/>
             <!-- <Label fx:id="sessionLabel" text="Session Summary" styleClass="section-title"/> -->
         </VBox>
     </top>

@@ -1,50 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
+<ScrollPane fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.cab302studyslice.Controller.DashboardController"
+            styleClass="dashboard-scroll">
 
-<VBox alignment="CENTER" spacing="15.0" prefHeight="500.0" prefWidth="500.0" style="-fx-padding: 20;"
-      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.cab302studyslice.Controller.DashboardController">
+    <content>
+        <VBox spacing="24" styleClass="dashboard-root">
 
-    <!-- HEADER -->
-    <Label text="STUDY SLICE" styleClass="header"/>
+            <padding>
+                <Insets top="28" right="28" bottom="28" left="28"/>
+            </padding>
 
-    <!-- MAIN BUTTONS -->
-    <HBox spacing="20" alignment="CENTER">
-        <Button text="start tracking"
-                fx:id="toggleButton"
-                onAction="#handleToggleTracking"
-                styleClass="main-button"/>
+            <!-- Top heading -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="6">
+                    <Label text="StudySlice" styleClass="dashboard-kicker"/>
+                    <Label text="Dashboard" styleClass="dashboard-title"/>
+                    <Label text="Track your session and review your focus in real time." styleClass="dashboard-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Ready to focus?" styleClass="dashboard-status-pill"/>
+            </HBox>
 
-        <Button text="explore sessions"
-                fx:id="exploreButton"
-                onAction="#onExploreClicked"
-                styleClass="main-button"/>
+            <!-- Top cards row -->
+            <HBox spacing="20">
+                <!-- Main session card -->
+                <VBox spacing="18" styleClass="dashboard-card dashboard-session-card" HBox.hgrow="ALWAYS">
+                    <Label text="CURRENT SESSION" styleClass="dashboard-section-chip"/>
+                    <Label text="Session Time" styleClass="dashboard-card-label"/>
 
-        <!-- Temporary placing of the Wrapped button -->
-        <Button text="Unwrap?"
-                fx:id="wrappedButton"
-                onAction="#onWrappedClicked"
-                styleClass="main-button"/>
-    </HBox>
+                    <StackPane alignment="CENTER_LEFT" styleClass="dashboard-timer-panel">
+                        <Label fx:id="timerLabel"
+                               text="Total Study Time: 00:00:00"
+                               wrapText="true"
+                               styleClass="dashboard-timer-text"/>
+                    </StackPane>
 
-    <!-- TRACKING DISPLAY -->
-    <VBox spacing="5" alignment="CENTER" prefWidth="500">
-        <Label fx:id="timerLabel"
-               text="Total Study Time: 00:00:00"
-               style="-fx-font-size: 18px;" />
+                    <Label text="Start tracking when you're ready. Your activity log will update below." styleClass="dashboard-helper-text"/>
 
-        <TextArea fx:id="statusTextArea"
-                  editable="false"
-                  VBox.vgrow="ALWAYS"
-                  promptText="Activity log will appear here once tracking starts..."
-                  prefHeight="300" prefWidth="400"/>
-    </VBox>
+                    <HBox spacing="14">
+                        <Button text="Start Tracking"
+                                fx:id="toggleButton"
+                                onAction="#handleToggleTracking"
+                                styleClass="dashboard-primary-button"/>
 
-</VBox>
+                        <Button text="View History"
+                                fx:id="exploreButton"
+                                onAction="#onExploreClicked"
+                                styleClass="dashboard-secondary-button"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Quick stats -->
+                <VBox spacing="16" styleClass="dashboard-card dashboard-side-card">
+                    <Label text="QUICK STATS" styleClass="dashboard-section-chip dashboard-chip-grey"/>
+
+                    <HBox spacing="12">
+                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                            <Label text="Today's Time" styleClass="dashboard-mini-label"/>
+                            <Label text="0h 00m" styleClass="dashboard-mini-value"/>
+                        </VBox>
+                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                            <Label text="Sessions" styleClass="dashboard-mini-label"/>
+                            <Label text="0" styleClass="dashboard-mini-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12">
+                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                            <Label text="Focus Streak" styleClass="dashboard-mini-label"/>
+                            <Label text="0 days" styleClass="dashboard-mini-value"/>
+                        </VBox>
+                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                            <Label text="Best Session" styleClass="dashboard-mini-label"/>
+                            <Label text="0h 00m" styleClass="dashboard-mini-value"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- Bottom cards row -->
+            <HBox spacing="20">
+                <!-- Activity log -->
+                <VBox spacing="16" styleClass="dashboard-card dashboard-log-card" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="ACTIVITY LOG" styleClass="dashboard-section-chip"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Waiting for session" styleClass="dashboard-waiting-pill"/>
+                    </HBox>
+
+                    <TextArea fx:id="statusTextArea"
+                              editable="false"
+                              wrapText="true"
+                              promptText="Activity log will appear here once tracking starts..."
+                              VBox.vgrow="ALWAYS"
+                              styleClass="dashboard-log-area"/>
+                </VBox>
+
+                <!-- Session snapshot -->
+                <VBox spacing="16" styleClass="dashboard-card dashboard-snapshot-card">
+                    <Label text="SESSION SNAPSHOT" styleClass="dashboard-section-chip dashboard-chip-warm"/>
+
+                    <VBox spacing="12" styleClass="dashboard-snapshot-item">
+                        <Label text="Most Used App" styleClass="dashboard-mini-label"/>
+                        <Label text="-" styleClass="dashboard-snapshot-value"/>
+                    </VBox>
+
+                    <VBox spacing="12" styleClass="dashboard-snapshot-item">
+                        <Label text="Top Website" styleClass="dashboard-mini-label"/>
+                        <Label text="-" styleClass="dashboard-snapshot-value"/>
+                    </VBox>
+
+                    <VBox spacing="12" styleClass="dashboard-snapshot-item">
+                        <Label text="Productivity" styleClass="dashboard-mini-label"/>
+                        <Label text="-" styleClass="dashboard-snapshot-value"/>
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- Tip banner -->
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="dashboard-tip-banner">
+                <Label text="Tip:" styleClass="dashboard-tip-title"/>
+                <Label text="Take regular breaks and stay hydrated. A focused mind is a productive mind!"
+                       wrapText="true"
+                       styleClass="dashboard-tip-text"/>
+            </HBox>
+
+        </VBox>
+    </content>
+</ScrollPane>
+
+\\test
