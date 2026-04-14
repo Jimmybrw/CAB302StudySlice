@@ -1,4 +1,4 @@
-package com.example.cab302studyslice;
+/** package com.example.cab302studyslice;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,4 +28,4 @@ public class HelloApplication extends Application {
 
 //tesst 3
 
-//test 4 and again
+//test 4 and again **/
