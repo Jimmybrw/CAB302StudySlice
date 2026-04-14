@@ -6,16 +6,28 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class TrackingEngine {
+    //Stores the amount of time spend on each detected activity
     private Map<String, Integer> timeSpent = new LinkedHashMap<>();
+
+    // Remembers the last valid app detected
     private String lastSavedApp = "Desktop";
+
+    // Controls whether the tracking loop is running
     private boolean isRunning = false;
+
+    // Sends updated tracking text back to the UI
     private Consumer<String> uiUpdater;
+
+    // Total study time for the current session in seconds
     private int totalSeconds = 0;
 
+    // Maps raw app keywords to cleaner display names
     private static final Map<String, String> APP_KEYWORDS = new HashMap<>() {{
         put("WINWORD", "WORD");
         put("CODE", "VS CODE");
         put("POWERPNT", "POWERPOINT");
+        put("OUTLOOK", "OUTLOOK");
+        put("IDEA", "INTELLIJ IDEA");
     }};
 
     public void setUiUpdater(Consumer<String> uiUpdater) {
@@ -38,21 +50,19 @@ public class TrackingEngine {
                             String rawTitle = lines.get(0).trim();
                             String currentApp = simplifyTitle(rawTitle);
 
-                            if (!currentApp.isEmpty() && !currentApp.contains("STUDY TRACKER") && !currentApp.contains("CAB302")) {
+                            if (!currentApp.isEmpty()) {
                                 lastSavedApp = currentApp;
                                 int newTime = timeSpent.getOrDefault(lastSavedApp, 0) + 1;
                                 timeSpent.put(lastSavedApp, newTime);
                                 totalSeconds++;
 
-                                StringBuilder displayData = new StringBuilder("Total Study Time: " + formatTime(totalSeconds) + "\n");
-                                displayData.append("Currently Tracking: " + lastSavedApp + "\n\n");
-                                displayData.append("--- ACTIVITY LOG ---\n");
+                                StringBuilder displayData = new StringBuilder();
                                 for (Map.Entry<String, Integer> entry : timeSpent.entrySet()) {
-                                    displayData.append(entry.getKey()).append(" : ").append(entry.getValue()).append("s\n");
+                                    displayData.append(entry.getKey()).append(" : ").append(formatTime(entry.getValue())).append("\n");
                                 }
-
+                                //sends updated session data to the UI
                                 if (uiUpdater != null) {
-                                    uiUpdater.accept(displayData.toString());
+                                    uiUpdater.accept("Total Study Time: " + formatTime(totalSeconds) + "\n" + displayData.toString());
                                 }
                             }
                         }
@@ -67,9 +77,20 @@ public class TrackingEngine {
         return totalSeconds;
     }
 
-    // New method to stop the loop
+    //returns the tracked activity data
+    public Map<String, Integer> getTimeSpent() {
+        return new LinkedHashMap<>(timeSpent);
+    }
+
     public void stopTracking() {
         isRunning = false;
+    }
+
+    //Will clear the current session data so a new tracking session can begin clearly
+    public void reset() {
+        timeSpent.clear();
+        totalSeconds = 0;
+        lastSavedApp = "Desktop";
     }
 
     private String formatTime(int totalSeconds) {
@@ -82,12 +103,25 @@ public class TrackingEngine {
     private static String simplifyTitle(String title) {
         if (title == null || title.isEmpty() || title.equalsIgnoreCase("Desktop")) return "DESKTOP";
         String upperTitle = title.toUpperCase();
+        
+        // Handle Browsers
         if (upperTitle.contains("CHROME") || upperTitle.contains("EDGE") || upperTitle.contains("FIREFOX")) {
-            return "WEB: " + title.split(" - ")[0].trim();
+            String cleanTitle = title.split(" - ")[0].trim();
+            
+            // Remove "and X more page(s)" suffix
+            if (cleanTitle.contains(" and ") && (cleanTitle.contains(" more page") || cleanTitle.contains(" other page"))) {
+                cleanTitle = cleanTitle.replaceAll(" and \\d+ more page.*", "");
+                cleanTitle = cleanTitle.replaceAll(" and \\d+ other page.*", "");
+            }
+            
+            return "WEB: " + cleanTitle.trim();
         }
+
+        // Handle specific keywords
         for (Map.Entry<String, String> entry : APP_KEYWORDS.entrySet()) {
             if (upperTitle.contains(entry.getKey())) return entry.getValue();
         }
+
         return upperTitle.trim();
     }
 }

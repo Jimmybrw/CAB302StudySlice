@@ -1,107 +1,126 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.TrackingEngine;
+import com.example.cab302studyslice.View.ViewManager;
+import com.example.cab302studyslice.Model.HistoryStore;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import javafx.scene.control.TextArea;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
-import java.io.IOException;
-import java.util.List;
+
 
 public class DashboardController {
 
-    @FXML private HBox recentSessionsContainer;
-    @FXML private PieChart pieChart;
-    @FXML private BarChart<String, Number> barChart;
+    // Tracking UI elements
+    @FXML private Label timerLabel;
+    @FXML private TextArea statusTextArea;
+    @FXML private Button toggleButton;
+
+    // Static engine to persist tracking across scene switches
+    private static TrackingEngine engine = new TrackingEngine();
+    private static boolean isTracking = false;
 
     @FXML
     public void initialize() {
-        loadRecentSessions();
-        loadPieChartData();
-        loadBarChartData();
+        // Connect the Engine to the UI
+        engine.setUiUpdater(text -> {
+            Platform.runLater(() -> {
+                if (text.contains("\n")) {
+                    String[] parts = text.split("\n", 2);
+                    if (timerLabel != null) {
+                        timerLabel.setText(parts[0]); // First line is the total time
+                    }
+                    if (statusTextArea != null) {
+                        statusTextArea.setText(parts[1]); // Remaining lines are the activity log
+                    }
+                }
+            });
+        });
+
+        // Sync button text if tracking is already running
+        if (isTracking) {
+            toggleButton.setText("Stop Tracking");
+        }
+    }
+
+    @FXML
+    private void handleToggleTracking() {
+        if (!isTracking) {
+            engine.startTracking();
+            toggleButton.setText("Stop Tracking");
+            isTracking = true;
+        } else {
+            engine.stopTracking();
+
+            //Save the completed session into HistoryStore.
+            String sessionText = buildSessionText();
+            System.out.println("Saving session to history...");
+            System.out.println(sessionText);
+
+            HistoryStore.addSession(sessionText);
+            // Reset tracker so the next study session starts fresh
+            engine.reset();
+
+            // Clear dashboard display after session ends
+            if (timerLabel != null) {
+                timerLabel.setText("Total Study Time: 00:00:00");
+            }
+            if (statusTextArea != null) {
+                statusTextArea.clear();
+            }
+
+            toggleButton.setText("Start Tracking");
+            isTracking = false;
+
+        }
+    }
+
+
+    //Will format the completed tracking session into text for the history page
+    private String buildSessionText() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Session Date: ")
+                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
+                .append("\n");
+
+        builder.append("Total Study Time: ")
+                .append(formatTime(engine.getTotalSeconds()))
+                .append("\n\n");
+
+        for (Map.Entry<String, Integer> entry : engine.getTimeSpent().entrySet()) {
+            builder.append(entry.getKey())
+                    .append(" : ")
+                    .append(formatTime(entry.getValue()))
+                    .append("\n");
+        }
+
+        return builder.toString();
+    }
+
+    //Converts seconds into HH:MM:SS format
+    private String formatTime(int totalSeconds) {
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     // -----------------------------
     // NAVIGATION BUTTONS
     // -----------------------------
     @FXML
-    private void onTimerClicked(javafx.event.ActionEvent event) {
-        switchScene(event, "timer-view.fxml");
+    private void onTimerClicked() {
+        ViewManager.switchScene("timer-view.fxml");
     }
 
     @FXML
-    private void onExploreClicked(javafx.event.ActionEvent event) {
-        switchScene(event, "explore-view.fxml");
-    }
-
-    private void switchScene(javafx.event.ActionEvent event, String fxmlFile) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // -----------------------------
-    // RECENT SESSIONS (placeholder)
-    // -----------------------------
-    private void loadRecentSessions() {
-        List<String> recentWeeks = List.of("Week 1", "Week 2", "Week 23");
-
-        recentSessionsContainer.getChildren().clear();
-
-        for (String week : recentWeeks) {
-            StackPane tile = createSessionTile(week);
-            recentSessionsContainer.getChildren().add(tile);
-        }
-    }
-
-    private StackPane createSessionTile(String label) {
-        StackPane pane = new StackPane();
-        pane.getStyleClass().add("session-tile");
-        pane.setPrefSize(120, 60);
-
-        Label text = new Label(label);
-        text.getStyleClass().add("session-tile-text");
-
-        pane.getChildren().add(text);
-        return pane;
-    }
-
-    // -----------------------------
-    // PIE CHART
-    // -----------------------------
-    private void loadPieChartData() {
-        pieChart.getData().clear();
-        pieChart.getData().add(new PieChart.Data("Study", 65));
-        pieChart.getData().add(new PieChart.Data("Breaks", 20));
-        pieChart.getData().add(new PieChart.Data("Distractions", 15));
-    }
-
-    // -----------------------------
-    // BAR CHART
-    // -----------------------------
-    private void loadBarChartData() {
-        barChart.getData().clear();
-
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Hours Studied");
-
-        series.getData().add(new XYChart.Data<>("Week 1", 5));
-        series.getData().add(new XYChart.Data<>("Week 2", 7));
-        series.getData().add(new XYChart.Data<>("Week 23", 3));
-
-        barChart.getData().add(series);
+    private void onExploreClicked() {
+        ViewManager.switchScene("history-view.fxml");
     }
 }
