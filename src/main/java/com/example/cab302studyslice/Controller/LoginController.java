@@ -45,7 +45,7 @@ public class LoginController {
         boolean validUser = DatabaseManager.validateLogin(username, password);
 
         if (validUser) {
-            ViewManager.switchScene("home-view.fxml");
+            ViewManager.switchScene("dashboard-view.fxml");
         } else {
             messageLabel.setStyle("-fx-text-fill: #7B4141;");
             messageLabel.setText("Username or password was incorrect.");
