@@ -1,81 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Separator?>
-
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cab302studyslice.Controller.HistoryController">
-    <!-- Top: Back button top left corner -->
-    <top>
-        <VBox spacing="15" alignment="CENTER">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<ScrollPane fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.cab302studyslice.Controller.HistoryController"
+            styleClass="dashboard-scroll">
+    <content>
+        <VBox spacing="24" styleClass="dashboard-root history-root">
             <padding>
-                <Insets top="20" right="20" bottom="10" left="20"/>
+                <Insets top="28" right="28" bottom="28" left="28"/>
             </padding>
-
-            <HBox alignment="CENTER_LEFT" maxWidth="800">
-                <Button text="Back" onAction="#onBackClick" styleClass="back-button"/>
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="6">
+                    <Label text="StudySlice" styleClass="dashboard-kicker"/>
+                    <Label text="History" styleClass="dashboard-title"/>
+                    <Label fx:id="stateMessageLabel"
+                           text="Showing your latest saved sessions from SQL."
+                           styleClass="dashboard-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Back to Dashboard"
+                        onAction="#onBackClick"
+                        styleClass="dashboard-secondary-button"/>
             </HBox>
-
-            <!-- Title and Total time  -->
-            <Label text="STUDY SLICE" styleClass="auth-title"/>
-            <HBox alignment="CENTER_LEFT" spacing="30">
-                <Label text="Your total hours logged:" styleClass="auth-brand-title"/>
-                <Label fx:id="totalHoursLabel" text="00:00:00" styleClass="history-totalTime"/>
-            </HBox>
-
-            <Separator prefWidth="800"/>
-        </VBox>
-    </top>
-
-    <!-- CENTER: Content -->
-    <!--
-
- <VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cab302studyslice.Controller.HistoryController">
-
-    <Button text="Back" onAction="#onBackClick" />
-    <Label text="HISTORY PAGE" style="-fx-font-size: 24px;" />
-    <Label text="This is where your SQLite data will be displayed." />
-
-    <ListView fx:id="historyList" styleClass="history-list" />
-</VBox> -->
-
-<!-- <VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="450.0"
-      xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.cab302studyslice.Controller.HistoryController">
-
-    <Label text="HISTORY PAGE" style="-fx-font-size: 24px; " />
-
-    <TextArea fx:id="historyTextArea"
-              editable="false"
-              wrapText="true"
-              prefHeight="300.0"
-              prefWidth="350.0"
-              text="No study history available yet." />
-</VBox> -->
-
-    <center>
-        <ScrollPane fitToWidth="true">
-            <content>
+            <VBox spacing="16" styleClass="dashboard-card">
+                <Label text="OVERVIEW" styleClass="dashboard-section-chip dashboard-chip-grey"/>
+                <HBox spacing="12">
+                    <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                        <Label text="Total Study Time" styleClass="dashboard-mini-label"/>
+                        <Label fx:id="totalHoursLabel" text="00:00:00" styleClass="dashboard-mini-value"/>
+                    </VBox>
+                    <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                        <Label text="Saved Sessions" styleClass="dashboard-mini-label"/>
+                        <Label fx:id="totalSessionsLabel" text="0" styleClass="dashboard-mini-value"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            <VBox spacing="16" styleClass="dashboard-card history-list-card" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="SESSION HISTORY" styleClass="dashboard-section-chip"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="MySQL" styleClass="dashboard-waiting-pill"/>
+                </HBox>
                 <TilePane fx:id="historyContainer"
-                        prefColumns="3"
-                        hgap="25"
-                        vgap="25"
-                        alignment="TOP_CENTER">
+                          prefColumns="2"
+                          hgap="16"
+                          vgap="16"
+                          alignment="TOP_LEFT"
+                          VBox.vgrow="ALWAYS">
                     <padding>
-                        <Insets top="25" right="25" bottom="25" left="25"/>
+                        <Insets top="4" right="4" bottom="4" left="4"/>
                     </padding>
                 </TilePane>
-            </content>
-        </ScrollPane>
-    </center>
-
-</BorderPane>
+            </VBox>
+        </VBox>
+    </content>
+</ScrollPane>

@@ -8,7 +8,10 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseManager {
 
@@ -185,6 +188,70 @@ public class DatabaseManager {
         }
     }
 
+    // Loads all saved sessions and related activities for one user
+    public static List<SessionHistoryEntry> getSessionHistoryByUserId(int userId) {
+        List<SessionHistoryEntry> sessions = new ArrayList<>();
+        if (userId <= 0) {
+            return sessions;
+        }
+
+        String sessionsSql = "SELECT ID, title, start_time, end_time, CAST(total_time AS CHAR) AS total_time_text " +
+                "FROM sessions WHERE User_ID = ? ORDER BY start_time DESC, ID DESC";
+        String activitiesSql = "SELECT sa.session_ID, sa.app_name, sa.duration " +
+                "FROM session_activities sa INNER JOIN sessions s ON s.ID = sa.session_ID " +
+                "WHERE s.User_ID = ? ORDER BY sa.session_ID DESC, sa.duration DESC";
+
+        try (Connection connection = getConnection();
+             PreparedStatement sessionsStatement = connection.prepareStatement(sessionsSql);
+             PreparedStatement activitiesStatement = connection.prepareStatement(activitiesSql)) {
+
+            Map<Integer, SessionHistoryEntry> sessionsById = new LinkedHashMap<>();
+
+            sessionsStatement.setInt(1, userId);
+            try (ResultSet sessionRows = sessionsStatement.executeQuery()) {
+                while (sessionRows.next()) {
+                    int sessionId = sessionRows.getInt("ID");
+                    String title = sessionRows.getString("title");
+
+                    Timestamp startTimestamp = sessionRows.getTimestamp("start_time");
+                    Timestamp endTimestamp = sessionRows.getTimestamp("end_time");
+                    LocalDateTime startDateTime = startTimestamp == null ? null : startTimestamp.toLocalDateTime();
+                    LocalDateTime endDateTime = endTimestamp == null ? null : endTimestamp.toLocalDateTime();
+
+                    int totalSeconds = parseTotalTimeSeconds(sessionRows.getString("total_time_text"));
+
+                    SessionHistoryEntry entry = new SessionHistoryEntry(
+                            sessionId,
+                            title,
+                            startDateTime,
+                            endDateTime,
+                            totalSeconds
+                    );
+                    sessionsById.put(sessionId, entry);
+                }
+            }
+
+            activitiesStatement.setInt(1, userId);
+            try (ResultSet activityRows = activitiesStatement.executeQuery()) {
+                while (activityRows.next()) {
+                    int sessionId = activityRows.getInt("session_ID");
+                    SessionHistoryEntry entry = sessionsById.get(sessionId);
+                    if (entry != null) {
+                        String appName = activityRows.getString("app_name");
+                        int duration = activityRows.getInt("duration");
+                        entry.addActivity(new Activity(appName, duration));
+                    }
+                }
+            }
+
+            sessions.addAll(sessionsById.values());
+            return sessions;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     private static void bindTotalTimeValue(Connection connection,
                                            PreparedStatement statement,
                                            int parameterIndex,
@@ -256,5 +323,48 @@ public class DatabaseManager {
     private static Timestamp durationAsTimestamp(int totalSeconds) {
         LocalDateTime anchor = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
         return Timestamp.valueOf(anchor.plusSeconds(totalSeconds));
+    }
+
+    private static int parseTotalTimeSeconds(String rawTotalTime) {
+        if (rawTotalTime == null || rawTotalTime.isBlank()) {
+            return 0;
+        }
+
+        String value = rawTotalTime.trim();
+        if (value.matches("\\d+")) {
+            return Integer.parseInt(value);
+        }
+
+        int spaceIndex = value.indexOf(' ');
+        if (spaceIndex >= 0 && spaceIndex < value.length() - 1) {
+            value = value.substring(spaceIndex + 1).trim();
+        }
+
+        int dotIndex = value.indexOf('.');
+        if (dotIndex > 0) {
+            value = value.substring(0, dotIndex);
+        }
+
+        return parseTimePartsToSeconds(value);
+    }
+
+    private static int parseTimePartsToSeconds(String value) {
+        if (value == null || value.isBlank()) {
+            return 0;
+        }
+
+        String[] parts = value.split(":");
+        if (parts.length != 3) {
+            return 0;
+        }
+
+        try {
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            int seconds = Integer.parseInt(parts[2]);
+            return (hours * 3600) + (minutes * 60) + seconds;
+        } catch (NumberFormatException exception) {
+            return 0;
+        }
     }
 }
