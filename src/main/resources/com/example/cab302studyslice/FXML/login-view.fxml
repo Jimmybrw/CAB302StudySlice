@@ -30,12 +30,12 @@
         <Label text="Login" styleClass="auth-title"/>
         <Label text="Sign in to continue" styleClass="auth-subtitle"/>
 
-        <TextField fx:id="usernameField" promptText="Username" styleClass="auth-field"/>
-        <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-field"/>
+        <TextField fx:id="usernameField" promptText="Username" onAction="#handleLogin" styleClass="auth-field"/>
+        <PasswordField fx:id="passwordField" promptText="Password" onAction="#handleLogin" styleClass="auth-field"/>
 
         <Label fx:id="messageLabel" text="" wrapText="true" styleClass="auth-message"/>
 
-        <Button text="Login" onAction="#handleLogin" styleClass="auth-primary-button"/>
+        <Button text="Login" onAction="#handleLogin" defaultButton="true" styleClass="auth-primary-button"/>
         <Button text="Create Account" onAction="#handleGoToRegister" styleClass="auth-secondary-button"/>
     </VBox>
 </HBox>
