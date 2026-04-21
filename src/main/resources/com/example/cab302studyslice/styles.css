@@ -373,3 +373,44 @@
     -fx-text-fill: #8A5B2B;
 }
 
+/* =========================
+   History styles
+   ========================= */
+
+.history-root {
+    -fx-min-width: 860;
+}
+
+.history-list-card {
+    -fx-min-height: 350;
+}
+
+.history-session-card {
+    -fx-background-color: #FCFBFA;
+    -fx-background-radius: 18;
+    -fx-border-color: #E7E2DD;
+    -fx-border-radius: 18;
+}
+
+.history-session-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E2E2E;
+}
+
+.history-session-time {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7B4141;
+}
+
+.history-session-meta {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6B7C76;
+}
+
+.history-session-activities {
+    -fx-font-size: 13px;
+    -fx-text-fill: #4C4C4C;
+}
+

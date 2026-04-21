@@ -53,16 +53,40 @@
 
                     <Label text="Start tracking when you're ready. Your activity log will update below." styleClass="dashboard-helper-text"/>
 
-                    <HBox spacing="14">
+                    <HBox spacing="8">
                         <Button text="Start Tracking"
                                 fx:id="toggleButton"
                                 onAction="#handleToggleTracking"
-                                styleClass="dashboard-primary-button"/>
+                                styleClass="dashboard-primary-button"
+                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                                maxWidth="Infinity"
+                                HBox.hgrow="ALWAYS"/>
+                        <Button text="Save"
+                                onAction="#handleSaveSession"
+                                styleClass="dashboard-secondary-button"
+                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                                maxWidth="Infinity"
+                                HBox.hgrow="ALWAYS"/>
+                        <Button text="Delete"
+                                onAction="#handleDeleteSession"
+                                styleClass="dashboard-secondary-button"
+                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                                maxWidth="Infinity"
+                                HBox.hgrow="ALWAYS"/>
 
                         <Button text="View History"
                                 fx:id="exploreButton"
                                 onAction="#onExploreClicked"
-                                styleClass="dashboard-secondary-button"/>
+                                styleClass="dashboard-secondary-button"
+                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                                maxWidth="Infinity"
+                                HBox.hgrow="ALWAYS"/>
+                        <Button text="Timer"
+                                onAction="#onTimerClicked"
+                                styleClass="dashboard-secondary-button"
+                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                                maxWidth="Infinity"
+                                HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 

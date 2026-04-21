@@ -1,6 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
 import com.example.cab302studyslice.Model.DatabaseManager;
+import com.example.cab302studyslice.Model.User;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -42,10 +43,11 @@ public class LoginController {
             return;
         }
 
-        boolean validUser = DatabaseManager.validateLogin(username, password);
-
-        if (validUser) {
-            ViewManager.switchScene("home-view.fxml");
+        int userId = DatabaseManager.getUserIdByCredentials(username, password);
+        if (userId > 0) {
+            User.setCurrentUserId(userId);
+            User.setCurrentUsername(username);
+            ViewManager.switchScene("dashboard-view.fxml");
         } else {
             messageLabel.setStyle("-fx-text-fill: #7B4141;");
             messageLabel.setText("Username or password was incorrect.");
