@@ -197,7 +197,7 @@ public class DatabaseManager {
 
         String sessionsSql = "SELECT ID, title, start_time, end_time, CAST(total_time AS CHAR) AS total_time_text " +
                 "FROM sessions WHERE User_ID = ? ORDER BY start_time DESC, ID DESC";
-        String activitiesSql = "SELECT sa.session_ID, sa.app_name, sa.duration " +
+        String activitiesSql = "SELECT sa.session_ID, sa.app_name, CAST(sa.duration AS CHAR) AS duration_text " +
                 "FROM session_activities sa INNER JOIN sessions s ON s.ID = sa.session_ID " +
                 "WHERE s.User_ID = ? ORDER BY sa.session_ID DESC, sa.duration DESC";
 
@@ -238,7 +238,7 @@ public class DatabaseManager {
                     SessionHistoryEntry entry = sessionsById.get(sessionId);
                     if (entry != null) {
                         String appName = activityRows.getString("app_name");
-                        int duration = activityRows.getInt("duration");
+                        int duration = parseTotalTimeSeconds(activityRows.getString("duration_text"));
                         entry.addActivity(new Activity(appName, duration));
                     }
                 }
