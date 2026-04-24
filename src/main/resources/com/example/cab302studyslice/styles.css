@@ -414,3 +414,35 @@
     -fx-text-fill: #4C4C4C;
 }
 
+/* timer page */
+.timer-circle {
+    -fx-fill: linear-gradient(to bottom right, #ffb37a, #ff8a4c);
+}
+
+.timer-display {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Consolas";
+}
+
+.sidebar-button-selected {
+    -fx-background-color: #cfe7cf;
+    -fx-font-size: 16px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.sidebar {
+    -fx-background-color: #819D93;
+    -fx-padding: 20;
+}
+
+.sidebar-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-alignment: CENTER_LEFT;
+}

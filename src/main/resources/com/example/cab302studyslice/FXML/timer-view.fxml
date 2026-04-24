@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.cab302studyslice.Controller.TimerController"
+            fx:controller="com.example.cab302studyslice.Controller.DashboardController"
             prefWidth="900" prefHeight="600">
 
     <!-- Menu Sidebar / will probably work on making this pop out rahter than constant -->
@@ -16,7 +16,7 @@
 
             <Button text="Dashboard" fx:id="dashboardButton" onAction="#goToDashboard" styleClass="sidebar-button"/>
             <Button text="Timer" styleClass="sidebar-button-selected"/>
-            <Button text="Explore" fx:id="exploreButton" onAction="#goToExplore" styleClass="sidebar-button"/>
+            <Button text="Explore" fx:id="exploreButtonSB" onAction="#goToExplore" styleClass="sidebar-button"/>
             <Button text="Settings" styleClass="sidebar-button"/>
             <Button text="Log Out" styleClass="sidebar-button"/>
 
@@ -26,48 +26,65 @@
         </VBox>
     </left>
 
-    <!--  MAIN CONTENT  -->
     <center>
-        <HBox spacing="40" alignment="CENTER" style="-fx-padding: 30;">
+        <VBox spacing="20" alignment="TOP_CENTER">
+            <Label text="Start tracking when you're ready. Your activity log will update below." styleClass="dashboard-helper-text"/>
 
-            <!-- LEFT: space for logo / fun graphic -->
-            <VBox alignment="CENTER">
-                <Circle radius="140" styleClass="timer-circle"/>
-            </VBox>
+            <HBox spacing="8">
+                <Button text="Start Tracking"
+                        fx:id="toggleButton"
+                        onAction="#handleToggleTracking"
+                        styleClass="dashboard-primary-button"
+                        style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"/>
+                <Button text="Save"
+                        onAction="#handleSaveSession"
+                        styleClass="dashboard-secondary-button"
+                        style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"/>
+                <Button text="Delete"
+                        onAction="#handleDeleteSession"
+                        styleClass="dashboard-secondary-button"
+                        style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"/>
 
-            <!-- RIGHT: Timer Options -->
-            <VBox spacing="40" alignment="CENTER">
+                <Button text="View History"
+                        fx:id="exploreButton"
+                        onAction="#onExploreClicked"
+                        styleClass="dashboard-secondary-button"
+                        style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"/>
+                <Button text="Timer"
+                        onAction="#onTimerClicked"
+                        styleClass="dashboard-secondary-button"
+                        style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"/>
+            </HBox>
 
-                <!-- SET TIMER SECTION -->
-                <VBox spacing="10" alignment="CENTER">
-                    <Label text="Set Timer" styleClass="section-title"/>
+            <!-- Bottom cards row -->
+            <HBox spacing="20">
+            <!-- Activity log -->
+                <VBox spacing="16" styleClass="dashboard-card dashboard-log-card" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="ACTIVITY LOG" styleClass="dashboard-section-chip"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Waiting for session" styleClass="dashboard-waiting-pill"/>
+                </HBox>
 
-                    <Label fx:id="setTimerDisplay"
-                           text="02:30:00"
-                           styleClass="timer-display"/>
-
-                    <Button text="SET"
-                            fx:id="setTimerButton"
-                            onAction="#openSetTimerDialog"
-                            styleClass="main-button"/>
+                <TextArea fx:id="statusTextArea"
+                          editable="false"
+                          wrapText="true"
+                          promptText="Activity log will appear here once tracking starts..."
+                          VBox.vgrow="ALWAYS"
+                          styleClass="dashboard-log-area"/>
                 </VBox>
-
-                <!-- LIVE TIMER SECTION -->
-                <VBox spacing="10" alignment="CENTER">
-                    <Label text="Live Timer" styleClass="section-title"/>
-
-                    <Label fx:id="liveTimerDisplay"
-                           text="00:00:00"
-                           styleClass="timer-display"/>
-
-                    <Button text="START"
-                            fx:id="startLiveTimerButton"
-                            onAction="#startLiveTimer"
-                            styleClass="main-button"/>
-                </VBox>
-
-            </VBox>
-        </HBox>
+            </HBox>
+        </VBox>
     </center>
 
 </BorderPane>

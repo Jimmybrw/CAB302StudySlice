@@ -44,6 +44,7 @@
                     <HBox spacing="10" styleClass="dashboard_subSections">
                         <Button text="CURRENT SESSION" styleClass="dashboard-section-chip"/>
                         <Button text="EXPLORE SESSIONS" fx:id="goToExplorePage" onAction="#onExploreClicked" styleClass="dashboard-section-chip"/>
+                        <Button text="TRACKING" fx:id="goToTimerPage" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
                     </HBox>
                     <Label text="Session Time" styleClass="dashboard-card-label"/>
 

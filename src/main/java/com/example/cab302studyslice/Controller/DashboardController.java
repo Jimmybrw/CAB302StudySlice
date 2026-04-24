@@ -10,6 +10,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -22,6 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -381,6 +384,11 @@ public class DashboardController {
     }
 
     @FXML
+    private void onTrackingClicked() {
+        ViewManager.switchScene("timer-view.fxml");
+    }
+
+    @FXML
     private void onExploreClicked() {
         ViewManager.switchScene("history-view.fxml");
     }
@@ -441,5 +449,28 @@ public class DashboardController {
         scene.getStylesheets().add(getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
         dialog.setScene(scene);
         dialog.showAndWait();
+    }
+    //for timer page - adjusting
+    @FXML private Label setTimerDisplay;
+    @FXML private Label liveTimerDisplay;
+
+    @FXML
+    private void goToDashboard() {
+        switchScene("/com/example/cab302studyslice/dashboard-view.fxml");
+    }
+
+    @FXML
+    private void goToExplore() {
+        switchScene("/com/example/cab302studyslice/explore-view.fxml");
+    }
+
+    private void switchScene(String fxmlPath) {
+        try {
+            Stage stage = (Stage) setTimerDisplay.getScene().getWindow();
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlPath)));
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

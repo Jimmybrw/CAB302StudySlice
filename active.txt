@@ -1,1 +1,1 @@
-StudySlice ? dashboard-view.fxml
+StudySlice ? timer-view.fxml
