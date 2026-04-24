@@ -1,1 +1,1 @@
-CAB302StudySlice ? dashboard-view.fxml
+StudySlice ? dashboard-view.fxml
