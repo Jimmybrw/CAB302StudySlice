@@ -15,9 +15,14 @@ public class ViewController {
         ViewManager.switchScene("history-view.fxml");
     }
 
+    @FXML
+    private void goToTimer() { ViewManager.switchScene("timer-view.fxml"); }
+
     public void handleSignIn(ActionEvent actionEvent) {
     }
 
     public void handleSignUp(ActionEvent actionEvent) {
     }
+
+
 }
