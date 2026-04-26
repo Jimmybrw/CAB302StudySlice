@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 
-
+// Controller to connect the dashboard ui with the actual program features and Java file.
 public class DashboardController {
 
     // Tracking UI elements
