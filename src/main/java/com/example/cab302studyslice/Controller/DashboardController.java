@@ -4,7 +4,7 @@ import com.example.cab302studyslice.Model.TrackingEngine;
 import com.example.cab302studyslice.View.ViewManager;
 import com.example.cab302studyslice.Model.HistoryStore;
 import com.example.cab302studyslice.Model.DatabaseManager;
-import com.example.cab302studyslice.Model.Activity;
+import com.example.cab302studyslice.Model.SessionSaveService;
 import com.example.cab302studyslice.Model.User;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -27,8 +27,6 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -43,6 +41,7 @@ public class DashboardController {
     // Static engine to persist tracking across scene switches
     private static TrackingEngine engine = new TrackingEngine();
     private static boolean isTracking = false;
+    private final SessionSaveService sessionSaveService = new SessionSaveService();
 
     @FXML
     public void initialize() {
@@ -178,34 +177,29 @@ public class DashboardController {
         confirmButton.getStyleClass().add("dashboard-primary-button");
         confirmButton.setOnAction(event -> {
             String sessionName = sessionNameField.getText().trim();
-            if (sessionName.isEmpty()) {
+            SessionSaveService.PrepareResult preparedSession = sessionSaveService.prepareSaveRequest(
+                    sessionName,
+                    User.getCurrentUserId(),
+                    engine.getTotalSeconds(),
+                    engine.getTimeSpent(),
+                    LocalDateTime.now()
+            );
+
+            if (!preparedSession.isReady()) {
                 messageLabel.setStyle("-fx-text-fill: #7B4141;");
-                messageLabel.setText("Please enter a session name.");
-                return;
-            }
-            int currentUserId = User.getCurrentUserId();
-            if (currentUserId <= 0) {
-                messageLabel.setStyle("-fx-text-fill: #7B4141;");
-                messageLabel.setText("Please log in again before saving.");
+                messageLabel.setText(preparedSession.message());
                 return;
             }
 
-            LocalDateTime endTime = LocalDateTime.now();
-            LocalDateTime startTime = endTime.minusSeconds(engine.getTotalSeconds());
-            int totalTime = engine.getTotalSeconds();
-
-            List<Activity> activities = new ArrayList<>();
-            for (Map.Entry<String, Integer> entry : engine.getTimeSpent().entrySet()) {
-                activities.add(new Activity(entry.getKey(), entry.getValue()));
-            }
+            SessionSaveService.SaveRequest saveRequest = preparedSession.request();
 
             boolean saved = DatabaseManager.saveFullSession(
-                    currentUserId,
-                    sessionName,
-                    startTime,
-                    endTime,
-                    totalTime,
-                    activities
+                    User.getCurrentUserId(),
+                    saveRequest.title(),
+                    saveRequest.startTime(),
+                    saveRequest.endTime(),
+                    saveRequest.totalSeconds(),
+                    saveRequest.activities()
             );
 
             if (!saved) {
