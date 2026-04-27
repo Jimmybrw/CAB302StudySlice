@@ -5,11 +5,8 @@ import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.Pane;
 import javafx.scene.Group;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
@@ -54,7 +51,7 @@ public class WrapperTotalTimeController {
         supportTextLabel.setText("That is a serious study stretch.Your future self probably owes you a snack.");
     }
 
-    // set angle and rotation for clock hands
+    // set clock hands' initial pivot and resting angles
     private void setUpClockHands(){
         hourHandRotate = new Rotate(0, 115, 115);
         minuteHandRotate = new Rotate(0, 115, 115);
@@ -70,7 +67,6 @@ public class WrapperTotalTimeController {
     // ANIMATION
     // -----------------------------
 
-    // get background colors to subtly swirl
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -146,7 +142,7 @@ public class WrapperTotalTimeController {
         sequence.play();
     }
 
-    // display animation of clock before revealing total time
+    // display clock animation before revealing total time
     private void playClockThenRevealAnimation() {
         totalTimeLabel.setOpacity(0);
         totalTimeLabel.setVisible(false);
@@ -234,13 +230,11 @@ public class WrapperTotalTimeController {
     // NAVIGATION BUTTONS
     // -----------------------------
 
-    // go back to first wrapped page
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-intro-view.fxml");
     }
 
-    // go to next wrapped page
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-TopApp-view.fxml");

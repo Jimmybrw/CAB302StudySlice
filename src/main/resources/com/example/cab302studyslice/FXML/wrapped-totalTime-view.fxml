@@ -28,8 +28,6 @@
 
     <!-- Content -->
     <BorderPane>
-
-        <!-- TOP BAR -->
         <top>
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <padding>
@@ -55,7 +53,6 @@
                         <Insets top="20" right="40" bottom="40" left="40"/>
                     </padding>
 
-                    <!-- Label -->
                     <Label text="You studied for"
                             styleClass="wrapped-page-label"/>
 

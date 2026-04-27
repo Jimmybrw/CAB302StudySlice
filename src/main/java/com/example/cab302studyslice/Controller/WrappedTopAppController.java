@@ -36,6 +36,10 @@ public class WrappedTopAppController {
         topAppSupportLabel.setText("This was your main study space for this session. Looks like the assignment grind was real.");
     }
 
+    // -----------------------------
+    // ANIMATION
+    // -----------------------------
+
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -117,6 +121,10 @@ public class WrappedTopAppController {
         pulse.setAutoReverse(true);
         pulse.play();
     }
+
+    // -----------------------------
+    // NAVIGATION BUTTONS
+    // -----------------------------
 
     @FXML
     private void onBackClick() {

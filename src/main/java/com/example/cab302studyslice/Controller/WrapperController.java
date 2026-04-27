@@ -6,9 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 
@@ -34,18 +31,11 @@ public class WrapperController {
         playNextButtonPulse();
     }
 
-    // Navigation
-    @FXML
-    private void onBackClick() {
-        ViewManager.switchScene("dashboard-view.fxml");
-    }
-
-    @FXML
-    private void onNextClick() {
-        ViewManager.switchScene("wrapped-totalTime-view.fxml");
-    }
-
     @FXML private Region animatedOverlay;
+
+    // -----------------------------
+    // ANIMATION
+    // -----------------------------
 
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
@@ -143,57 +133,17 @@ public class WrapperController {
         pulse.play();
     }
 
-    /*private void playNextButtonAttentionAnimation() {
-        PauseTransition delay = new PauseTransition(Duration.seconds(1.2));
+    // -----------------------------
+    // NAVIGATION BUTTONS
+    // -----------------------------
 
-        // tiny scale pulse
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(180), nextButton);
-        scaleUp.setFromX(1.0);
-        scaleUp.setFromY(1.0);
-        scaleUp.setToX(1.05);
-        scaleUp.setToY(1.05);
+    @FXML
+    private void onBackClick() {
+        ViewManager.switchScene("dashboard-view.fxml");
+    }
 
-        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(180), nextButton);
-        scaleDown.setFromX(1.05);
-        scaleDown.setFromY(1.05);
-        scaleDown.setToX(1.0);
-        scaleDown.setToY(1.0);
-
-        // tiny horizontal nudge
-        TranslateTransition nudgeRight = new TranslateTransition(Duration.millis(90), nextButton);
-        nudgeRight.setFromX(0);
-        nudgeRight.setToX(4);
-
-        TranslateTransition nudgeLeft = new TranslateTransition(Duration.millis(90), nextButton);
-        nudgeLeft.setFromX(4);
-        nudgeLeft.setToX(-4);
-
-        TranslateTransition nudgeCenter = new TranslateTransition(Duration.millis(90), nextButton);
-        nudgeCenter.setFromX(-4);
-        nudgeCenter.setToX(0);
-
-        // temporary color change to maroon
-        PauseTransition colorOn =  new PauseTransition(Duration.ZERO);
-        colorOn.setOnFinished(e -> nextButton.setStyle(
-                "-fx-background-color: #7B4141;" +
-                "-fx-text-fill: white;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 14;" +
-                "-fx-padding: 8 18"
-        ));
-
-        PauseTransition colorOff =  new PauseTransition(Duration.ZERO);
-        colorOff.setOnFinished(e -> nextButton.setStyle(
-                "-fx-background-color: rgba(255, 255, 255, 0.25);" +
-                "-fx-text-fill: white;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 14;" +
-                "-fx-padding: 8 18"
-        ));
-
-        SequentialTransition sequence = new SequentialTransition(delay, colorOn, scaleUp, nudgeRight, nudgeLeft, nudgeCenter, scaleDown, colorOff);
-        sequence.play();
-    } */
+    @FXML
+    private void onNextClick() {
+        ViewManager.switchScene("wrapped-totalTime-view.fxml");
+    }
 }

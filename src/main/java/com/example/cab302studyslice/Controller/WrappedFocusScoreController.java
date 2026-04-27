@@ -40,6 +40,10 @@ public class WrappedFocusScoreController {
         focusSupportLabel.setText("You stayed locked in for most of the session, with only a few attention dips.");
     }
 
+    // -----------------------------
+    // ANIMATION
+    // -----------------------------
+
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -121,6 +125,10 @@ public class WrappedFocusScoreController {
         pulse.setAutoReverse(true);
         pulse.play();
     }
+
+    // -----------------------------
+    // NAVIGATION BUTTONS
+    // -----------------------------
 
     @FXML
     private void onBackClick() {
