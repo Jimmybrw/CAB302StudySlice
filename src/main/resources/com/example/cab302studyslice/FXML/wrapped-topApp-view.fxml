@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane fx:id="rootStack"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.cab302studyslice.Controller.WrappedTopAppController">
+
+    <!-- Base Background -->
+    <Region fx:id="backgroundLayer"
+            styleClass="wrapped-topApp-root"
+            maxWidth="Infinity"
+            maxHeight="Infinity"/>
+
+    <!-- Animated overlay -->
+    <Region fx:id="animatedOverlay"
+            styleClass="wrapped-intro-overlay"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+            mouseTransparent="true"/>
+
+    <!-- Content -->
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="24" right="24" bottom="10" left="24"/>
+                </padding>
+
+                <Button fx:id="backButton"
+                        text="Back"
+                        onAction="#onBackClick"
+                        styleClass="wrapped-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="pageIndicatorLabel"
+                       text="03 / 05"
+                       styleClass="wrapped-page-indicator"/>
+            </HBox>
+        </top>
+
+        <center>
+            <StackPane>
+                <VBox alignment="CENTER" spacing="25">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label text="You spent most of your time on"
+                            styleClass="wrapped-page-label"/>
+
+                    <Label fx:id="topAppLabel"
+                            wrapText="true"
+                            styleClass="wrapped-page-hero"/>
+
+                    <Label fx:id="topAppSupportLabel"
+                           text="Looks like this app carried your session."
+                           wrapText="true"
+                           styleClass="wrapped-page-subtext"/>
+
+                    <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
+                        <Button fx:id="nextButton"
+                                text="Next"
+                                onAction="#onNextClick"
+                                styleClass="wrapped-soft-next-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+</StackPane>

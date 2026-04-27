@@ -442,4 +442,9 @@ public class DashboardController {
         dialog.setScene(scene);
         dialog.showAndWait();
     }
+
+    @FXML
+    private void onWrappedTestClicked() {
+        ViewManager.switchScene("wrapped-intro-view.fxml");
+    }
 }
