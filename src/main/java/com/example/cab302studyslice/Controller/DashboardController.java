@@ -444,6 +444,7 @@ public class DashboardController {
         dialog.setScene(scene);
         dialog.showAndWait();
     }
+
     //for timer page - adjusting
     @FXML private Label setTimerDisplay;
     @FXML private Label liveTimerDisplay;
@@ -466,5 +467,10 @@ public class DashboardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onWrappedTestClicked() {
+        ViewManager.switchScene("wrapped-intro-view.fxml");
     }
 }
