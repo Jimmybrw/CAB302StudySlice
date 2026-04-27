@@ -48,23 +48,7 @@ public class TrackingEngine {
                         List<String> lines = Files.readAllLines(file.toPath());
                         if (!lines.isEmpty()) {
                             String rawTitle = lines.get(0).trim();
-                            String currentApp = simplifyTitle(rawTitle);
-
-                            if (!currentApp.isEmpty()) {
-                                lastSavedApp = currentApp;
-                                int newTime = timeSpent.getOrDefault(lastSavedApp, 0) + 1;
-                                timeSpent.put(lastSavedApp, newTime);
-                                totalSeconds++;
-
-                                StringBuilder displayData = new StringBuilder();
-                                for (Map.Entry<String, Integer> entry : timeSpent.entrySet()) {
-                                    displayData.append(entry.getKey()).append(" : ").append(formatTime(entry.getValue())).append("\n");
-                                }
-                                //sends updated session data to the UI
-                                if (uiUpdater != null) {
-                                    uiUpdater.accept("Total Study Time: " + formatTime(totalSeconds) + "\n" + displayData.toString());
-                                }
-                            }
+                            recordTitle(rawTitle);
                         }
                     } catch (Exception e) {}
                 }
@@ -93,14 +77,34 @@ public class TrackingEngine {
         lastSavedApp = "Desktop";
     }
 
-    private String formatTime(int totalSeconds) {
+    void recordTitle(String rawTitle) {
+        String currentApp = simplifyTitle(rawTitle);
+
+        if (!currentApp.isEmpty()) {
+            lastSavedApp = currentApp;
+            int newTime = timeSpent.getOrDefault(lastSavedApp, 0) + 1;
+            timeSpent.put(lastSavedApp, newTime);
+            totalSeconds++;
+
+            StringBuilder displayData = new StringBuilder();
+            for (Map.Entry<String, Integer> entry : timeSpent.entrySet()) {
+                displayData.append(entry.getKey()).append(" : ").append(formatTime(entry.getValue())).append("\n");
+            }
+            //sends updated session data to the UI
+            if (uiUpdater != null) {
+                uiUpdater.accept("Total Study Time: " + formatTime(totalSeconds) + "\n" + displayData.toString());
+            }
+        }
+    }
+
+    String formatTime(int totalSeconds) {
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    private static String simplifyTitle(String title) {
+    static String simplifyTitle(String title) {
         if (title == null || title.isEmpty() || title.equalsIgnoreCase("Desktop")) return "DESKTOP";
         String upperTitle = title.toUpperCase();
         

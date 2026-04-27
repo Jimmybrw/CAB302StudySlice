@@ -13,11 +13,14 @@ public class Main extends Application {
         ViewManager.setStage(stage);
 
         try {
-            Runtime.getRuntime().exec("powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File tracker.ps1");
+            // Launch the tracker script
+            ProcessBuilder pb = new ProcessBuilder("powershell.exe", "-WindowStyle", "Hidden", "-ExecutionPolicy", "Bypass", "-File", "tracker.ps1");
+            pb.start();
         } catch (Exception e) {
             System.err.println("Could not launch tracker.ps1. Ensure it is in the project root.");
         }
 
+        // Show login view first
         ViewManager.switchScene("login-view.fxml");
         stage.setTitle("StudySlice");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/cab302studyslice/Images/CAB302_StudySliceFullSize.png")));

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="rootStack"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.cab302studyslice.Controller.WrappedFocusScoreController">
+
+    <!-- Base Background -->
+    <Region fx:id="backgroundLayer"
+            styleClass="wrapped-focusScore-root"
+            maxWidth="Infinity"
+            maxHeight="Infinity"/>
+
+    <!-- Animated overlay -->
+    <Region fx:id="animatedOverlay"
+            styleClass="wrapped-intro-overlay"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+            mouseTransparent="true"/>
+
+    <!-- Content -->
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="24" right="24" bottom="10" left="24"/>
+                </padding>
+
+                <Button fx:id="backButton"
+                        text="Back"
+                        onAction="#onBackClick"
+                        styleClass="wrapped-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="pageIndicatorLabel"
+                       text="04 / 05"
+                       styleClass="wrapped-page-indicator"/>
+            </HBox>
+        </top>
+
+        <center>
+            <StackPane>
+                <VBox alignment="CENTER" spacing="28">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label text="Your focus score was"
+                           styleClass="wrapped-page-label"/>
+
+                    <StackPane styleClass="wrapped-score-circle">
+                            <Label fx:id="focusScoreLabel"
+                                    text="82%"
+                                    styleClass="wrapped-score-value"/>
+                    </StackPane>
+
+                    <Label fx:id="focusSupportLabel"
+                           text="You stayed locked in for the most session, with only a few attention dips."
+                           wrapText="true"
+                           maxWidth="620"
+                           alignment="CENTER"
+                           textAlignment="CENTER"
+                           styleClass="wrapped-page-subtext"/>
+
+                    <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
+                        <Button fx:id="nextButton"
+                                text="Next"
+                                onAction="#onNextClick"
+                                styleClass="wrapped-soft-next-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+</StackPane>

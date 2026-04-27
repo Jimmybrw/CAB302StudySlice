@@ -90,6 +90,12 @@
                                 style="-fx-font-size: 13px; -fx-padding: 10 10;"
                                 maxWidth="Infinity"
                                 HBox.hgrow="ALWAYS"/>
+                        <Button text="Unwrap (Test)"
+                                onAction="#onWrappedTestClicked"
+                                styleClass="dashboard-secondary-button"
+                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                                maxWidth="Infinity"
+                                HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 

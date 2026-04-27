@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.cab302studyslice.Controller.WrapperTotalTimeController">
+
+    <!-- Background -->
+    <Region fx:id="backgroundLayer"
+            styleClass="wrapped-totalTime-root"
+            maxWidth="Infinity"
+            maxHeight="Infinity"/>
+
+    <Region fx:id="animatedOverlay"
+            styleClass="wrapped-intro-overlay"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+            mouseTransparent="true"/>
+
+    <!-- Content -->
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="24" right="24" bottom="10" left="24"/>
+                </padding>
+
+                <Button text="Back"
+                        onAction="#onBackClick"
+                        styleClass="wrapped-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label text="02 / 05"
+                       styleClass="wrapped-page-indicator"/>
+            </HBox>
+        </top>
+
+        <!-- CENTER CONTENT -->
+        <center>
+            <StackPane>
+                <VBox alignment="CENTER" spacing="25">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label text="You studied for"
+                            styleClass="wrapped-page-label"/>
+
+                    <!-- Clock Diagram -->
+                    <Pane fx:id="clockContainer"
+                          prefWidth="230"
+                          prefHeight="230"
+                          maxWidth="230"
+                          maxHeight="230"
+                          styleClass="wrapped-clock-container">
+
+                        <Circle centerX="115" centerY="115" radius="94"
+                                styleClass="wrapped-clock-face"/>
+
+                        <Group fx:id="hourHandGroup">
+                            <Line fx:id="hourHand"
+                                  startX="115" startY="115"
+                                  endX="145" endY="95"
+                                  styleClass="wrapped-clock-hand-short"/>
+                        </Group>
+
+                        <Group fx:id="minuteHandGroup">
+                            <Line fx:id="minuteHand"
+                                  startX="115" startY="115"
+                                  endX="115" endY="52"
+                                  styleClass="wrapped-clock-hand"/>
+                        </Group>
+
+                        <Circle centerX="115" centerY="115" radius="7"
+                                styleClass="wrapped-clock-center"/>
+                    </Pane>
+
+                    <!-- BIG TIME -->
+                    <Label fx:id="totalTimeLabel"
+                            text="time value here"
+                            styleClass="wrapped-page-hero"/>
+
+                    <!-- Supporting text -->
+                    <Label fx:id="supportTextLabel"
+                           text="observation on total time"
+                           wrapText="true"
+                           styleClass="wrapped-page-subtext"/>
+
+                    <!-- Next Button -->
+                    <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
+                        <Button fx:id="nextButton"
+                                text="Next"
+                                onAction="#onNextClick"
+                                styleClass="wrapped-soft-next-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+</StackPane>

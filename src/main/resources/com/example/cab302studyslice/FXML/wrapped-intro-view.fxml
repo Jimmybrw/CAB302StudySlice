@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="rootStack"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.cab302studyslice.Controller.WrapperController">
+
+    <!-- Base Background -->
+    <Region fx:id="backgroundLayer"
+            styleClass="wrapped-intro-root"
+            maxWidth="Infinity"
+            maxHeight="Infinity"/>
+
+    <!-- Animated overlay -->
+    <Region fx:id="animatedOverlay"
+            styleClass="wrapped-intro-overlay"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+            mouseTransparent="true"/>
+
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="24" right="24" bottom="10" left="24"/>
+                </padding>
+
+                <Button fx:id="backButton"
+                        text="Back"
+                        onAction="#onBackClick"
+                        styleClass="wrapped-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="pageIndicatorLabel"
+                       text="01 / 05"
+                       styleClass="wrapped-page-indicator"/>
+            </HBox>
+        </top>
+
+        <center>
+            <StackPane>
+                <VBox alignment="CENTER" spacing="22">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label fx:id="brandLabel"
+                           text="StudySlice"
+                           styleClass="wrapped-intro-brand"/>
+
+                    <Label fx:id="titleLabel"
+                           text="LET'S UNWRAP YOUR STUDY SESSION!"
+                           wrapText="true"
+                           styleClass="wrapped-intro-title"/>
+
+                    <Label fx:id="subtitleLabel"
+                           text="We'll walk through the highlights of your latest study session, one reveal at a time."
+                           wrapText="true"
+                           styleClass="wrapped-intro-subtitle"/>
+
+                    <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
+                        <Button fx:id="nextButton"
+                                text="Next"
+                                onAction="#onNextClick"
+                                styleClass="wrapped-soft-next-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+</StackPane>

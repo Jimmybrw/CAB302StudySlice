@@ -18,9 +18,27 @@ public class DatabaseManager {
     private static final String URL = "jdbc:mysql://studyslice-studyslice.d.aivencloud.com:27251/studyslice?sslMode=REQUIRED";
     private static final String USER = "avnadmin";
     private static final String PASSWORD = "AVNS_dH9MQkrjlY36qW9GWBe";
+    private static ConnectionProvider connectionProvider = DatabaseManager::openProductionConnection;
+
+    @FunctionalInterface
+    interface ConnectionProvider {
+        Connection getConnection() throws Exception;
+    }
 
     // Opens a connection to the hosted database
     public static Connection getConnection() throws Exception {
+        return connectionProvider.getConnection();
+    }
+
+    static void setConnectionProviderForTesting(ConnectionProvider provider) {
+        connectionProvider = provider == null ? DatabaseManager::openProductionConnection : provider;
+    }
+
+    static void resetConnectionProviderForTesting() {
+        connectionProvider = DatabaseManager::openProductionConnection;
+    }
+
+    private static Connection openProductionConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
@@ -195,9 +213,9 @@ public class DatabaseManager {
             return sessions;
         }
 
-        String sessionsSql = "SELECT ID, title, start_time, end_time, CAST(total_time AS CHAR) AS total_time_text " +
+        String sessionsSql = "SELECT ID, title, start_time, end_time, total_time AS total_time_text " +
                 "FROM sessions WHERE User_ID = ? ORDER BY start_time DESC, ID DESC";
-        String activitiesSql = "SELECT sa.session_ID, sa.app_name, CAST(sa.duration AS CHAR) AS duration_text " +
+        String activitiesSql = "SELECT sa.session_ID, sa.app_name, sa.duration AS duration_text " +
                 "FROM session_activities sa INNER JOIN sessions s ON s.ID = sa.session_ID " +
                 "WHERE s.User_ID = ? ORDER BY sa.session_ID DESC, sa.duration DESC";
 
