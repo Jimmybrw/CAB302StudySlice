@@ -420,7 +420,7 @@
 
 /* Introduction wrapped style page */
 .wrapped-intro-root {
-    -fx-background-color: linear-gradient(to bottom right, #6F8A81, #819D93, #A7D8FF, #FBCC92);
+    -fx-background-color: linear-gradient(to bottom right, #7B4141, #819D93, #FBCC92);
 }
 
 .wrapped-intro-overlay {
@@ -472,7 +472,7 @@
 /* Total Time wrapped page */
 
 .wrapped-totalTime-root {
-    -fx-background-color: linear-gradient(to bottom right, #819D93, #A7D8FF, #FBCC92, #6F8A81);
+    -fx-background-color: linear-gradient(to bottom right, #819D93, #FBCC92, #7B4141);
 }
 
 .wrapped-clock-container {
@@ -505,7 +505,7 @@
 /* Top App wrapped page */
 
 .wrapped-topApp-root {
-    -fx-background-color: linear-gradient(to bottom right, #A7D8FF, #FBCC92, #6F8A81, #819D93);
+    -fx-background-color: linear-gradient(to bottom right, #FBCC92, #7B4141, #819D93);
 }
 
 .wrapped-page-label {
@@ -573,7 +573,7 @@
 /* Focus Score Wrapped Page*/
 
 .wrapped-focusScore-root {
-    -fx-background-color: linear-gradient(to bottom right, #FBCC92, #6F8A81, #819D93, #A7D8FF);
+    -fx-background-color: linear-gradient(to bottom right, #7B4141, #819D93, #FBCC92);
 }
 
 .wrapped-score-circle {
