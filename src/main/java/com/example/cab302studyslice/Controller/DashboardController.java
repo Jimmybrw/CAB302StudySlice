@@ -464,6 +464,7 @@ public class DashboardController {
         switchScene("/com/example/cab302studyslice/explore-view.fxml");
     }
 
+
     private void switchScene(String fxmlPath) {
         try {
             Stage stage = (Stage) setTimerDisplay.getScene().getWindow();

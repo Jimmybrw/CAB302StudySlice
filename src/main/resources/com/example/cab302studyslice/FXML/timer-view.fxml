@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.cab302studyslice.Controller.DashboardController"
+            fx:controller="com.example.cab302studyslice.Controller.TimerController"
             prefWidth="900" prefHeight="600">
 
     <!-- Menu Sidebar / will probably work on making this pop out rahter than constant -->
@@ -16,7 +16,7 @@
 
             <Button text="Dashboard" fx:id="dashboardButton" onAction="#goToDashboard" styleClass="sidebar-button"/>
             <Button text="Timer" styleClass="sidebar-button-selected"/>
-            <Button text="Explore" fx:id="exploreButtonSB" onAction="#goToExplore" styleClass="sidebar-button"/>
+            <Button text="Explore" fx:id="exploreButtonSB" onAction="#onExploreClicked" styleClass="sidebar-button"/>
             <Button text="Settings" styleClass="sidebar-button"/>
             <Button text="Log Out" styleClass="sidebar-button"/>
 
@@ -58,7 +58,7 @@
                         style="-fx-font-size: 13px; -fx-padding: 10 10;"
                         maxWidth="Infinity"
                         HBox.hgrow="ALWAYS"/>
-                <Button text="Timer"
+                <Button text="Mini Timer"
                         onAction="#onTimerClicked"
                         styleClass="dashboard-secondary-button"
                         style="-fx-font-size: 13px; -fx-padding: 10 10;"

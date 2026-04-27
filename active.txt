@@ -1,1 +1,1 @@
-StudySlice ? timer-view.fxml
+StudySlice ? Main.java
