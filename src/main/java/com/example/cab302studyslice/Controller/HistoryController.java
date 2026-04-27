@@ -1,24 +1,20 @@
 package com.example.cab302studyslice.Controller;
-import com.example.cab302studyslice.Model.Activity;
+
 import com.example.cab302studyslice.Model.DatabaseManager;
+import com.example.cab302studyslice.Model.HistoryFormatter;
 import com.example.cab302studyslice.Model.SessionHistoryEntry;
 import com.example.cab302studyslice.Model.User;
 import com.example.cab302studyslice.View.ViewManager;
-
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class HistoryController {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private final HistoryFormatter historyFormatter = new HistoryFormatter();
 
     @FXML
     private void onBackClick() {
@@ -60,7 +56,7 @@ public class HistoryController {
             totalSeconds += session.getTotalSeconds();
         }
 
-        totalHoursLabel.setText(formatSeconds(totalSeconds));
+        totalHoursLabel.setText(historyFormatter.formatSeconds(totalSeconds));
         totalSessionsLabel.setText(String.valueOf(sessions.size()));
 
         if (sessions.isEmpty()) {
@@ -107,63 +103,15 @@ public class HistoryController {
         Label timeLabel = new Label("Total Time: " + session.getFormattedTotalTime());
         timeLabel.getStyleClass().add("history-session-time");
 
-        Label dateLabel = new Label(formatSessionRange(session.getStartTime(), session.getEndTime()));
+        Label dateLabel = new Label(historyFormatter.formatSessionRange(session.getStartTime(), session.getEndTime()));
         dateLabel.getStyleClass().add("history-session-meta");
         dateLabel.setWrapText(true);
 
-        Label activitiesLabel = new Label(buildActivityPreview(session.getActivities()));
+        Label activitiesLabel = new Label(historyFormatter.buildActivityPreview(session.getActivities()));
         activitiesLabel.getStyleClass().add("history-session-activities");
         activitiesLabel.setWrapText(true);
 
         card.getChildren().addAll(titleLabel, timeLabel, dateLabel, activitiesLabel);
         historyContainer.getChildren().add(card);
-    }
-
-    private String buildActivityPreview(List<Activity> activities) {
-        if (activities == null || activities.isEmpty()) {
-            return "No activities recorded.";
-        }
-
-        List<Activity> sorted = new ArrayList<>(activities);
-        sorted.sort(Comparator.comparingInt(Activity::getDuration).reversed());
-
-        int limit = Math.min(4, sorted.size());
-        StringBuilder builder = new StringBuilder("Top activities:\n");
-        for (int i = 0; i < limit; i++) {
-            Activity activity = sorted.get(i);
-            builder.append("• ")
-                    .append(activity.getAppName())
-                    .append(" — ")
-                    .append(formatSeconds(activity.getDuration()))
-                    .append("\n");
-        }
-
-        if (sorted.size() > limit) {
-            builder.append("+").append(sorted.size() - limit).append(" more");
-        } else if (builder.length() > 0) {
-            builder.setLength(builder.length() - 1);
-        }
-        return builder.toString();
-    }
-
-    private String formatSessionRange(LocalDateTime start, LocalDateTime end) {
-        if (start == null && end == null) {
-            return "Date not available";
-        }
-        if (start != null && end != null) {
-            return "From " + start.format(DATE_TIME_FORMATTER) + " to " + end.format(DATE_TIME_FORMATTER);
-        }
-        if (start != null) {
-            return "Started " + start.format(DATE_TIME_FORMATTER);
-        }
-        return "Ended " + end.format(DATE_TIME_FORMATTER);
-    }
-
-    private String formatSeconds(int totalSeconds) {
-        int safeSeconds = Math.max(0, totalSeconds);
-        int hours = safeSeconds / 3600;
-        int minutes = (safeSeconds % 3600) / 60;
-        int seconds = safeSeconds % 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

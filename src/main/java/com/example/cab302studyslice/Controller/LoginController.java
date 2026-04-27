@@ -1,6 +1,6 @@
 package com.example.cab302studyslice.Controller;
 
-import com.example.cab302studyslice.Model.DatabaseManager;
+import com.example.cab302studyslice.Model.AuthService;
 import com.example.cab302studyslice.Model.User;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.fxml.FXML;
@@ -20,6 +20,7 @@ public class LoginController {
     private Label messageLabel;
 
     private static String registerMessage = "";
+    private final AuthService authService = new AuthService();
 
     // Displays a message if the user has just created an account
     @FXML
@@ -36,21 +37,21 @@ public class LoginController {
     private void handleLogin() {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
+        AuthService.AuthResult result = authService.login(username, password, AuthService.databaseGateway());
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (result.status() == AuthService.Status.MISSING_FIELDS) {
             messageLabel.setStyle("-fx-text-fill: #7B4141;");
-            messageLabel.setText("Please enter both username and password.");
+            messageLabel.setText(result.message());
             return;
         }
 
-        int userId = DatabaseManager.getUserIdByCredentials(username, password);
-        if (userId > 0) {
-            User.setCurrentUserId(userId);
-            User.setCurrentUsername(username);
+        if (result.isSuccess()) {
+            User.setCurrentUserId(result.userId());
+            User.setCurrentUsername(result.username());
             ViewManager.switchScene("dashboard-view.fxml");
         } else {
             messageLabel.setStyle("-fx-text-fill: #7B4141;");
-            messageLabel.setText("Username or password was incorrect.");
+            messageLabel.setText(result.message());
         }
     }
 

@@ -1,1 +1,1 @@
-CAB302StudySlice ? dashboard-view.fxml
+CAB302StudySlice ? DashboardController.java
