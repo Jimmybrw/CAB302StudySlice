@@ -36,7 +36,6 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label text="Ready to focus?" styleClass="dashboard-status-pill"/>
             </HBox>
-
             <!-- Top cards row -->
             <HBox spacing="20">
                 <!-- Main session card -->

@@ -56,7 +56,7 @@ public class TimerController {
     private void onExploreClicked() {
         switchScene("/com/example/cab302studyslice/history-view.fxml");
     }
-    
+
 
     //
     @FXML private Label timerLabel;
