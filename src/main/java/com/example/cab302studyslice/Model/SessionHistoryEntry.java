@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//Represents one saved study session, including its title,
+//start/end time, total duration, and tracked app activities.
 public class SessionHistoryEntry {
     private final int sessionId;
     private final String title;

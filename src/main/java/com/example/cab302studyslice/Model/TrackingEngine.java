@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Consumer;
 
+//Core engine that tracks study sessions, including duration
+//and applications used during the session
 public class TrackingEngine {
     //Stores the amount of time spend on each detected activity
     private Map<String, Integer> timeSpent = new LinkedHashMap<>();

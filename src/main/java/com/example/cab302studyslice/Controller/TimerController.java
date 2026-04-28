@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class TimerController {
 
     // ===== UI ELEMENTS =====
@@ -519,6 +520,7 @@ public class TimerController {
     //                      LIVE TIMER MODE
     // ============================================================
 
+    //Start live stopwatch mode
     @FXML
     private void startLiveTimer() {
         stopAllTimers();
@@ -548,6 +550,7 @@ public class TimerController {
     //                      SET TIMER COUNTDOWN
     // ============================================================
 
+    //Starts countdown mode using the user's selected time
     @FXML
     private void startSetTimer() {
         stopAllTimers();
@@ -582,12 +585,14 @@ public class TimerController {
     //                      UTILITIES
     // ============================================================
 
+    //Stop both live and countdown timers safely
     private void stopAllTimers() {
         if (liveTimerLoop != null) liveTimerLoop.stop();
         if (setTimerLoop != null) setTimerLoop.stop();
         trackingEngine.stopTracking();
     }
 
+    //Show an alert when the countdown timer finishes
     private void showTimerFinishedAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Timer Finished");

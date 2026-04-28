@@ -129,7 +129,9 @@ public class DatabaseManager {
 
         try (Connection connection = getConnection()) {
             boolean originalAutoCommit = connection.getAutoCommit();
+            //// Disable auto-commit so the session and activities are saved together
             connection.setAutoCommit(false);
+            //// Check whether the database automatically generates IDs
             boolean sessionIdAutoIncrement = isAutoIncrementColumn(connection, "sessions", "ID");
             boolean activityIdAutoIncrement = isAutoIncrementColumn(connection, "session_activities", "activity_ID");
             String sessionSql = sessionIdAutoIncrement
@@ -177,6 +179,7 @@ public class DatabaseManager {
 
                 if (activities != null) {
                     int nextActivityId = activityIdAutoIncrement ? -1 : getNextNumericId(connection, "session_activities", "activity_ID");
+                    // Save each tracked application as an activity linked to the session
                     for (Activity activity : activities) {
                         if (!activityIdAutoIncrement) {
                             activityStatement.setInt(1, nextActivityId++);
@@ -194,6 +197,7 @@ public class DatabaseManager {
                 connection.commit();
                 return true;
             } catch (Exception e) {
+                // If anything fails, undo the whole save so partial data is not stored
                 connection.rollback();
                 e.printStackTrace();
                 return false;

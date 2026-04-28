@@ -31,6 +31,7 @@ import java.util.Map;
 
 
 // Controller to connect the dashboard ui with the actual program features and Java file.
+//Handles starting/stopping study sessions
 public class DashboardController {
 
     // Tracking UI elements
@@ -65,7 +66,7 @@ public class DashboardController {
             toggleButton.setText("Stop Tracking");
         }
     }
-
+    //Start or stop tracking depending on the current tracking state
     @FXML
     private void handleToggleTracking() {
         if (!isTracking) {
@@ -145,6 +146,8 @@ public class DashboardController {
         dialog.setScene(scene);
         dialog.showAndWait();
     }
+
+    //Save the current session after validating title, user, and tracked data
     @FXML
     private void handleSaveSession() {
         if (!hasSessionData()) {
@@ -233,6 +236,7 @@ public class DashboardController {
         resetCurrentSession();
     }
 
+    //Reset the current unsaved session data from the dashboard
     private void resetCurrentSession() {
         engine.stopTracking();
         engine.reset();
@@ -251,6 +255,8 @@ public class DashboardController {
     // -----------------------------
     // NAVIGATION BUTTONS
     // -----------------------------
+
+    //Open the custom timer popup and start countdown tracking
     @FXML
     private void onTimerClicked() {
         Stage dialog = new Stage();
