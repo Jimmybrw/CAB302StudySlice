@@ -31,7 +31,7 @@ public class ViewManager {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 }

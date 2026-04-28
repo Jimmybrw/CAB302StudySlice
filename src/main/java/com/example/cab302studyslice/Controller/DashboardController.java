@@ -472,7 +472,7 @@ public class DashboardController {
             Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlPath)));
             stage.setScene(scene);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 

@@ -57,7 +57,7 @@ public class DatabaseManager {
             return resultSet.next();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -78,7 +78,7 @@ public class DatabaseManager {
             }
             return -1;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return -1;
         }
     }
@@ -96,7 +96,7 @@ public class DatabaseManager {
             return resultSet.next();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -114,7 +114,7 @@ public class DatabaseManager {
             return statement.executeUpdate() > 0;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -199,13 +199,13 @@ public class DatabaseManager {
             } catch (Exception e) {
                 // If anything fails, undo the whole save so partial data is not stored
                 connection.rollback();
-                e.printStackTrace();
+                System.err.println("Database error: " + e.getMessage());
                 return false;
             } finally {
                 connection.setAutoCommit(originalAutoCommit);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -269,7 +269,7 @@ public class DatabaseManager {
             sessions.addAll(sessionsById.values());
             return sessions;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return new ArrayList<>();
         }
     }

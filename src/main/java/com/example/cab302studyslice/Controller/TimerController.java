@@ -470,7 +470,7 @@ public class TimerController {
             Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlPath)));
             stage.setScene(scene);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -530,7 +530,8 @@ public class TimerController {
         // Start tracking apps
         trackingEngine.setUiUpdater(text -> {
 
-            System.out.println(text);
+            //System.out.println(text);
+            //Tracking output is currently handled elsewhere in the UI
         });
         trackingEngine.startTracking();
 
