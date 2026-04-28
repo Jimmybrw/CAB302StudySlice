@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Model;
 
+//Handles user authentication logic, including login and registration validation.
+//This class separates authentication rules from the JavaFX controllers
 public class AuthService {
     public enum Status {
         SUCCESS,
@@ -42,7 +44,7 @@ public class AuthService {
             }
         };
     }
-
+    //Check that registration fields are valid before creating a new account
     public AuthResult register(String username, String password, String confirmPassword, UserGateway gateway) {
         String cleanUsername = clean(username);
         String cleanPassword = clean(password);
@@ -66,7 +68,7 @@ public class AuthService {
 
         return new AuthResult(Status.SUCCESS, -1, cleanUsername, "Account created successfully. Please log in.");
     }
-
+    //Validates login details and returns the matching user ID if successful
     public AuthResult login(String username, String password, UserGateway gateway) {
         String cleanUsername = clean(username);
         String cleanPassword = clean(password);
@@ -82,7 +84,7 @@ public class AuthService {
 
         return new AuthResult(Status.SUCCESS, userId, cleanUsername, "");
     }
-
+    //Removes extra spaces and safely handle null input
     private String clean(String value) {
         return value == null ? "" : value.trim();
     }

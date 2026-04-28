@@ -57,7 +57,7 @@ public class DatabaseManager {
             return resultSet.next();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -78,7 +78,7 @@ public class DatabaseManager {
             }
             return -1;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return -1;
         }
     }
@@ -96,7 +96,7 @@ public class DatabaseManager {
             return resultSet.next();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -114,7 +114,7 @@ public class DatabaseManager {
             return statement.executeUpdate() > 0;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -129,7 +129,9 @@ public class DatabaseManager {
 
         try (Connection connection = getConnection()) {
             boolean originalAutoCommit = connection.getAutoCommit();
+            //// Disable auto-commit so the session and activities are saved together
             connection.setAutoCommit(false);
+            //// Check whether the database automatically generates IDs
             boolean sessionIdAutoIncrement = isAutoIncrementColumn(connection, "sessions", "ID");
             boolean activityIdAutoIncrement = isAutoIncrementColumn(connection, "session_activities", "activity_ID");
             String sessionSql = sessionIdAutoIncrement
@@ -177,6 +179,7 @@ public class DatabaseManager {
 
                 if (activities != null) {
                     int nextActivityId = activityIdAutoIncrement ? -1 : getNextNumericId(connection, "session_activities", "activity_ID");
+                    // Save each tracked application as an activity linked to the session
                     for (Activity activity : activities) {
                         if (!activityIdAutoIncrement) {
                             activityStatement.setInt(1, nextActivityId++);
@@ -194,14 +197,15 @@ public class DatabaseManager {
                 connection.commit();
                 return true;
             } catch (Exception e) {
+                // If anything fails, undo the whole save so partial data is not stored
                 connection.rollback();
-                e.printStackTrace();
+                System.err.println("Database error: " + e.getMessage());
                 return false;
             } finally {
                 connection.setAutoCommit(originalAutoCommit);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return false;
         }
     }
@@ -265,7 +269,7 @@ public class DatabaseManager {
             sessions.addAll(sessionsById.values());
             return sessions;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
             return new ArrayList<>();
         }
     }

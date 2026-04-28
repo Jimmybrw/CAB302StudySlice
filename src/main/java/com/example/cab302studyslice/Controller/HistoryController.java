@@ -13,6 +13,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
+//Controller for the History page
+//loads saved study sessions for the currently logged-in user
+//displays them as cards in the UI
 public class HistoryController {
     private final HistoryFormatter historyFormatter = new HistoryFormatter();
 
@@ -38,6 +41,8 @@ public class HistoryController {
         loadHistoryFromDatabase();
     }
 
+    //Loads the current user's saved sessions from the database
+    //Updates the total study time, session count, and history cards.
     private void loadHistoryFromDatabase() {
         historyContainer.getChildren().clear();
         int currentUserId = User.getCurrentUserId();
@@ -71,6 +76,7 @@ public class HistoryController {
         }
     }
 
+    //Adds a placeholder/info card when there is no history to display
     private void addInfoCard(String title, String details) {
         VBox card = new VBox(8);
         card.setAlignment(Pos.TOP_LEFT);
@@ -89,6 +95,7 @@ public class HistoryController {
         historyContainer.getChildren().add(card);
     }
 
+    //Creates aa visual card for one save study session
     private void addSessionCard(SessionHistoryEntry session) {
         VBox card = new VBox(8);
         card.setAlignment(Pos.TOP_LEFT);

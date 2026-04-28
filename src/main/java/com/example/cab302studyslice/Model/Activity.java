@@ -1,5 +1,6 @@
 package com.example.cab302studyslice.Model;
 
+//Represents one tracked application and the amount of time spent using it
 public class Activity {
     private String appName;
     private int duration;

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+//Prepares study session data before it is saved to the database
+//This class validates the session and converts tracked app time into Activity objects
 public class SessionSaveService {
     public enum Status {
         READY,
