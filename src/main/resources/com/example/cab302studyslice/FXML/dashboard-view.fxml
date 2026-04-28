@@ -20,7 +20,7 @@
             styleClass="dashboard-scroll">
 
     <content>
-        <VBox spacing="24" styleClass="dashboard-root">
+        <VBox spacing="24" styleClass="dashboard-root" fx:id="dash_topBox">
 
             <padding>
                 <Insets top="28" right="28" bottom="28" left="28"/>
@@ -28,7 +28,7 @@
 
             <!-- Top heading -->
             <HBox alignment="CENTER_LEFT">
-                <VBox spacing="6">
+                <VBox  spacing="6">
                     <Label text="StudySlice" styleClass="dashboard-kicker"/>
                     <Label text="Dashboard" styleClass="dashboard-title"/>
                     <Label text="Track your session and review your focus in real time." styleClass="dashboard-subtitle"/>
@@ -36,7 +36,6 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label text="Ready to focus?" styleClass="dashboard-status-pill"/>
             </HBox>
-
             <!-- Top cards row -->
             <HBox spacing="20">
                 <!-- Main session card -->

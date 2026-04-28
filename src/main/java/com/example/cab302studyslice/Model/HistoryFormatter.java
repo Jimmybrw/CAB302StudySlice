@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+//Formats saved session data for display on the History page
 public class HistoryFormatter {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    //Builds a short text summary of the apps used during a session
     public String buildActivityPreview(List<Activity> activities) {
         if (activities == null || activities.isEmpty()) {
             return "No activities recorded.";
@@ -36,6 +38,7 @@ public class HistoryFormatter {
         return builder.toString();
     }
 
+    //Formats the start and end time of a saved study session
     public String formatSessionRange(LocalDateTime start, LocalDateTime end) {
         if (start == null && end == null) {
             return "Date not available";
@@ -49,6 +52,7 @@ public class HistoryFormatter {
         return "Ended " + end.format(DATE_TIME_FORMATTER);
     }
 
+    //Converts seconds into HH:MM:SS format
     public String formatSeconds(int totalSeconds) {
         int safeSeconds = Math.max(0, totalSeconds);
         int hours = safeSeconds / 3600;

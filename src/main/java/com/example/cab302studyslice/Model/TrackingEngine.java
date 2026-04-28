@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Consumer;
 
+//Core engine that tracks study sessions, including duration
+//and applications used during the session
 public class TrackingEngine {
     //Stores the amount of time spend on each detected activity
-    private Map<String, Integer> timeSpent = new LinkedHashMap<>();
+    private final Map<String, Integer> timeSpent = new LinkedHashMap<>();
 
     // Remembers the last valid app detected
     private String lastSavedApp = "Desktop";
@@ -50,9 +52,13 @@ public class TrackingEngine {
                             String rawTitle = lines.get(0).trim();
                             recordTitle(rawTitle);
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        System.err.println("Could not read active window file: " + e.getMessage());
+                    }
                 }
-                try { Thread.sleep(1000); } catch (Exception e) {}
+                try { Thread.sleep(1000); } catch (Exception e) {
+                    System.err.println("Tracking thread interrupted: " + e.getMessage());
+                }
             }
         }).start();
     }

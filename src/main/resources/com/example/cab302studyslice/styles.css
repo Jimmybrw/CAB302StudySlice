@@ -169,8 +169,15 @@
     -fx-background-color: #F6F4F2;
 }
 
+
+
 .dashboard-root {
     -fx-background-color: #F6F4F2;
+}
+
+#dash_topBox {
+    -fx-background-color: #D9D9D9;
+    -fx-background-radius: 20;
 }
 
 .dashboard-kicker {
@@ -208,6 +215,7 @@
     -fx-border-width: 1;
     -fx-padding: 22;
 }
+
 
 .dashboard-session-card {
     -fx-pref-width: 620;

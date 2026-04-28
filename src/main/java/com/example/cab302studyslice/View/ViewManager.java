@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.net.URL;
 
+//Handles switching between JavaFX scenes
 public class ViewManager {
     private static Stage stage;
     private static final int WIDTH = 900;
@@ -14,7 +15,7 @@ public class ViewManager {
         stage = primaryStage;
         stage.setResizable(false);
     }
-
+    // Load the requested FXML file and display it on the main stage
     public static void switchScene(String fxmlFile) {
         try {
             String resourcePath = "/com/example/cab302studyslice/FXML/" + fxmlFile;
@@ -30,7 +31,7 @@ public class ViewManager {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 }

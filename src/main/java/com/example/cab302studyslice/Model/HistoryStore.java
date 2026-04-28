@@ -3,8 +3,6 @@ package com.example.cab302studyslice.Model;
 
 //Shared storage for study session history
     //stores history in memory early
-    //not sure if we wanted to use SQL for this or not
-    //NOTE THAT THE HISTORY IS ONLY STORED WHILE THE APP IS RUNNING
 public class HistoryStore {
 
     // Stores all session history text in one place
