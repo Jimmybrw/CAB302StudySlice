@@ -5,6 +5,7 @@ import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +32,33 @@ public class TimerController {
     // ===== UI ELEMENTS =====
     @FXML private Label setTimerDisplay;
     @FXML private Label liveTimerDisplay;
+
+    // hamburger menu
+    @FXML private VBox sideMenu;
+    @FXML private Button hamburgerButton;
+
+    private boolean menuOpen = false;
+
+
+    @FXML
+    private void toggleMenu() {
+        TranslateTransition slide = new TranslateTransition(Duration.millis(250), sideMenu);
+
+        if (!menuOpen) {
+            slide.setToX(0);
+            sideMenu.setMouseTransparent(false);  // enable clicks when open
+            menuOpen = true;
+        } else {
+            slide.setToX(-180);
+            slide.setOnFinished(e -> sideMenu.setMouseTransparent(true)); // disable clicks when closed
+            menuOpen = false;
+        }
+
+        slide.play();
+    }
+
+
+
 
     // ===== TIMER STATE =====
     private long liveStartTime;
