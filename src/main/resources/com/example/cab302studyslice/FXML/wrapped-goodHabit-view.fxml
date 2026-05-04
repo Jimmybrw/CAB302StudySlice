@@ -3,28 +3,22 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <StackPane fx:id="rootStack"
            xmlns="http://javafx.com/javafx/17"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.cab302studyslice.Controller.WrapperController">
+           fx:controller="com.example.cab302studyslice.Controller.WrappedGoodHabitController">
 
     <!-- Base Background -->
     <Region fx:id="backgroundLayer"
-            styleClass="wrapped-intro-root"
+            styleClass="wrapped-goodHabit-root"
             maxWidth="Infinity"
             maxHeight="Infinity"/>
 
-    <!-- Animated overlay -->
-    <Region fx:id="animatedOverlay"
-            styleClass="wrapped-intro-overlay"
-            maxWidth="Infinity"
-            maxHeight="Infinity"
-            mouseTransparent="true"/>
-
+    <!-- Content -->
     <BorderPane>
         <top>
             <HBox alignment="CENTER_LEFT" spacing="12">
@@ -40,31 +34,33 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="pageIndicatorLabel"
-                       text="01 / 00"
+                       text="06 / 00"
                        styleClass="wrapped-page-indicator"/>
             </HBox>
         </top>
 
         <center>
             <StackPane>
-                <VBox alignment="CENTER" spacing="22">
+                <VBox alignment="CENTER" spacing="28">
                     <padding>
                         <Insets top="20" right="40" bottom="40" left="40"/>
                     </padding>
 
-                    <Label fx:id="brandLabel"
-                           text="StudySlice"
-                           styleClass="wrapped-intro-brand"/>
+                    <Label text="What worked for you?"
+                           styleClass="wrapped-page-label"/>
 
-                    <Label fx:id="titleLabel"
-                           text="LET'S UNWRAP YOUR STUDY SESSION!"
+                    <Label fx:id="goodHabitLabel"
+                           text="Staying in one task"
                            wrapText="true"
-                           styleClass="wrapped-intro-title"/>
+                           styleClass="wrapped-page-hero"/>
 
-                    <Label fx:id="subtitleLabel"
-                           text="We'll walk through the highlights of your latest study session, one reveal at a time."
+                    <Label fx:id="goodHabitSupportLabel"
+                           text="Your strongest habit was staying focused in one work stream for a longer stretch."
                            wrapText="true"
-                           styleClass="wrapped-intro-subtitle"/>
+                           maxWidth="620"
+                           alignment="CENTER"
+                           textAlignment="CENTER"
+                           styleClass="wrapped-page-subtext"/>
 
                     <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
                         <Button fx:id="nextButton"
@@ -77,3 +73,4 @@
         </center>
     </BorderPane>
 </StackPane>
+

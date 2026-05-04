@@ -13,16 +13,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
-public class WrappedFocusScoreController {
+public class WrappedGoodHabitController {
+    @FXML
+    private Label goodHabitLabel;
 
     @FXML
-    private Region animatedOverlay;
-
-    @FXML
-    private Label focusScoreLabel;
-
-    @FXML
-    private Label focusSupportLabel;
+    private Label goodHabitSupportLabel;
 
     @FXML
     private Button nextButton;
@@ -30,60 +26,37 @@ public class WrappedFocusScoreController {
     @FXML
     public void initialize(){
         loadPlaceHolderData();
-        animateBackground();
         playRevealAnimation();
         playNextButtonPulse();
     }
 
-    private void loadPlaceHolderData(){
-        focusScoreLabel.setText("82%");
-        focusSupportLabel.setText("You stayed locked in for most of the session, with only a few attention dips.");
+    private void loadPlaceHolderData() {
+        goodHabitLabel.setText("Staying in one task");
+        goodHabitSupportLabel.setText(
+                "Your strongest habit was staying focused in one work stream for a longer stretch."
+        );
     }
 
     // -----------------------------
     // ANIMATION
     // -----------------------------
 
-    private void animateBackground() {
-        TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
-        move.setFromX(-50);
-        move.setToX(50);
-        move.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
-
-        TranslateTransition moveY = new TranslateTransition(Duration.seconds(12), animatedOverlay);
-        moveY.setFromY(-30);
-        moveY.setToY(30);
-        moveY.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
-
-        ParallelTransition animation = new ParallelTransition(move, moveY);
-        animation.play();
-
-        FadeTransition fade = new FadeTransition(Duration.seconds(6), animatedOverlay);
-        fade.setFromValue(0.2);
-        fade.setToValue(0.35);
-        fade.setCycleCount(Animation.INDEFINITE);
-        fade.setAutoReverse(true);
-        fade.play();
-    }
-
     private void playRevealAnimation() {
-        focusScoreLabel.setOpacity(0);
-        focusScoreLabel.setScaleX(0.75);
-        focusScoreLabel.setScaleY(0.75);
+        goodHabitLabel.setOpacity(0);
+        goodHabitLabel.setScaleX(0.75);
+        goodHabitLabel.setScaleY(0.75);
 
-        focusSupportLabel.setOpacity(0);
-        focusSupportLabel.setTranslateY(16);
+        goodHabitSupportLabel.setOpacity(0);
+        goodHabitSupportLabel.setTranslateY(16);
 
         nextButton.setOpacity(0);
         nextButton.setTranslateY(14);
 
-        FadeTransition scoreFade = new FadeTransition(Duration.millis(550), focusScoreLabel);
+        FadeTransition scoreFade = new FadeTransition(Duration.millis(550), goodHabitLabel);
         scoreFade.setFromValue(0);
         scoreFade.setToValue(1);
 
-        ScaleTransition scoreScale = new ScaleTransition(Duration.millis(550), focusScoreLabel);
+        ScaleTransition scoreScale = new ScaleTransition(Duration.millis(550), goodHabitLabel);
         scoreScale.setFromX(0.75);
         scoreScale.setFromY(0.75);
         scoreScale.setToX(1.0);
@@ -91,11 +64,11 @@ public class WrappedFocusScoreController {
 
         ParallelTransition scoreReveal = new ParallelTransition(scoreFade, scoreScale);
 
-        FadeTransition supportFade = new FadeTransition(Duration.millis(450), focusSupportLabel);
+        FadeTransition supportFade = new FadeTransition(Duration.millis(450), goodHabitSupportLabel);
         supportFade.setFromValue(0);
         supportFade.setToValue(1);
 
-        TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), focusSupportLabel);
+        TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), goodHabitSupportLabel);
         supportSlide.setFromX(16);
         supportSlide.setFromY(0);
 
@@ -132,11 +105,11 @@ public class WrappedFocusScoreController {
 
     @FXML
     private void onBackClick() {
-        ViewManager.switchScene("wrapped-topApp-view.fxml");
+        ViewManager.switchScene("wrapped-badHabit-view.fxml");
     }
 
     @FXML
     private void onNextClick() {
-        ViewManager.switchScene("wrapped-badHabit-view.fxml");
+        ViewManager.switchScene("wrapped-sessionRanking-view.fxml");
     }
 }
