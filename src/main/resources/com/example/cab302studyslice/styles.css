@@ -654,10 +654,42 @@
     -fx-background-color: rgba(255, 255, 255, 0.4);
 }
 
+.wrapped-frownFace-outline {
+    -fx-fill: transparent;
+    -fx-stroke: #4F2727;
+    -fx-stroke-width: 10;
+}
+
+.wrapped-frownFace-eye {
+    -fx-fill: #4F2727;
+}
+
+.wrapped-face-frown {
+    -fx-stroke: #4F2727;
+    -fx-stroke-width: 10;
+    -fx-fill: transparent;
+}
+
 /* Good Habit Wrapped Page */
 
 .wrapped-goodHabit-root {
     -fx-background-color: linear-gradient(to bottom right, #5F7A71, #819D93, #A4B7B0);
+}
+
+.wrapped-smileyFace-outline {
+    -fx-fill: transparent;
+    -fx-stroke: #384843;
+    -fx-stroke-width: 10;
+}
+
+.wrapped-smileyFace-eye {
+    -fx-fill: #384843;
+}
+
+.wrapped-face-smile {
+    -fx-stroke: #384843;
+    -fx-stroke-width: 10;
+    -fx-fill: transparent;
 }
 
 /* timer page */

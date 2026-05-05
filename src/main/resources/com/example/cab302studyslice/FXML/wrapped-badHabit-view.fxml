@@ -6,6 +6,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Arc?>
+<?import javafx.scene.shape.Circle?>
 
 <StackPane fx:id="rootStack"
            xmlns="http://javafx.com/javafx/17"
@@ -41,6 +44,20 @@
 
         <center>
             <StackPane>
+
+                <StackPane prefHeight="220" maxWidth="Infinity">
+                    <Group fx:id="frownFaceGroup">
+                        <Circle centerX="0" centerY="0" radius="78" styleClass="wrapped-frownFace-outline"/>
+                        <Circle centerX="-24" centerY="-18" radius="6" styleClass="wrapped-frownFace-eye"/>
+                        <Circle centerX="24" centerY="-18" radius="6" styleClass="wrapped-frownFace-eye"/>
+                        <Arc centerX="0" centerY="30"
+                             radiusX="28" radiusY="18"
+                             startAngle="35" length="110"
+                             type="OPEN"
+                             styleClass="wrapped-face-frown"/>
+                    </Group>
+                </StackPane>
+
                 <VBox alignment="CENTER" spacing="28">
                     <padding>
                         <Insets top="20" right="40" bottom="40" left="40"/>

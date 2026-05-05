@@ -1,17 +1,13 @@
 package com.example.cab302studyslice.Controller;
 
 import com.example.cab302studyslice.View.ViewManager;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.util.Duration;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
+import javafx.scene.Group;
 
 public class WrappedBadHabitController {
 
@@ -22,11 +18,15 @@ public class WrappedBadHabitController {
     private Label badHabitSupportLabel;
 
     @FXML
+    private Group frownFaceGroup;
+
+    @FXML
     private Button nextButton;
 
     @FXML
     public void initialize(){
         loadPlaceHolderData();
+        playFrownFaceIntro();
         playRevealAnimation();
         playNextButtonPulse();
     }
@@ -41,6 +41,31 @@ public class WrappedBadHabitController {
     // -----------------------------
     // ANIMATION
     // -----------------------------
+
+    private void playFrownFaceIntro() {
+        frownFaceGroup.setScaleX(2.8);
+        frownFaceGroup.setScaleY(2.8);
+
+        frownFaceGroup.setOpacity(0.22);
+        frownFaceGroup.setTranslateY(-260);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(350),  frownFaceGroup);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        TranslateTransition dropIn = new TranslateTransition(Duration.millis(360),  frownFaceGroup);
+        dropIn.setFromY(-260);
+        dropIn.setToY(0);
+
+        RotateTransition wobble = new RotateTransition(Duration.millis(180),  frownFaceGroup);
+        wobble.setFromAngle(-4);
+        wobble.setToAngle(4);
+        wobble.setCycleCount(2);
+        wobble.setAutoReverse(true);
+
+        ParallelTransition intro = new ParallelTransition(fadeIn, dropIn);
+        intro.play();
+    }
 
     private void playRevealAnimation() {
         badHabitLabel.setOpacity(0);
@@ -100,6 +125,17 @@ public class WrappedBadHabitController {
         pulse.play();
     }
 
+    private void playFrownFaceExit() {
+        TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), frownFaceGroup);
+        slideOut.setToY(420);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(420), frownFaceGroup);
+
+        ParallelTransition outro = new ParallelTransition(slideOut, fadeOut);
+        outro.setOnFinished(event -> ViewManager.switchScene("wrapped-goodHabit-view.fxml"));
+        outro.play();
+    }
+
     // -----------------------------
     // NAVIGATION BUTTONS
     // -----------------------------
@@ -110,7 +146,5 @@ public class WrappedBadHabitController {
     }
 
     @FXML
-    private void onNextClick() {
-        ViewManager.switchScene("wrapped-goodHabit-view.fxml");
-    }
+    private void onNextClick() { playFrownFaceExit();}
 }

@@ -6,6 +6,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Arc?>
+<?import javafx.scene.shape.Circle?>
 
 <StackPane fx:id="rootStack"
            xmlns="http://javafx.com/javafx/17"
@@ -41,6 +43,20 @@
 
         <center>
             <StackPane>
+
+                <StackPane prefHeight="220" maxWidth="Infinity">
+                    <Group fx:id="smileyFaceGroup">
+                        <Circle centerX="0" centerY="0" radius="78" styleClass="wrapped-smileyFace-outline"/>
+                        <Circle centerX="-24" centerY="-18" radius="6" styleClass="wrapped-smileyFace-eye"/>
+                        <Circle centerX="24" centerY="-18" radius="6" styleClass="wrapped-smileyFace-eye"/>
+                        <Arc centerX="0" centerY="18"
+                             radiusX="30" radiusY="20"
+                             startAngle="200" length="140"
+                             type="OPEN"
+                             styleClass="wrapped-face-smile"/>
+                    </Group>
+                </StackPane>
+
                 <VBox alignment="CENTER" spacing="28">
                     <padding>
                         <Insets top="20" right="40" bottom="40" left="40"/>

@@ -1,12 +1,8 @@
 package com.example.cab302studyslice.Controller;
 
 import com.example.cab302studyslice.View.ViewManager;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
+import javafx.scene.Group;
 import javafx.util.Duration;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,11 +17,15 @@ public class WrappedGoodHabitController {
     private Label goodHabitSupportLabel;
 
     @FXML
+    private Group smileyFaceGroup;
+
+    @FXML
     private Button nextButton;
 
     @FXML
     public void initialize(){
         loadPlaceHolderData();
+        playFrownFaceIntro();
         playRevealAnimation();
         playNextButtonPulse();
     }
@@ -40,6 +40,31 @@ public class WrappedGoodHabitController {
     // -----------------------------
     // ANIMATION
     // -----------------------------
+
+    private void playFrownFaceIntro() {
+        smileyFaceGroup.setScaleX(2.8);
+        smileyFaceGroup.setScaleY(2.8);
+
+        smileyFaceGroup.setOpacity(0);
+        smileyFaceGroup.setTranslateY(260);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(350),  smileyFaceGroup);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(0.22);
+
+        TranslateTransition riseIn = new TranslateTransition(Duration.millis(650),  smileyFaceGroup);
+        riseIn.setFromY(260);
+        riseIn.setToY(0);
+
+        RotateTransition wobble = new RotateTransition(Duration.millis(180),  smileyFaceGroup);
+        wobble.setFromAngle(-4);
+        wobble.setToAngle(4);
+        wobble.setCycleCount(2);
+        wobble.setAutoReverse(true);
+
+        ParallelTransition intro = new ParallelTransition(fadeIn, riseIn);
+        intro.play();
+    }
 
     private void playRevealAnimation() {
         goodHabitLabel.setOpacity(0);
@@ -99,6 +124,18 @@ public class WrappedGoodHabitController {
         pulse.play();
     }
 
+    private void playSmileyFaceExit() {
+        TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), smileyFaceGroup);
+        slideOut.setToY(-220);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(420), smileyFaceGroup);
+        fadeOut.setToValue(0);
+
+        ParallelTransition outro = new ParallelTransition(slideOut, fadeOut);
+        outro.setOnFinished(event -> ViewManager.switchScene("wrapped-sessionRanking-view.fxml"));
+        outro.play();
+    }
+
     // -----------------------------
     // NAVIGATION BUTTONS
     // -----------------------------
@@ -110,6 +147,6 @@ public class WrappedGoodHabitController {
 
     @FXML
     private void onNextClick() {
-        ViewManager.switchScene("wrapped-sessionRanking-view.fxml");
+        playSmileyFaceExit();
     }
 }
