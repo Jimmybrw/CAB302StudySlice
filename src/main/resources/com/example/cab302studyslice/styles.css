@@ -502,6 +502,7 @@
 }
 
 /* Introduction wrapped style page */
+
 .wrapped-intro-root {
     -fx-background-color: linear-gradient(to bottom right, #7B4141, #819D93, #FBCC92);
 }
@@ -509,7 +510,7 @@
 .wrapped-intro-overlay {
     -fx-background-color: linear-gradient(to top left,
         rgba(255,255,255,0.15),
-        rgba(255,255,255.0.05),
+        rgba(255,255,255,0.05),
         rgba(255,255,255,0.15));
 }
 
@@ -593,7 +594,7 @@
 .wrapped-score-value {
     -fx-font-size: 76px;
     -fx-font-weight: bold;
-    -fx-text-fill: white
+    -fx-text-fill: white;
 }
 
 /* Bad Habit Wrapped Page */
@@ -690,6 +691,42 @@
     -fx-stroke: #384843;
     -fx-stroke-width: 10;
     -fx-fill: transparent;
+}
+
+/* Ranking Wrapped Page */
+
+.wrapped-ranking-root {
+    -fx-background-color: linear-gradient(to bottom right, #A7D8FF, #819D93, #FBCC92 );
+}
+
+.wrapped-ranking-label {
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.wrapped-ranking-hero {
+    -fx-font-size: 120px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* Streak Wrapped Page */
+
+.wrapped-streak-root {
+    -fx-background-color: linear-gradient(to bottom right, #FBCC92, #FF8A4C, #7B4141);
+}
+
+.wrapped-streak-hero {
+    -fx-font-size: 120px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.wrapped-streakPage-indicator {
+    -fx-font-size: 13px;
+    -fx-text-fill: #844526;
+    -fx-font-weight: bold;
 }
 
 /* timer page */

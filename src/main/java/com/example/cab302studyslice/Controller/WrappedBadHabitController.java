@@ -53,7 +53,7 @@ public class WrappedBadHabitController {
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
-        TranslateTransition dropIn = new TranslateTransition(Duration.millis(360),  frownFaceGroup);
+        TranslateTransition dropIn = new TranslateTransition(Duration.millis(650),  frownFaceGroup);
         dropIn.setFromY(-260);
         dropIn.setToY(0);
 

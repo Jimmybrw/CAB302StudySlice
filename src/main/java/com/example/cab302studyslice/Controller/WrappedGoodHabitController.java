@@ -25,7 +25,7 @@ public class WrappedGoodHabitController {
     @FXML
     public void initialize(){
         loadPlaceHolderData();
-        playFrownFaceIntro();
+        playSmileFaceIntro();
         playRevealAnimation();
         playNextButtonPulse();
     }
@@ -41,7 +41,7 @@ public class WrappedGoodHabitController {
     // ANIMATION
     // -----------------------------
 
-    private void playFrownFaceIntro() {
+    private void playSmileFaceIntro() {
         smileyFaceGroup.setScaleX(2.8);
         smileyFaceGroup.setScaleY(2.8);
 
@@ -147,6 +147,8 @@ public class WrappedGoodHabitController {
 
     @FXML
     private void onNextClick() {
+
         playSmileyFaceExit();
+        ViewManager.switchScene("wrapped-ranking-view.fxml");
     }
 }

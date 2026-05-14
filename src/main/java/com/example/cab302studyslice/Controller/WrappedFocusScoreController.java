@@ -130,6 +130,9 @@ public class WrappedFocusScoreController {
     // NAVIGATION BUTTONS
     // -----------------------------
 
+    /**
+     *
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-topApp-view.fxml");
