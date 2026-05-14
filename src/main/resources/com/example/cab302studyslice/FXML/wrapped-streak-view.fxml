@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="rootStack"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.cab302studyslice.Controller.WrappedStreakController">
+
+    <!-- Base Background -->
+    <Region fx:id="backgroundLayer"
+            styleClass="wrapped-streak-root"
+            maxWidth="Infinity"
+            maxHeight="Infinity"/>
+
+    <!-- Animated overlay -->
+    <Region fx:id="animatedOverlay"
+            styleClass="wrapped-intro-overlay"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+            mouseTransparent="true"/>
+
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="24" right="24" bottom="10" left="24"/>
+                </padding>
+
+                <Button fx:id="backButton"
+                        text="Back"
+                        onAction="#onBackClick"
+                        styleClass="wrapped-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="pageIndicatorLabel"
+                       text="08 / 08"
+                       styleClass="wrapped-streakPage-indicator"/>
+            </HBox>
+        </top>
+
+        <center>
+            <StackPane>
+                <VBox alignment="CENTER" spacing="24">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label text="Current Streak"
+                           styleClass="wrapped-page-label"/>
+
+                    <Label fx:id="streakValueLabel"
+                           text="3 days"
+                           styleClass="wrapped-streak-hero"/>
+
+                    <Label fx:id="streakSupportLabel"
+                           text="You've studied three days in a row. Keep the streak alive!"
+                           wrapText="true"
+                           maxWidth="680"
+                           textAlignment="CENTER"
+                           alignment="CENTER"
+                           styleClass="wrapped-intro-subtitle"/>
+
+                    <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
+                        <Button fx:id="exitButton"
+                                text="Exit"
+                                onAction="#onExitClick"
+                                styleClass="wrapped-soft-next-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+</StackPane>
