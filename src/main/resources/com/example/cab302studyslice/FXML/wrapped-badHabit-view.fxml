@@ -37,7 +37,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="bahHabitPageIndicatorLabel"
-                       text="05 / 00"
+                       text="05 / 09"
                        styleClass="wrapped-badHabitPage-indicator"/>
             </HBox>
         </top>

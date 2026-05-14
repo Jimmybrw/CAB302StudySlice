@@ -194,7 +194,7 @@ public class WrappedRankingController {
 
     @FXML
     private void onBackClick() {
-        ViewManager.switchScene("wrapped-goodHabit-view.fxml");
+        ViewManager.switchScene("wrapped-comparison-view.fxml");
     }
 
     @FXML

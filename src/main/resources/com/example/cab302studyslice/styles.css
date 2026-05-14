@@ -436,6 +436,7 @@
     -fx-font-size: 72px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-text-alignment: center;
 }
 
 .wrapped-page-subtext {

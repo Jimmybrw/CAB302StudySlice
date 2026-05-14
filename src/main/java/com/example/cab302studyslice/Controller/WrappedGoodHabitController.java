@@ -149,6 +149,6 @@ public class WrappedGoodHabitController {
     private void onNextClick() {
 
         playSmileyFaceExit();
-        ViewManager.switchScene("wrapped-ranking-view.fxml");
+        ViewManager.switchScene("wrapped-comparison-view.fxml");
     }
 }

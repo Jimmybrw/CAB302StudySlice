@@ -40,7 +40,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="pageIndicatorLabel"
-                       text="08 / 08"
+                       text="09 / 09"
                        styleClass="wrapped-streakPage-indicator"/>
             </HBox>
         </top>

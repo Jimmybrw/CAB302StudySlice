@@ -41,7 +41,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="pageIndicatorLabel"
-                       text="03 / 00"
+                       text="03 / 09"
                        styleClass="wrapped-page-indicator"/>
             </HBox>
         </top>
