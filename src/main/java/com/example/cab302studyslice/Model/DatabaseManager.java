@@ -389,4 +389,42 @@ public class DatabaseManager {
             return 0;
         }
     }
+
+    public static int getLatestSessionId(int userId) {
+        String sql = "SELECT ID FROM sessions WHERE User_ID = ? ORDER BY ID DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting latest session ID: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static boolean insertWrappedData(int sessionId, boolean recordTotalTime, String mostUsedApp,
+                                            int ranking, String badHabit, String comparedToSessions, int streakCurrent, int score) {
+        String sql = "INSERT INTO wrapped (wrapped_ID, session_ID, score, record_total_time, most_used_app, ranking, bad_habit, compared_to_sessions, streak_current) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = getConnection()) {
+            int nextId = getNextNumericId(connection, "wrapped", "wrapped_ID");
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, nextId);
+                statement.setInt(2, sessionId);
+                statement.setInt(3, score);
+                statement.setBoolean(4, recordTotalTime);
+                statement.setString(5, mostUsedApp);
+                statement.setInt(6, ranking);
+                statement.setString(7, badHabit);
+                statement.setString(8, comparedToSessions);
+                statement.setInt(9, streakCurrent);
+                return statement.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            System.err.println("Error inserting wrapped data: " + e.getMessage());
+            return false;
+        }
+    }
 }

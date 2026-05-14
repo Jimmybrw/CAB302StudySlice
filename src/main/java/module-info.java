@@ -5,6 +5,7 @@ module com.example.cab302studyslice {
     requires java.desktop;
     requires java.sql;
     requires java.xml.crypto;
+    requires java.net.http;
 
     // Export and Open packages to allow JavaFX to run the UI
     opens com.example.cab302studyslice.Core to javafx.fxml;

@@ -269,6 +269,73 @@ public class TimerController {
             HistoryStore.addSession(buildSessionText(sessionName));
             resetCurrentSession();
             dialog.close();
+
+            final int userId = currentUserId;
+            new Thread(() -> {
+                int latestId = DatabaseManager.getLatestSessionId(userId);
+                if (latestId <= 0) return;
+                List<SessionHistoryEntry> allSessions = DatabaseManager.getSessionHistoryByUserId(userId);
+                SessionHistoryEntry newest = allSessions.stream()
+                        .filter(s -> s.getSessionId() == latestId)
+                        .findFirst().orElse(null);
+                if (newest == null) return;
+                AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(newest, allSessions);
+                Platform.runLater(() -> {
+                    if (data == null) {
+                        Alert err = new Alert(Alert.AlertType.ERROR);
+                        err.setTitle("AI Analysis");
+                        err.setHeaderText("Could not get AI analysis for this session.");
+                        err.showAndWait();
+                        return;
+                    }
+
+                    String display =
+                            "Score: " + data.score + "/100\n" +
+                            "Ranking: " + data.ranking + "/" + data.totalSessions + "\n" +
+                            "Record Total Time: " + (data.recordTotalTime ? "Yes" : "No") + "\n" +
+                            "Most Used App: " + data.mostUsedApp + "\n" +
+                            "Bad Habit: " + data.badHabit + "\n" +
+                            "Compared to Sessions: " + data.comparedToSessions + "\n" +
+                            "Current Streak: " + data.streakCurrent;
+
+                    TextArea textArea = new TextArea(display);
+                    textArea.setEditable(false);
+                    textArea.setWrapText(true);
+                    textArea.setPrefWidth(500);
+                    textArea.setPrefHeight(200);
+
+                    Button saveButton = new Button("Save to Database");
+                    saveButton.getStyleClass().add("dashboard-primary-button");
+                    saveButton.setOnAction(ev -> {
+                        saveButton.setText("Saving...");
+                        saveButton.setDisable(true);
+                        new Thread(() -> {
+                            boolean saved2 = DatabaseManager.insertWrappedData(
+                                    newest.getSessionId(),
+                                    data.recordTotalTime,
+                                    data.mostUsedApp,
+                                    data.ranking,
+                                    data.badHabit,
+                                    data.comparedToSessions,
+                                    data.streakCurrent,
+                                    data.score
+                            );
+                            Platform.runLater(() -> {
+                                saveButton.setText(saved2 ? "Saved!" : "Failed - try again");
+                                saveButton.setDisable(saved2);
+                            });
+                        }).start();
+                    });
+
+                    VBox content = new VBox(10, textArea, saveButton);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("AI Analysis - " + newest.getTitle());
+                    alert.setHeaderText("Session Analysis");
+                    alert.getDialogPane().setContent(content);
+                    alert.getDialogPane().setPrefWidth(550);
+                    alert.showAndWait();
+                });
+            }).start();
         });
 
         VBox root = new VBox(12, titleLabel, helperLabel, sessionNameField, messageLabel, confirmButton);

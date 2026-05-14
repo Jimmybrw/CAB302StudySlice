@@ -1,13 +1,14 @@
 package com.example.cab302studyslice.Controller;
 
-import com.example.cab302studyslice.Model.DatabaseManager;
-import com.example.cab302studyslice.Model.HistoryFormatter;
-import com.example.cab302studyslice.Model.SessionHistoryEntry;
-import com.example.cab302studyslice.Model.User;
+import com.example.cab302studyslice.Model.*;
 import com.example.cab302studyslice.View.ViewManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
@@ -118,7 +119,76 @@ public class HistoryController {
         activitiesLabel.getStyleClass().add("history-session-activities");
         activitiesLabel.setWrapText(true);
 
-        card.getChildren().addAll(titleLabel, timeLabel, dateLabel, activitiesLabel);
+        Button aiButton = new Button("Ask AI");
+        aiButton.getStyleClass().add("dashboard-secondary-button");
+        aiButton.setOnAction(e -> {
+            aiButton.setText("Loading...");
+            aiButton.setDisable(true);
+            List<SessionHistoryEntry> allSessions = DatabaseManager.getSessionHistoryByUserId(User.getCurrentUserId());
+            new Thread(() -> {
+                AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(session, allSessions);
+                Platform.runLater(() -> {
+                    aiButton.setText("Ask AI");
+                    aiButton.setDisable(false);
+
+                    if (data == null) {
+                        Alert err = new Alert(Alert.AlertType.ERROR);
+                        err.setTitle("AI Error");
+                        err.setHeaderText("Could not get AI analysis. Please try again.");
+                        err.showAndWait();
+                        return;
+                    }
+
+                    String display =
+                            "Score: " + data.score + "/100\n" +
+                            "Ranking: " + data.ranking + "/" + data.totalSessions + "\n" +
+                            "Record Total Time: " + (data.recordTotalTime ? "Yes" : "No") + "\n" +
+                            "Most Used App: " + data.mostUsedApp + "\n" +
+                            "Bad Habit: " + data.badHabit + "\n" +
+                            "Compared to Sessions: " + data.comparedToSessions + "\n" +
+                            "Current Streak: " + data.streakCurrent;
+
+                    TextArea textArea = new TextArea(display);
+                    textArea.setEditable(false);
+                    textArea.setWrapText(true);
+                    textArea.setPrefWidth(500);
+                    textArea.setPrefHeight(200);
+
+                    Button saveButton = new Button("Save to Database");
+                    saveButton.getStyleClass().add("dashboard-primary-button");
+                    saveButton.setOnAction(ev -> {
+                        saveButton.setText("Saving...");
+                        saveButton.setDisable(true);
+                        new Thread(() -> {
+                            boolean saved = DatabaseManager.insertWrappedData(
+                                    session.getSessionId(),
+                                    data.recordTotalTime,
+                                    data.mostUsedApp,
+                                    data.ranking,
+                                    data.badHabit,
+                                    data.comparedToSessions,
+                                    data.streakCurrent,
+                                    data.score
+                            );
+                            Platform.runLater(() -> {
+                                saveButton.setText(saved ? "Saved!" : "Failed - try again");
+                                saveButton.setDisable(saved);
+                            });
+                        }).start();
+                    });
+
+                    VBox content = new VBox(10, textArea, saveButton);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("AI Analysis - " + session.getTitle());
+                    alert.setHeaderText("Session Analysis");
+                    alert.getDialogPane().setContent(content);
+                    alert.getDialogPane().setPrefWidth(550);
+                    alert.showAndWait();
+                });
+            }).start();
+        });
+
+        card.getChildren().addAll(titleLabel, timeLabel, dateLabel, activitiesLabel, aiButton);
         historyContainer.getChildren().add(card);
     }
 }

@@ -2,8 +2,10 @@ package com.example.cab302studyslice.Controller;
 
 import com.example.cab302studyslice.Model.TrackingEngine;
 import com.example.cab302studyslice.View.ViewManager;
+import com.example.cab302studyslice.Model.AiAPI;
 import com.example.cab302studyslice.Model.HistoryStore;
 import com.example.cab302studyslice.Model.DatabaseManager;
+import com.example.cab302studyslice.Model.SessionHistoryEntry;
 import com.example.cab302studyslice.Model.SessionSaveService;
 import com.example.cab302studyslice.Model.User;
 import javafx.animation.KeyFrame;
@@ -13,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -27,6 +30,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 
@@ -214,6 +218,30 @@ public class DashboardController {
             HistoryStore.addSession(buildSessionText(sessionName));
             resetCurrentSession();
             dialog.close();
+
+            final int userId = User.getCurrentUserId();
+            new Thread(() -> {
+                int latestId = DatabaseManager.getLatestSessionId(userId);
+                if (latestId <= 0) return;
+                List<SessionHistoryEntry> allSessions = DatabaseManager.getSessionHistoryByUserId(userId);
+                SessionHistoryEntry newest = allSessions.stream()
+                        .filter(s -> s.getSessionId() == latestId)
+                        .findFirst().orElse(null);
+                if (newest == null) return;
+                AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(newest, allSessions);
+                if (data != null) {
+                    DatabaseManager.insertWrappedData(
+                            newest.getSessionId(),
+                            data.recordTotalTime,
+                            data.mostUsedApp,
+                            data.ranking,
+                            data.badHabit,
+                            data.comparedToSessions,
+                            data.streakCurrent,
+                            data.score
+                    );
+                }
+            }).start();
         });
 
         VBox root = new VBox(12, titleLabel, helperLabel, sessionNameField, messageLabel, confirmButton);
