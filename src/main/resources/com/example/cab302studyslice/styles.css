@@ -436,6 +436,7 @@
     -fx-font-size: 72px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-text-alignment: center;
 }
 
 .wrapped-page-subtext {
@@ -488,7 +489,21 @@
     -fx-background-color: rgba(255, 255, 255, 0.4);
 }
 
+.wrapped-homeButton {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-padding: 8 18;
+}
+
+.wrapped-back-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+}
+
 /* Introduction wrapped style page */
+
 .wrapped-intro-root {
     -fx-background-color: linear-gradient(to bottom right, #7B4141, #819D93, #FBCC92);
 }
@@ -496,7 +511,7 @@
 .wrapped-intro-overlay {
     -fx-background-color: linear-gradient(to top left,
         rgba(255,255,255,0.15),
-        rgba(255,255,255.0.05),
+        rgba(255,255,255,0.05),
         rgba(255,255,255,0.15));
 }
 
@@ -580,7 +595,148 @@
 .wrapped-score-value {
     -fx-font-size: 76px;
     -fx-font-weight: bold;
-    -fx-text-fill: white
+    -fx-text-fill: white;
+}
+
+/* Bad Habit Wrapped Page */
+
+.wrapped-badHabit-root {
+    -fx-background-color: linear-gradient(to bottom right, #5F2F2F, #7B4141, #9B5A5A);
+}
+
+.wrapped-badHabitPage-label {
+    -fx-font-size: 20px;
+    -fx-text-fill: #FFD700;
+    -fx-font-weight: bold;
+}
+
+.wrapped-badHabitPage-hero {
+    -fx-font-size: 72px;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
+
+.wrapped-badHabitPage-subtext {
+    -fx-font-size: 18px;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
+.wrapped-badHabitBack-button {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-text-fill: black;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-padding: 8 18;
+}
+
+.wrapped-badHabitBack-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+}
+
+.wrapped-badHabitPage-indicator {
+    -fx-font-size: 13px;
+    -fx-text-fill: #5F2F2F;
+    -fx-font-weight: bold;
+}
+
+.wrapped-badHabit-soft-next-button {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 16;
+    -fx-padding: 16 28;
+    -fx-min-width: 120px;
+}
+
+.wrapped-badHabit-soft-next-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+}
+
+.wrapped-frownFace-outline {
+    -fx-fill: transparent;
+    -fx-stroke: #4F2727;
+    -fx-stroke-width: 10;
+}
+
+.wrapped-frownFace-eye {
+    -fx-fill: #4F2727;
+}
+
+.wrapped-face-frown {
+    -fx-stroke: #4F2727;
+    -fx-stroke-width: 10;
+    -fx-fill: transparent;
+}
+
+/* Good Habit Wrapped Page */
+
+.wrapped-goodHabit-root {
+    -fx-background-color: linear-gradient(to bottom right, #5F7A71, #819D93, #A4B7B0);
+}
+
+.wrapped-smileyFace-outline {
+    -fx-fill: transparent;
+    -fx-stroke: #384843;
+    -fx-stroke-width: 10;
+}
+
+.wrapped-smileyFace-eye {
+    -fx-fill: #384843;
+}
+
+.wrapped-face-smile {
+    -fx-stroke: #384843;
+    -fx-stroke-width: 10;
+    -fx-fill: transparent;
+}
+
+/* Comparison Wrapped Page */
+
+.wrapped-comparisonPage-hero {
+    -fx-font-size: 50px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
+/* Ranking Wrapped Page */
+
+.wrapped-ranking-root {
+    -fx-background-color: linear-gradient(to bottom right, #A7D8FF, #819D93, #FBCC92 );
+}
+
+.wrapped-ranking-label {
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.wrapped-ranking-hero {
+    -fx-font-size: 120px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* Streak Wrapped Page */
+
+.wrapped-streak-root {
+    -fx-background-color: linear-gradient(to bottom right, #FBCC92, #FF8A4C, #7B4141);
+}
+
+.wrapped-streak-hero {
+    -fx-font-size: 120px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.wrapped-streakPage-indicator {
+    -fx-font-size: 13px;
+    -fx-text-fill: #844526;
+    -fx-font-weight: bold;
 }
 
 /* timer page */

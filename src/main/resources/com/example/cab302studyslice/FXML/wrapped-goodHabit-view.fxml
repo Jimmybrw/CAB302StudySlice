@@ -3,27 +3,22 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Arc?>
+<?import javafx.scene.shape.Circle?>
 
 <StackPane fx:id="rootStack"
            xmlns="http://javafx.com/javafx/17"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.cab302studyslice.Controller.WrappedTopAppController">
+           fx:controller="com.example.cab302studyslice.Controller.WrappedGoodHabitController">
 
     <!-- Base Background -->
     <Region fx:id="backgroundLayer"
-            styleClass="wrapped-topApp-root"
+            styleClass="wrapped-goodHabit-root"
             maxWidth="Infinity"
             maxHeight="Infinity"/>
-
-    <!-- Animated overlay -->
-    <Region fx:id="animatedOverlay"
-            styleClass="wrapped-intro-overlay"
-            maxWidth="Infinity"
-            maxHeight="Infinity"
-            mouseTransparent="true"/>
 
     <!-- Content -->
     <BorderPane>
@@ -41,28 +36,46 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="pageIndicatorLabel"
-                       text="03 / 09"
+                       text="06 / 09"
                        styleClass="wrapped-page-indicator"/>
             </HBox>
         </top>
 
         <center>
             <StackPane>
-                <VBox alignment="CENTER" spacing="25">
+
+                <StackPane prefHeight="220" maxWidth="Infinity">
+                    <Group fx:id="smileyFaceGroup">
+                        <Circle centerX="0" centerY="0" radius="78" styleClass="wrapped-smileyFace-outline"/>
+                        <Circle centerX="-24" centerY="-18" radius="6" styleClass="wrapped-smileyFace-eye"/>
+                        <Circle centerX="24" centerY="-18" radius="6" styleClass="wrapped-smileyFace-eye"/>
+                        <Arc centerX="0" centerY="18"
+                             radiusX="30" radiusY="20"
+                             startAngle="200" length="140"
+                             type="OPEN"
+                             styleClass="wrapped-face-smile"/>
+                    </Group>
+                </StackPane>
+
+                <VBox alignment="CENTER" spacing="28">
                     <padding>
                         <Insets top="20" right="40" bottom="40" left="40"/>
                     </padding>
 
-                    <Label text="You spent most of your time on"
-                            styleClass="wrapped-page-label"/>
+                    <Label text="What worked for you?"
+                           styleClass="wrapped-page-label"/>
 
-                    <Label fx:id="topAppLabel"
-                            wrapText="true"
-                            styleClass="wrapped-page-hero"/>
-
-                    <Label fx:id="topAppSupportLabel"
-                           text="Looks like this app carried your session."
+                    <Label fx:id="goodHabitLabel"
+                           text="Staying in one task"
                            wrapText="true"
+                           styleClass="wrapped-page-hero"/>
+
+                    <Label fx:id="goodHabitSupportLabel"
+                           text="Your strongest habit was staying focused in one work stream for a longer stretch."
+                           wrapText="true"
+                           maxWidth="620"
+                           alignment="CENTER"
+                           textAlignment="CENTER"
                            styleClass="wrapped-page-subtext"/>
 
                     <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
@@ -76,3 +89,4 @@
         </center>
     </BorderPane>
 </StackPane>
+
