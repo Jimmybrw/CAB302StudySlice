@@ -694,6 +694,15 @@
     -fx-fill: transparent;
 }
 
+/* Comparison Wrapped Page */
+
+.wrapped-comparisonPage-hero {
+    -fx-font-size: 50px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
 /* Ranking Wrapped Page */
 
 .wrapped-ranking-root {
