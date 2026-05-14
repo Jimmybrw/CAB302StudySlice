@@ -241,6 +241,11 @@
     -fx-text-fill: white;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.dashboard-section-chip:hover {
+    -fx-background-color: #6f8a81;
 }
 
 .dashboard-chip-grey {

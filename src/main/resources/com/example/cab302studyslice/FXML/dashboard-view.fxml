@@ -27,105 +27,91 @@
             </padding>
 
             <!-- Top heading -->
-            <HBox alignment="CENTER_LEFT">
-                <VBox  spacing="6">
-                    <Label text="StudySlice" styleClass="dashboard-kicker"/>
-                    <Label text="Dashboard" styleClass="dashboard-title"/>
-                    <Label text="Track your session and review your focus in real time." styleClass="dashboard-subtitle"/>
+            <VBox spacing="6">
+                <Label text="StudySlice" styleClass="dashboard-kicker"/>
+                <Label text="Dashboard" styleClass="dashboard-title"/>
+                <Label text="Track your session and review your focus in real time." styleClass="dashboard-subtitle"/>
+            </VBox>
+
+            <!-- Quick stats -->
+            <HBox spacing="12">
+                <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                    <Label text="Today's Time" styleClass="dashboard-mini-label"/>
+                    <Label text="0h 00m" styleClass="dashboard-mini-value"/>
                 </VBox>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label text="Ready to focus?" styleClass="dashboard-status-pill"/>
-            </HBox>
-            <!-- Top cards row -->
-            <HBox spacing="20">
-                <!-- Main session card -->
-                <VBox spacing="18" styleClass="dashboard-card dashboard-session-card" HBox.hgrow="ALWAYS">
-                    <HBox spacing="10" styleClass="dashboard_subSections">
-                        <Button text="CURRENT SESSION" styleClass="dashboard-section-chip"/>
-                        <Button text="EXPLORE SESSIONS" fx:id="goToExplorePage" onAction="#onExploreClicked" styleClass="dashboard-section-chip"/>
-                        <Button text="TRACKING" fx:id="goToTimerPage" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
-                    </HBox>
-                    <Label text="Session Time" styleClass="dashboard-card-label"/>
-
-                    <StackPane alignment="CENTER_LEFT" styleClass="dashboard-timer-panel">
-                        <Label fx:id="timerLabel"
-                               text="Total Study Time: 00:00:00"
-                               wrapText="true"
-                               styleClass="dashboard-timer-text"/>
-                    </StackPane>
-
-                    <Label text="Start tracking when you're ready. Your activity log will update below." styleClass="dashboard-helper-text"/>
-
-                    <HBox spacing="8">
-                        <Button text="Start Tracking"
-                                fx:id="toggleButton"
-                                onAction="#handleToggleTracking"
-                                styleClass="dashboard-primary-button"
-                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                                maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS"/>
-                        <Button text="Save"
-                                onAction="#handleSaveSession"
-                                styleClass="dashboard-secondary-button"
-                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                                maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS"/>
-                        <Button text="Delete"
-                                onAction="#handleDeleteSession"
-                                styleClass="dashboard-secondary-button"
-                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                                maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS"/>
-
-                        <Button text="View History"
-                                fx:id="exploreButton"
-                                onAction="#onExploreClicked"
-                                styleClass="dashboard-secondary-button"
-                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                                maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS"/>
-                        <Button text="Timer"
-                                onAction="#onTimerClicked"
-                                styleClass="dashboard-secondary-button"
-                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                                maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS"/>
-                        <Button text="Unwrap (Test)"
-                                onAction="#onWrappedTestClicked"
-                                styleClass="dashboard-secondary-button"
-                                style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                                maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS"/>
-                    </HBox>
+                <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                    <Label text="Sessions" styleClass="dashboard-mini-label"/>
+                    <Label text="0" styleClass="dashboard-mini-value"/>
                 </VBox>
-
-                <!-- Quick stats -->
-                <VBox spacing="16" styleClass="dashboard-card dashboard-side-card">
-                    <Label text="QUICK STATS" styleClass="dashboard-section-chip dashboard-chip-grey"/>
-
-                    <HBox spacing="12">
-                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
-                            <Label text="Today's Time" styleClass="dashboard-mini-label"/>
-                            <Label text="0h 00m" styleClass="dashboard-mini-value"/>
-                        </VBox>
-                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
-                            <Label text="Sessions" styleClass="dashboard-mini-label"/>
-                            <Label text="0" styleClass="dashboard-mini-value"/>
-                        </VBox>
-                    </HBox>
-
-                    <HBox spacing="12">
-                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
-                            <Label text="Focus Streak" styleClass="dashboard-mini-label"/>
-                            <Label text="0 days" styleClass="dashboard-mini-value"/>
-                        </VBox>
-                        <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
-                            <Label text="Best Session" styleClass="dashboard-mini-label"/>
-                            <Label text="0h 00m" styleClass="dashboard-mini-value"/>
-                        </VBox>
-                    </HBox>
+                <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                    <Label text="Focus Streak" styleClass="dashboard-mini-label"/>
+                    <Label text="0 days" styleClass="dashboard-mini-value"/>
+                </VBox>
+                <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
+                    <Label text="Best Session" styleClass="dashboard-mini-label"/>
+                    <Label text="0h 00m" styleClass="dashboard-mini-value"/>
                 </VBox>
             </HBox>
+
+            <!-- Main session card -->
+            <VBox spacing="18" styleClass="dashboard-card dashboard-session-card">
+                <HBox spacing="10" alignment="CENTER" styleClass="dashboard_subSections">
+                    <Button text="CURRENT SESSION" styleClass="dashboard-section-chip"/>
+                    <Button text="EXPLORE SESSIONS" onAction="#onExploreClicked" styleClass="dashboard-section-chip"/>
+                    <Button text="TRACKING" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
+                </HBox>
+                <Label text="Session Time" styleClass="dashboard-card-label"/>
+
+                <StackPane alignment="CENTER_LEFT" styleClass="dashboard-timer-panel">
+                    <Label fx:id="timerLabel"
+                           text="Total Study Time: 00:00:00"
+                           wrapText="true"
+                           styleClass="dashboard-timer-text"/>
+                </StackPane>
+
+                <Label text="Start tracking when you're ready. Your activity log will update below." styleClass="dashboard-helper-text"/>
+
+                <HBox spacing="8">
+                    <Button text="Start Tracking"
+                            fx:id="toggleButton"
+                            onAction="#handleToggleTracking"
+                            styleClass="dashboard-primary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Save"
+                            onAction="#handleSaveSession"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Delete"
+                            onAction="#handleDeleteSession"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="View History"
+                            fx:id="exploreButton"
+                            onAction="#onExploreClicked"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Timer"
+                            onAction="#onTimerClicked"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Unwrap (Test)"
+                            onAction="#onWrappedTestClicked"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
 
             <!-- Bottom cards row -->
             <HBox spacing="20">
@@ -164,14 +150,6 @@
                         <Label text="-" styleClass="dashboard-snapshot-value"/>
                     </VBox>
                 </VBox>
-            </HBox>
-
-            <!-- Tip banner -->
-            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="dashboard-tip-banner">
-                <Label text="Tip:" styleClass="dashboard-tip-title"/>
-                <Label text="Take regular breaks and stay hydrated. A focused mind is a productive mind!"
-                       wrapText="true"
-                       styleClass="dashboard-tip-text"/>
             </HBox>
 
         </VBox>
