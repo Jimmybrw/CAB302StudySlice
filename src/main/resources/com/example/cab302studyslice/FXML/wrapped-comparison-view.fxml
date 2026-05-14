@@ -10,7 +10,7 @@
 <StackPane fx:id="rootStack"
            xmlns="http://javafx.com/javafx/17"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.cab302studyslice.Controller.WrappedTopAppController">
+           fx:controller="com.example.cab302studyslice.Controller.WrappedComparisonController">
 
     <!-- Base Background -->
     <Region fx:id="backgroundLayer"
@@ -41,7 +41,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="pageIndicatorLabel"
-                       text="03 / 09"
+                       text="07 / 09"
                        styleClass="wrapped-page-indicator"/>
             </HBox>
         </top>
@@ -53,17 +53,14 @@
                         <Insets top="20" right="40" bottom="40" left="40"/>
                     </padding>
 
-                    <Label text="You spent most of your time on"
-                            styleClass="wrapped-page-label"/>
+                    <Label fx:id="comparisonLabel"
+                           text="Compared to previous sessions"
+                           styleClass="wrapped-page-label"/>
 
-                    <Label fx:id="topAppLabel"
-                            wrapText="true"
-                            styleClass="wrapped-page-hero"/>
-
-                    <Label fx:id="topAppSupportLabel"
-                           text="Looks like this app carried your session."
+                    <Label fx:id="comparisonSupportLabel"
+                           text="This session lasted 35 minutes longer than your average session."
                            wrapText="true"
-                           styleClass="wrapped-page-subtext"/>
+                           styleClass="wrapped-comparisonPage-hero"/>
 
                     <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
                         <Button fx:id="nextButton"

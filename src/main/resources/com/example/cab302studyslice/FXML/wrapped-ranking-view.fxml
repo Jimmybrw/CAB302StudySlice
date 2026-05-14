@@ -3,18 +3,18 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <StackPane fx:id="rootStack"
            xmlns="http://javafx.com/javafx/17"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.cab302studyslice.Controller.WrappedTopAppController">
+           fx:controller="com.example.cab302studyslice.Controller.WrappedRankingController">
 
     <!-- Base Background -->
     <Region fx:id="backgroundLayer"
-            styleClass="wrapped-topApp-root"
+            styleClass="wrapped-ranking-root"
             maxWidth="Infinity"
             maxHeight="Infinity"/>
 
@@ -25,7 +25,6 @@
             maxHeight="Infinity"
             mouseTransparent="true"/>
 
-    <!-- Content -->
     <BorderPane>
         <top>
             <HBox alignment="CENTER_LEFT" spacing="12">
@@ -41,29 +40,41 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="pageIndicatorLabel"
-                       text="03 / 09"
+                       text="08 / 09"
                        styleClass="wrapped-page-indicator"/>
             </HBox>
         </top>
 
         <center>
             <StackPane>
-                <VBox alignment="CENTER" spacing="25">
+                <VBox alignment="CENTER" spacing="22">
                     <padding>
                         <Insets top="20" right="40" bottom="40" left="40"/>
                     </padding>
 
-                    <Label text="You spent most of your time on"
-                            styleClass="wrapped-page-label"/>
+                    <HBox alignment="CENTER" spacing="28">
+                        <Label text="This Session Ranks:"
+                               styleClass="wrapped-ranking-label"
+                               translateY="-26"/>
 
-                    <Label fx:id="topAppLabel"
-                            wrapText="true"
-                            styleClass="wrapped-page-hero"/>
+                        <StackPane prefWidth="220" prefHeight="180" alignment="CENTER">
+                            <Label fx:id="rankingLabelCurrent"
+                                   text="10"
+                                   styleClass="wrapped-ranking-hero"/>
 
-                    <Label fx:id="topAppSupportLabel"
-                           text="Looks like this app carried your session."
+                            <Label fx:id="rankingLabelNext"
+                                   text=""
+                                   styleClass="wrapped-ranking-hero"/>
+                        </StackPane>
+                    </HBox>
+
+                    <Label fx:id="rankingSupportLabel"
+                           text="Out of 10 saved sessions, this was your second most focused study session."
                            wrapText="true"
-                           styleClass="wrapped-page-subtext"/>
+                           maxWidth="700"
+                           alignment="CENTER"
+                           textAlignment="CENTER"
+                           styleClass="wrapped-intro-subtitle"/>
 
                     <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
                         <Button fx:id="nextButton"

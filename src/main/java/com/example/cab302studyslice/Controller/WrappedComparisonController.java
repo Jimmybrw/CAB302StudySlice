@@ -1,44 +1,32 @@
 package com.example.cab302studyslice.Controller;
 
 import com.example.cab302studyslice.View.ViewManager;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
-import javafx.util.Duration;
+import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
+import javafx.util.Duration;
 
-public class WrappedFocusScoreController {
-
+public class WrappedComparisonController {
     @FXML
-    private Region animatedOverlay;
-
+    private Label comparisonLabel;
     @FXML
-    private Label focusScoreLabel;
-
+    private Label comparisonSupportLabel;
     @FXML
-    private Label focusSupportLabel;
-
+    private Button backButton;
     @FXML
     private Button nextButton;
 
+
     @FXML
     public void initialize(){
-        loadPlaceHolderData();
         animateBackground();
-        playRevealAnimation();
+        playIntroAnimation();
         playNextButtonPulse();
     }
 
-    private void loadPlaceHolderData(){
-        focusScoreLabel.setText("82%");
-        focusSupportLabel.setText("You stayed locked in for most of the session, with only a few attention dips.");
-    }
+    @FXML private Region animatedOverlay;
 
     // -----------------------------
     // ANIMATION
@@ -68,38 +56,39 @@ public class WrappedFocusScoreController {
         fade.play();
     }
 
-    private void playRevealAnimation() {
-        focusScoreLabel.setOpacity(0);
-        focusScoreLabel.setScaleX(0.75);
-        focusScoreLabel.setScaleY(0.75);
+    private void playIntroAnimation() {
 
-        focusSupportLabel.setOpacity(0);
-        focusSupportLabel.setTranslateY(16);
+        comparisonLabel.setOpacity(0);
+        comparisonLabel.setScaleX(0.92);
+        comparisonLabel.setScaleY(0.92);
+
+        comparisonSupportLabel.setOpacity(0);
+        comparisonSupportLabel.setTranslateY(16);
 
         nextButton.setOpacity(0);
         nextButton.setTranslateY(14);
 
-        FadeTransition scoreFade = new FadeTransition(Duration.millis(550), focusScoreLabel);
-        scoreFade.setFromValue(0);
-        scoreFade.setToValue(1);
+        FadeTransition titleFade = new FadeTransition(Duration.millis(600), comparisonLabel);
+        titleFade.setFromValue(0);
+        titleFade.setToValue(1);
 
-        ScaleTransition scoreScale = new ScaleTransition(Duration.millis(550), focusScoreLabel);
-        scoreScale.setFromX(0.75);
-        scoreScale.setFromY(0.75);
-        scoreScale.setToX(1.0);
-        scoreScale.setToY(1.0);
+        ScaleTransition titleScale = new ScaleTransition(Duration.millis(600), comparisonLabel);
+        titleScale.setFromX(0.92);
+        titleScale.setFromY(0.92);
+        titleScale.setToX(1.0);
+        titleScale.setToY(1.0);
 
-        ParallelTransition scoreReveal = new ParallelTransition(scoreFade, scoreScale);
+        ParallelTransition titleAnim = new ParallelTransition(titleFade, titleScale);
 
-        FadeTransition supportFade = new FadeTransition(Duration.millis(450), focusSupportLabel);
-        supportFade.setFromValue(0);
-        supportFade.setToValue(1);
+        FadeTransition subtitleFade = new FadeTransition(Duration.millis(450), comparisonSupportLabel);
+        subtitleFade.setFromValue(0);
+        subtitleFade.setToValue(1);
 
-        TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), focusSupportLabel);
-        supportSlide.setFromX(16);
-        supportSlide.setFromY(0);
+        TranslateTransition subtitleSlide = new TranslateTransition(Duration.millis(450), comparisonSupportLabel);
+        subtitleSlide.setFromY(16);
+        subtitleSlide.setToY(0);
 
-        ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
+        ParallelTransition subtitleAnim = new ParallelTransition(subtitleFade, subtitleSlide);
 
         FadeTransition buttonFade = new FadeTransition(Duration.millis(400), nextButton);
         buttonFade.setFromValue(0);
@@ -109,9 +98,10 @@ public class WrappedFocusScoreController {
         buttonSlide.setFromY(14);
         buttonSlide.setToY(0);
 
-        ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
+        ParallelTransition buttonAnim = new ParallelTransition(buttonFade, buttonSlide);
 
-        SequentialTransition sequence = new SequentialTransition(scoreReveal, supportReveal, buttonReveal);
+        SequentialTransition sequence = new SequentialTransition(titleAnim, subtitleAnim, buttonAnim);
+
         sequence.play();
     }
 
@@ -130,16 +120,13 @@ public class WrappedFocusScoreController {
     // NAVIGATION BUTTONS
     // -----------------------------
 
-    /**
-     *
-     */
     @FXML
     private void onBackClick() {
-        ViewManager.switchScene("wrapped-topApp-view.fxml");
+        ViewManager.switchScene("wrapped-goodHabit-view.fxml");
     }
 
     @FXML
     private void onNextClick() {
-        ViewManager.switchScene("wrapped-badHabit-view.fxml");
+        ViewManager.switchScene("wrapped-ranking-view.fxml");
     }
 }

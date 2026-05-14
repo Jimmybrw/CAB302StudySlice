@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Arc?>
+<?import javafx.scene.shape.Circle?>
+
+<StackPane fx:id="rootStack"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.cab302studyslice.Controller.WrappedBadHabitController">
+
+    <!-- Base Background -->
+    <Region fx:id="backgroundLayer"
+            styleClass="wrapped-badHabit-root"
+            maxWidth="Infinity"
+            maxHeight="Infinity"/>
+
+    <!-- Content -->
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="24" right="24" bottom="10" left="24"/>
+                </padding>
+
+                <Button fx:id="backButton"
+                        text="Back"
+                        onAction="#onBackClick"
+                        styleClass="wrapped-back-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="bahHabitPageIndicatorLabel"
+                       text="05 / 09"
+                       styleClass="wrapped-badHabitPage-indicator"/>
+            </HBox>
+        </top>
+
+        <center>
+            <StackPane>
+
+                <StackPane prefHeight="220" maxWidth="Infinity">
+                    <Group fx:id="frownFaceGroup">
+                        <Circle centerX="0" centerY="0" radius="78" styleClass="wrapped-frownFace-outline"/>
+                        <Circle centerX="-24" centerY="-18" radius="6" styleClass="wrapped-frownFace-eye"/>
+                        <Circle centerX="24" centerY="-18" radius="6" styleClass="wrapped-frownFace-eye"/>
+                        <Arc centerX="0" centerY="30"
+                             radiusX="28" radiusY="18"
+                             startAngle="35" length="110"
+                             type="OPEN"
+                             styleClass="wrapped-face-frown"/>
+                    </Group>
+                </StackPane>
+
+                <VBox alignment="CENTER" spacing="28">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label text="What pulled you away?"
+                            styleClass="wrapped-page-label"/>
+
+                    <Label fx:id="badHabitLabel"
+                            text="Messages"
+                            wrapText="true"
+                            styleClass="wrapped-page-hero"/>
+
+                    <Label fx:id="badHabitSupportLabel"
+                            text="This was the biggest interruption in your study session and had the biggest impact on your focus score."
+                            wrapText="true"
+                            maxWidth="620"
+                            alignment="CENTER"
+                            textAlignment="CENTER"
+                            styleClass="wrapped-page-subtext"/>
+
+                    <HBox alignment="CENTER_RIGHT" maxWidth="Infinity">
+                        <Button fx:id="nextButton"
+                                text="Next"
+                                onAction="#onNextClick"
+                                styleClass="wrapped-soft-next-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+</StackPane>
