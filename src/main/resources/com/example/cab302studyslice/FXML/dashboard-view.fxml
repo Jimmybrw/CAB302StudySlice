@@ -37,19 +37,19 @@
             <HBox spacing="12">
                 <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
                     <Label text="Today's Time" styleClass="dashboard-mini-label"/>
-                    <Label text="0h 00m" styleClass="dashboard-mini-value"/>
+                    <Label fx:id="statTodayTime" text="0h 00m" styleClass="dashboard-mini-value"/>
                 </VBox>
                 <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
                     <Label text="Sessions" styleClass="dashboard-mini-label"/>
-                    <Label text="0" styleClass="dashboard-mini-value"/>
+                    <Label fx:id="statSessions" text="0" styleClass="dashboard-mini-value"/>
                 </VBox>
                 <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
                     <Label text="Focus Streak" styleClass="dashboard-mini-label"/>
-                    <Label text="0 days" styleClass="dashboard-mini-value"/>
+                    <Label fx:id="statStreak" text="0 days" styleClass="dashboard-mini-value"/>
                 </VBox>
                 <VBox spacing="6" styleClass="dashboard-mini-card" HBox.hgrow="ALWAYS">
                     <Label text="Best Session" styleClass="dashboard-mini-label"/>
-                    <Label text="0h 00m" styleClass="dashboard-mini-value"/>
+                    <Label fx:id="statBestSession" text="0h 00m" styleClass="dashboard-mini-value"/>
                 </VBox>
             </HBox>
 
@@ -87,13 +87,6 @@
                             HBox.hgrow="ALWAYS"/>
                     <Button text="Delete"
                             onAction="#handleDeleteSession"
-                            styleClass="dashboard-secondary-button"
-                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                            maxWidth="Infinity"
-                            HBox.hgrow="ALWAYS"/>
-                    <Button text="View History"
-                            fx:id="exploreButton"
-                            onAction="#onExploreClicked"
                             styleClass="dashboard-secondary-button"
                             style="-fx-font-size: 13px; -fx-padding: 10 10;"
                             maxWidth="Infinity"

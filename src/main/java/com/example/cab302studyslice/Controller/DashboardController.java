@@ -28,10 +28,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 // Controller to connect the dashboard ui with the actual program features and Java file.
@@ -43,13 +46,76 @@ public class DashboardController {
     @FXML private TextArea statusTextArea;
     @FXML private Button toggleButton;
 
+    // Quick stats labels
+    @FXML private Label statTodayTime;
+    @FXML private Label statSessions;
+    @FXML private Label statStreak;
+    @FXML private Label statBestSession;
+
     // Static engine to persist tracking across scene switches
     private static TrackingEngine engine = new TrackingEngine();
     private static boolean isTracking = false;
     private final SessionSaveService sessionSaveService = new SessionSaveService();
 
+    private void loadQuickStats() {
+        int userId = User.getCurrentUserId();
+        if (userId <= 0) return;
+
+        List<SessionHistoryEntry> sessions = DatabaseManager.getSessionHistoryByUserId(userId);
+        if (sessions.isEmpty()) return;
+
+        LocalDate today = LocalDate.now();
+        int todaySeconds = 0;
+        int bestSeconds = 0;
+        Set<LocalDate> sessionDates = new TreeSet<>();
+
+        for (SessionHistoryEntry s : sessions) {
+            int secs = s.getTotalSeconds();
+            if (secs > bestSeconds) bestSeconds = secs;
+            LocalDateTime start = s.getStartTime();
+            if (start != null) {
+                LocalDate date = start.toLocalDate();
+                sessionDates.add(date);
+                if (date.equals(today)) todaySeconds += secs;
+            }
+        }
+
+        // Streak: count consecutive days ending today or yesterday
+        int streak = 0;
+        LocalDate check = today;
+        while (sessionDates.contains(check)) {
+            streak++;
+            check = check.minusDays(1);
+        }
+        if (streak == 0) {
+            check = today.minusDays(1);
+            while (sessionDates.contains(check)) {
+                streak++;
+                check = check.minusDays(1);
+            }
+        }
+
+        int allTimeSeconds = sessions.stream().mapToInt(SessionHistoryEntry::getTotalSeconds).sum();
+        if (timerLabel != null && !isTracking) {
+            timerLabel.setText("Total Study Time: " + formatTime(allTimeSeconds));
+        }
+
+        statTodayTime.setText(formatShortTime(todaySeconds));
+        statSessions.setText(String.valueOf(sessions.size()));
+        statStreak.setText(streak + (streak == 1 ? " day" : " days"));
+        statBestSession.setText(formatShortTime(bestSeconds));
+    }
+
+    private String formatShortTime(int totalSeconds) {
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        return hours + "h " + String.format("%02d", minutes) + "m";
+    }
+
     @FXML
     public void initialize() {
+        loadQuickStats();
+
         // Connect the Engine to the UI
         engine.setUiUpdater(text -> {
             Platform.runLater(() -> {

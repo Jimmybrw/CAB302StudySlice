@@ -32,20 +32,20 @@
         <Label text="Create your account" styleClass="auth-subtitle"/>
 
         <TextField fx:id="usernameField" promptText="Username" styleClass="auth-field"/>
-        <HBox spacing="6" alignment="CENTER_LEFT">
-            <StackPane HBox.hgrow="ALWAYS">
-                <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-field" maxWidth="Infinity"/>
-                <TextField fx:id="passwordVisible" promptText="Password" visible="false" styleClass="auth-field" maxWidth="Infinity"/>
-            </StackPane>
-            <Button fx:id="eyeButton" text="👁" onAction="#togglePassword" style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 4 8;"/>
-        </HBox>
-        <HBox spacing="6" alignment="CENTER_LEFT">
-            <StackPane HBox.hgrow="ALWAYS">
-                <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" styleClass="auth-field" maxWidth="Infinity"/>
-                <TextField fx:id="confirmPasswordVisible" promptText="Confirm Password" visible="false" styleClass="auth-field" maxWidth="Infinity"/>
-            </StackPane>
-            <Button fx:id="eyeButton2" text="👁" onAction="#toggleConfirmPassword" style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 4 8;"/>
-        </HBox>
+        <StackPane>
+            <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-field" style="-fx-padding: 6 36 6 10;"/>
+            <TextField fx:id="passwordVisible" promptText="Password" visible="false" styleClass="auth-field" style="-fx-padding: 6 36 6 10;"/>
+            <Button fx:id="eyeButton" text="👁" onAction="#togglePassword"
+                    style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 0 10 0 0;"
+                    StackPane.alignment="CENTER_RIGHT"/>
+        </StackPane>
+        <StackPane>
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" styleClass="auth-field" style="-fx-padding: 6 36 6 10;"/>
+            <TextField fx:id="confirmPasswordVisible" promptText="Confirm Password" visible="false" styleClass="auth-field" style="-fx-padding: 6 36 6 10;"/>
+            <Button fx:id="eyeButton2" text="👁" onAction="#toggleConfirmPassword"
+                    style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 0 10 0 0;"
+                    StackPane.alignment="CENTER_RIGHT"/>
+        </StackPane>
 
         <Label fx:id="messageLabel" text="" wrapText="true" styleClass="auth-message"/>
 
