@@ -793,9 +793,10 @@
 }
 
 .sidebar-button {
-    -fx-background-color: transparent;
+    -fx-background-color: white;
     -fx-font-size: 16px;
     -fx-alignment: CENTER_LEFT;
+    -padding-left: 25px;
 }
 
 .hamburger-button {
@@ -811,7 +812,9 @@
 }
 
 .sidebar {
-    -fx-pref-width: 180;   /* force fixed width */
+    -fx-pref-width: 180;
+    -fx-padding: 40 0 0 20;  /* push content down below the toolbar */
+
 }
 
 
