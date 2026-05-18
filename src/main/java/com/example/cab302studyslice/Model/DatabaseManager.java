@@ -390,6 +390,74 @@ public class DatabaseManager {
         }
     }
 
+    public static List<String> getTopApps(int userId, int limit) {
+        String sql = "SELECT sa.app_name, SUM(sa.duration) AS total " +
+                     "FROM session_activities sa " +
+                     "INNER JOIN sessions s ON s.ID = sa.session_ID " +
+                     "WHERE s.User_ID = ? " +
+                     "GROUP BY sa.app_name ORDER BY total DESC LIMIT ?";
+        List<String> apps = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, limit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) apps.add(rs.getString("app_name"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting top apps: " + e.getMessage());
+        }
+        return apps;
+    }
+
+    public static int getLatestWrappedScore(int userId) {
+        String sql = "SELECT w.score FROM wrapped w " +
+                     "INNER JOIN sessions s ON s.ID = w.session_ID " +
+                     "WHERE s.User_ID = ? ORDER BY w.wrapped_ID DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("score");
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting latest score: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static int getBestSessionSeconds(int userId) {
+        String sql = "SELECT TIMESTAMPDIFF(SECOND, start_time, end_time) AS secs " +
+                     "FROM sessions WHERE User_ID = ? AND start_time IS NOT NULL AND end_time IS NOT NULL " +
+                     "ORDER BY secs DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("secs");
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting best session: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public static int getTodaySessionSeconds(int userId) {
+        String sql = "SELECT SUM(TIMESTAMPDIFF(SECOND, start_time, end_time)) AS today_secs " +
+                     "FROM sessions WHERE User_ID = ? AND DATE(start_time) = CURDATE() " +
+                     "AND start_time IS NOT NULL AND end_time IS NOT NULL";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("today_secs");
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting today's session time: " + e.getMessage());
+        }
+        return 0;
+    }
+
     public static int getLatestSessionId(int userId) {
         String sql = "SELECT ID FROM sessions WHERE User_ID = ? ORDER BY ID DESC LIMIT 1";
         try (Connection conn = getConnection();

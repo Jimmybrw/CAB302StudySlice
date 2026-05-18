@@ -45,12 +45,19 @@ public class DashboardController {
     @FXML private Label timerLabel;
     @FXML private TextArea statusTextArea;
     @FXML private Button toggleButton;
+    @FXML private Button saveButton;
+    @FXML private Button deleteButton;
 
     // Quick stats labels
     @FXML private Label statTodayTime;
     @FXML private Label statSessions;
     @FXML private Label statStreak;
     @FXML private Label statBestSession;
+
+    // Session snapshot labels
+    @FXML private Label snapMostUsedApp;
+    @FXML private Label snapSecondApp;
+    @FXML private Label snapProductivity;
 
     // Static engine to persist tracking across scene switches
     private static TrackingEngine engine = new TrackingEngine();
@@ -62,7 +69,6 @@ public class DashboardController {
         if (userId <= 0) return;
 
         List<SessionHistoryEntry> sessions = DatabaseManager.getSessionHistoryByUserId(userId);
-        if (sessions.isEmpty()) return;
 
         LocalDate today = LocalDate.now();
         int todaySeconds = 0;
@@ -72,38 +78,34 @@ public class DashboardController {
         for (SessionHistoryEntry s : sessions) {
             int secs = s.getTotalSeconds();
             if (secs > bestSeconds) bestSeconds = secs;
-            LocalDateTime start = s.getStartTime();
-            if (start != null) {
-                LocalDate date = start.toLocalDate();
+
+            LocalDateTime anchor = s.getStartTime() != null ? s.getStartTime() : s.getEndTime();
+            if (anchor != null) {
+                LocalDate date = anchor.toLocalDate();
                 sessionDates.add(date);
                 if (date.equals(today)) todaySeconds += secs;
             }
         }
 
-        // Streak: count consecutive days ending today or yesterday
         int streak = 0;
         LocalDate check = today;
-        while (sessionDates.contains(check)) {
-            streak++;
-            check = check.minusDays(1);
-        }
+        while (sessionDates.contains(check)) { streak++; check = check.minusDays(1); }
         if (streak == 0) {
             check = today.minusDays(1);
-            while (sessionDates.contains(check)) {
-                streak++;
-                check = check.minusDays(1);
-            }
-        }
-
-        int allTimeSeconds = sessions.stream().mapToInt(SessionHistoryEntry::getTotalSeconds).sum();
-        if (timerLabel != null && !isTracking) {
-            timerLabel.setText("Total Study Time: " + formatTime(allTimeSeconds));
+            while (sessionDates.contains(check)) { streak++; check = check.minusDays(1); }
         }
 
         statTodayTime.setText(formatShortTime(todaySeconds));
         statSessions.setText(String.valueOf(sessions.size()));
         statStreak.setText(streak + (streak == 1 ? " day" : " days"));
         statBestSession.setText(formatShortTime(bestSeconds));
+
+        // Session snapshot
+        List<String> topApps = DatabaseManager.getTopApps(userId, 2);
+        snapMostUsedApp.setText(topApps.size() > 0 ? topApps.get(0) : "-");
+        snapSecondApp.setText(topApps.size() > 1 ? topApps.get(1) : "-");
+        int score = DatabaseManager.getLatestWrappedScore(userId);
+        snapProductivity.setText(score >= 0 ? score + "/100" : "-");
     }
 
     private String formatShortTime(int totalSeconds) {
@@ -122,12 +124,13 @@ public class DashboardController {
                 if (text.contains("\n")) {
                     String[] parts = text.split("\n", 2);
                     if (timerLabel != null) {
-                        timerLabel.setText(parts[0]); // First line is the total time
+                        timerLabel.setText(parts[0]);
                     }
                     if (statusTextArea != null) {
-                        statusTextArea.setText(parts[1]); // Remaining lines are the activity log
+                        statusTextArea.setText(parts[1]);
                     }
                 }
+                updateSessionButtons();
             });
         });
 
@@ -136,6 +139,12 @@ public class DashboardController {
             toggleButton.setText("Stop Tracking");
         }
     }
+    private void updateSessionButtons() {
+        boolean hasData = hasSessionData();
+        if (saveButton != null) saveButton.setDisable(!hasData);
+        if (deleteButton != null) deleteButton.setDisable(!hasData);
+    }
+
     //Start or stop tracking depending on the current tracking state
     @FXML
     private void handleToggleTracking() {
@@ -145,10 +154,9 @@ public class DashboardController {
             isTracking = true;
         } else {
             engine.stopTracking();
-
             toggleButton.setText("Start Tracking");
             isTracking = false;
-
+            updateSessionButtons();
         }
     }
 
@@ -220,9 +228,11 @@ public class DashboardController {
     //Save the current session after validating title, user, and tracked data
     @FXML
     private void handleSaveSession() {
-        if (!hasSessionData()) {
-            showNoSessionDataPopup();
-            return;
+        if (!hasSessionData()) return;
+        if (isTracking) {
+            engine.stopTracking();
+            toggleButton.setText("Start Tracking");
+            isTracking = false;
         }
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -284,6 +294,7 @@ public class DashboardController {
             HistoryStore.addSession(buildSessionText(sessionName));
             resetCurrentSession();
             dialog.close();
+            loadQuickStats();
 
             final int userId = User.getCurrentUserId();
             new Thread(() -> {
@@ -323,9 +334,11 @@ public class DashboardController {
 
     @FXML
     private void handleDeleteSession() {
-        if (!hasSessionData()) {
-            showNoSessionDataPopup();
-            return;
+        if (!hasSessionData()) return;
+        if (isTracking) {
+            engine.stopTracking();
+            toggleButton.setText("Start Tracking");
+            isTracking = false;
         }
         resetCurrentSession();
     }
@@ -335,15 +348,12 @@ public class DashboardController {
         engine.stopTracking();
         engine.reset();
 
-        if (timerLabel != null) {
-            timerLabel.setText("Total Study Time: 00:00:00");
-        }
-        if (statusTextArea != null) {
-            statusTextArea.clear();
-        }
+        if (timerLabel != null) timerLabel.setText("Total Study Time: 00:00:00");
+        if (statusTextArea != null) statusTextArea.clear();
 
         toggleButton.setText("Start Tracking");
         isTracking = false;
+        updateSessionButtons();
     }
 
     // -----------------------------
