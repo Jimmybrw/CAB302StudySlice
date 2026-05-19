@@ -1,128 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<ScrollPane fitToWidth="true"
-            hbarPolicy="NEVER"
-            vbarPolicy="AS_NEEDED"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.cab302studyslice.Controller.TimerController"
-            styleClass="dashboard-scroll">
-    <content>
-        <VBox spacing="24" styleClass="dashboard-root">
-            <padding>
-                <Insets top="28" right="28" bottom="28" left="28"/>
-            </padding>
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.cab302studyslice.Controller.TimerController"
+           prefWidth="900" prefHeight="600">
 
-            <!-- Header -->
-            <HBox alignment="CENTER_LEFT">
-                <VBox spacing="6">
-                    <Label text="StudySlice" styleClass="dashboard-kicker"/>
-                    <Label text="Timer" styleClass="dashboard-title"/>
-                    <Label text="Spin the dial to set your session timer." styleClass="dashboard-subtitle"/>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Back to Dashboard"
-                        onAction="#goToDashboard"
-                        styleClass="dashboard-secondary-button"/>
-            </HBox>
+    <!-- MAIN CONTENT -->
+    <BorderPane fx:id="mainContent"
+                StackPane.alignment="CENTER"
+                prefWidth="900" prefHeight="600"
+                maxWidth="Infinity" maxHeight="Infinity">
 
-            <!-- Clock timer card -->
-            <VBox spacing="16" styleClass="dashboard-card" alignment="CENTER">
+        <top>
+            <ToolBar fx:id="topToolbar" prefHeight="40">
 
-                <!-- Edit button pinned to the top-right of the card -->
-                <HBox maxWidth="Infinity">
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="editButton"
-                            text="✏  Edit Time"
-                            onAction="#handleEditButton"
-                            style="-fx-font-size: 12px; -fx-padding: 7 18;
-                                   -fx-background-color: #819D93; -fx-text-fill: white;
-                                   -fx-background-radius: 999; -fx-cursor: hand;"/>
-                </HBox>
+            </ToolBar>
+        </top>
+        <center>
+            <VBox spacing="20"
+                  alignment="TOP_CENTER"
+                  styleClass="timer-center-wrapper">
 
-                <!-- Dial -->
-                <StackPane alignment="CENTER" maxWidth="340" maxHeight="340">
-                    <Canvas fx:id="timerCanvas" width="320" height="320"/>
-                    <Label fx:id="countdownLabel" text="00:00"
-                           mouseTransparent="true"
-                           style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #2e2e2e;"/>
-                </StackPane>
-
-                <Label fx:id="timerStatusLabel"
-                       text="Click ✏ Edit Time to set your timer."
+                <Label text="Start tracking when you're ready. Your activity log will update below."
                        styleClass="dashboard-helper-text"/>
 
-                <HBox spacing="10" alignment="CENTER">
-                    <Button fx:id="startTimerButton"
-                            text="Start"
-                            onAction="#handleStartTimer"
-                            styleClass="dashboard-primary-button"
-                            style="-fx-font-size: 14px; -fx-padding: 12 36;"/>
-                    <Button fx:id="stopTimerButton"
-                            text="Stop"
-                            onAction="#handleStopTimer"
-                            styleClass="dashboard-secondary-button"
-                            style="-fx-font-size: 14px; -fx-padding: 12 36;"
-                            disable="true"/>
-                </HBox>
-            </VBox>
 
-            <!-- Session time + save/delete -->
-            <VBox spacing="16" styleClass="dashboard-card dashboard-session-card">
-                <Label text="Session Time" styleClass="dashboard-card-label"/>
-                <StackPane alignment="CENTER_LEFT" styleClass="dashboard-timer-panel">
-                    <Label fx:id="timerLabel"
-                           text="Total Study Time: 00:00:00"
-                           wrapText="true"
-                           styleClass="dashboard-timer-text"/>
-                </StackPane>
                 <HBox spacing="8">
-                    <Button fx:id="saveButton"
-                            text="Save Session"
+                    <Button text="Start Tracking"
+                            fx:id="toggleButton"
+                            onAction="#handleToggleTracking"
+                            styleClass="dashboard-primary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Save"
                             onAction="#handleSaveSession"
                             styleClass="dashboard-secondary-button"
                             style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                            maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                            disable="true"/>
-                    <Button fx:id="deleteButton"
-                            text="Delete"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Delete"
                             onAction="#handleDeleteSession"
                             styleClass="dashboard-secondary-button"
                             style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                            maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                            disable="true"/>
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+
+                    <Button text="View History"
+                            fx:id="exploreButton"
+                            onAction="#onExploreClicked"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                    <Button text="Mini Timer"
+                            onAction="#onTimerClicked"
+                            styleClass="dashboard-secondary-button"
+                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
+                            maxWidth="Infinity"
+                            HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <!-- Bottom cards row -->
+                <HBox spacing="20">
+                    <!-- Activity log -->
+                    <VBox spacing="16" styleClass="dashboard-card dashboard-log-card" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="ACTIVITY LOG" styleClass="dashboard-section-chip"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Waiting for session" styleClass="dashboard-waiting-pill"/>
+                        </HBox>
+
+                        <TextArea fx:id="statusTextArea"
+                                  editable="false"
+                                  wrapText="true"
+                                  promptText="Activity log will appear here once tracking starts..."
+                                  VBox.vgrow="ALWAYS"
+                                  styleClass="dashboard-log-area"/>
+                    </VBox>
                 </HBox>
             </VBox>
+        </center>
+    </BorderPane>
 
-            <!-- Activity log -->
-            <VBox spacing="16" styleClass="dashboard-card dashboard-log-card">
-                <HBox alignment="CENTER_LEFT">
-                    <Label text="ACTIVITY LOG" styleClass="dashboard-chip-grey"
-                           style="-fx-background-radius: 999; -fx-padding: 6 14; -fx-font-size: 12px; -fx-font-weight: bold;"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Label text="Waiting for session" styleClass="dashboard-waiting-pill"/>
-                </HBox>
-                <TextArea fx:id="statusTextArea"
-                          editable="false"
-                          wrapText="true"
-                          promptText="Activity log will appear here once the timer starts..."
-                          VBox.vgrow="ALWAYS"
-                          styleClass="dashboard-log-area"/>
-            </VBox>
 
-            <!-- Hidden toggle button for engine compatibility -->
-            <Button fx:id="toggleButton" visible="false" managed="false"/>
+    <!-- SLIDE-OUT SIDEBAR -->
+    <VBox fx:id="sideMenu"
+          mouseTransparent="true"
+          spacing="20"
+          prefWidth="180"
+          styleClass="sidebar"
+          translateX="-180"
+          StackPane.alignment="TOP_LEFT">
 
-        </VBox>
-    </content>
-</ScrollPane>
+        <VBox.margin>
+            <Insets top="40"/>
+        </VBox.margin>
+
+
+        <Label text="STUDY SLICE" styleClass="sidebar-title"/>
+        <Button text="Dashboard" fx:id="dashboardButton" onAction="#goToDashboard" styleClass="sidebar-button"/>
+        <Button text="Timer" styleClass="sidebar-button-selected"/>
+        <Button text="Explore" fx:id="exploreButtonSB" onAction="#onExploreClicked" styleClass="sidebar-button"/>
+        <Button text="Settings" styleClass="sidebar-button"/>
+        <Button text="Log Out" styleClass="sidebar-button"/>
+    </VBox>
+
+
+    <Button fx:id="hamburgerButton"
+            text="☰"
+            onAction="#toggleMenu"
+            styleClass="hamburger-button"
+            StackPane.alignment="TOP_LEFT"
+            style="-fx-translate-y: 8; -fx-translate-x: 8;"/>
+
+</StackPane>
