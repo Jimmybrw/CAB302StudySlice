@@ -39,6 +39,17 @@
             <!-- Clock timer card -->
             <VBox spacing="16" styleClass="dashboard-card" alignment="CENTER">
 
+                <!-- Edit button pinned to the top-right of the card -->
+                <HBox maxWidth="Infinity">
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="editButton"
+                            text="✏  Edit Time"
+                            onAction="#handleEditButton"
+                            style="-fx-font-size: 12px; -fx-padding: 7 18;
+                                   -fx-background-color: #819D93; -fx-text-fill: white;
+                                   -fx-background-radius: 999; -fx-cursor: hand;"/>
+                </HBox>
+
                 <!-- Dial -->
                 <StackPane alignment="CENTER" maxWidth="340" maxHeight="340">
                     <Canvas fx:id="timerCanvas" width="320" height="320"/>
@@ -48,7 +59,7 @@
                 </StackPane>
 
                 <Label fx:id="timerStatusLabel"
-                       text="Drag the ring to set your time, or scroll to add hours."
+                       text="Click ✏ Edit Time to set your timer."
                        styleClass="dashboard-helper-text"/>
 
                 <HBox spacing="10" alignment="CENTER">

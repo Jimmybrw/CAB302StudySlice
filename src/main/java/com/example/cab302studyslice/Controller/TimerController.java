@@ -36,6 +36,7 @@ public class TimerController {
     @FXML private Label    timerStatusLabel;
     @FXML private Button   startTimerButton;
     @FXML private Button   stopTimerButton;
+    @FXML private Button   editButton;
 
     @FXML private Label    timerLabel;
     @FXML private TextArea statusTextArea;
@@ -47,6 +48,7 @@ public class TimerController {
     private int    lapCount       = 0;   // complete hours already set
     private int    partialSeconds = 0;   // seconds within the current hour (0-3599)
     private double prevAngleDeg   = -1;  // -1 = no previous sample (press just happened)
+    private boolean isEditMode    = false;
 
     private int      setSeconds       = 0;
     private int      remainingSeconds = 0;
@@ -86,7 +88,7 @@ public class TimerController {
 
             // Press: snap ring to clicked angle, preserve current lap count
             timerCanvas.setOnMousePressed(e -> {
-                if (countdownTimeline != null) return;
+                if (!isEditMode || countdownTimeline != null) return;
                 double angle = toAngleDeg(e.getX(), e.getY());
                 prevAngleDeg   = angle;
                 partialSeconds = (int) (angle / 360.0 * 3600);
@@ -100,20 +102,8 @@ public class TimerController {
             // Drag: accumulate laps via wrap detection
             timerCanvas.setOnMouseDragged(e -> handleDialDrag(e.getX(), e.getY()));
 
-            // Scroll: +/- 1 hour per notch (consume so page doesn't also scroll)
-            timerCanvas.setOnScroll(e -> {
-                e.consume(); // always consume — don't let ScrollPane see it
-                if (countdownTimeline != null) return;
-                if (e.getDeltaY() > 0) lapCount = Math.min(lapCount + 1, MAX_LAPS - 1);
-                else                    lapCount = Math.max(0, lapCount - 1);
-                setSeconds = lapCount * 3600 + partialSeconds;
-                remainingSeconds = setSeconds;
-                drawDonut(setSeconds);
-                updateCountdownLabel(setSeconds);
-                updateStatusLabel();
-            });
-
-            timerCanvas.setCursor(javafx.scene.Cursor.HAND);
+            // Start locked — edit mode must be enabled before dragging
+            timerCanvas.setCursor(javafx.scene.Cursor.DEFAULT);
         }
 
         engine.setUiUpdater(text -> Platform.runLater(() -> {
@@ -137,6 +127,45 @@ public class TimerController {
 
 
     // ============================================================
+    //  Edit mode toggle
+    // ============================================================
+
+    private static final String EDIT_BTN_IDLE =
+            "-fx-font-size: 12px; -fx-padding: 7 18;" +
+            "-fx-background-color: #819D93; -fx-text-fill: white;" +
+            "-fx-background-radius: 999; -fx-cursor: hand;";
+    private static final String EDIT_BTN_ACTIVE =
+            "-fx-font-size: 12px; -fx-padding: 7 18;" +
+            "-fx-background-color: #5CC8A5; -fx-text-fill: white;" +
+            "-fx-background-radius: 999; -fx-cursor: hand;";
+
+    @FXML
+    private void handleEditButton() {
+        isEditMode = !isEditMode;
+        if (isEditMode) {
+            editButton.setText("✓  Done");
+            editButton.setStyle(EDIT_BTN_ACTIVE);
+            timerCanvas.setCursor(javafx.scene.Cursor.HAND);
+            timerStatusLabel.setStyle("-fx-text-fill: #5CC8A5;");
+            timerStatusLabel.setText("Edit mode — drag the ring to set your time.");
+        } else {
+            exitEditMode();
+        }
+    }
+
+    /** Leaves edit mode and restores button + status label. */
+    private void exitEditMode() {
+        isEditMode = false;
+        if (editButton != null) {
+            editButton.setText("✏  Edit Time");
+            editButton.setStyle(EDIT_BTN_IDLE);
+        }
+        timerCanvas.setCursor(javafx.scene.Cursor.DEFAULT);
+        updateStatusLabel();
+    }
+
+
+    // ============================================================
     //  Dial interaction
     // ============================================================
 
@@ -151,7 +180,7 @@ public class TimerController {
     }
 
     private void handleDialDrag(double mouseX, double mouseY) {
-        if (countdownTimeline != null) return;
+        if (!isEditMode || countdownTimeline != null) return;
 
         // Basic dead-zone: ignore drags very close to the centre
         double cx   = timerCanvas.getWidth()  / 2;
@@ -184,9 +213,12 @@ public class TimerController {
 
     private void updateStatusLabel() {
         if (timerStatusLabel == null) return;
-        if (setSeconds <= 0) {
+        if (isEditMode) {
+            timerStatusLabel.setStyle("-fx-text-fill: #5CC8A5;");
+            timerStatusLabel.setText("Edit mode — drag the ring to set your time.");
+        } else if (setSeconds <= 0) {
             timerStatusLabel.setStyle("-fx-text-fill: #999999;");
-            timerStatusLabel.setText("Drag the ring to set your time, or scroll to add hours.");
+            timerStatusLabel.setText("Click ✏ Edit Time to set your timer.");
         } else {
             timerStatusLabel.setStyle("-fx-text-fill: #657972;");
             timerStatusLabel.setText(
@@ -211,7 +243,11 @@ public class TimerController {
     // ============================================================
 
     /**
-     * Draws a clean donut ring where one full revolution = 1 hour.
+     * Draws a layered donut where one full revolution = 1 hour.
+     *
+     * Completed laps are painted as full rings from the bottom up so that
+     * the current partial lap sits on top.  Counting down "unspools" the
+     * outermost colour first, revealing the previous lap's colour beneath.
      *
      * @param current  remaining (or set) seconds
      */
@@ -223,46 +259,77 @@ public class TimerController {
         double cx = w / 2;
         double cy = h / 2;
 
-        // Geometry
+        // ── Geometry ─────────────────────────────────────────────
         double outerR = Math.min(w, h) / 2.0 - 8;
-        double innerR = outerR * 0.60;          // donut-hole radius
+        double innerR = outerR * 0.60;
         double midR   = (outerR + innerR) / 2.0;
         double ringW  = outerR - innerR;
 
         gc.clearRect(0, 0, w, h);
-        gc.setLineCap(StrokeLineCap.ROUND);
+        gc.setLineCap(StrokeLineCap.BUTT);
 
-        // ── Background track (full ring, warm grey) ──────────────
+        // ── Background track ──────────────────────────────────────
         gc.setStroke(Color.web("#E5E0D9"));
         gc.setLineWidth(ringW);
         gc.strokeOval(cx - midR, cy - midR, midR * 2, midR * 2);
 
-        // ── Coloured progress arc ─────────────────────────────────
         if (current > 0) {
-            // (current-1) so that 3600 → lapIndex=0, secondsInLap=3600
-            int lapIndex      = (current - 1) / 3600;
-            int secondsInLap  = (current - 1) % 3600 + 1;   // 1 – 3600
-            double arcDeg     = secondsInLap / 3600.0 * 360.0;
+            // Split total seconds into complete laps + remainder within lap.
+            // (current-1) trick ensures exactly 3600 s maps to lap 0, full arc.
+            int fullLaps     = (current - 1) / 3600;
+            int secondsInLap = (current - 1) % 3600 + 1;   // 1 – 3600
+            double arcDeg    = secondsInLap / 3600.0 * 360.0;
+            String curColor  = LAP_COLORS[Math.min(fullLaps, LAP_COLORS.length - 1)];
 
-            String colorHex = LAP_COLORS[Math.min(lapIndex, LAP_COLORS.length - 1)];
-            gc.setStroke(Color.web(colorHex));
+            // ── Completed laps: paint full rings, oldest first ────
+            // Each successive ring sits on top of the one below it,
+            // so only the most-recent complete lap colour is visible.
+            // When the current lap unspools it reveals the layer beneath.
+            for (int i = 0; i < fullLaps; i++) {
+                gc.setStroke(Color.web(LAP_COLORS[Math.min(i, LAP_COLORS.length - 1)]));
+                gc.setLineWidth(ringW);
+                gc.strokeOval(cx - midR, cy - midR, midR * 2, midR * 2);
+            }
+
+            // ── Current partial lap arc ───────────────────────────
+            gc.setStroke(Color.web(curColor));
             gc.setLineWidth(ringW);
 
-            if (arcDeg >= 359.9) {
-                // Full ring — use strokeOval to avoid arc-cap artefacts
+            if (arcDeg >= 359.99) {
                 gc.strokeOval(cx - midR, cy - midR, midR * 2, midR * 2);
             } else {
-                // Partial arc: start at 12 o'clock (90°), go clockwise (negative extent)
+                // Arc: 12 o'clock (90°) → clockwise (negative extent)
                 gc.strokeArc(cx - midR, cy - midR, midR * 2, midR * 2,
                              90, -arcDeg, ArcType.OPEN);
+
+                // ── Rounded tip, strictly clipped to the arc's sector ──
+                // Build a pie-sector clip from 12 o'clock clockwise to the
+                // tip angle so the filled circle cannot bleed into the
+                // preceding lap on either side of 12 o'clock.
+                double tipRad = Math.toRadians(90 - arcDeg);
+                double tipX   = cx + midR * Math.cos(tipRad);
+                double tipY   = cy - midR * Math.sin(tipRad);
+                double tipR   = ringW / 2.0;
+                double clipR  = outerR + tipR; // radius large enough to contain the tip circle
+
+                gc.save();
+                gc.beginPath();
+                gc.moveTo(cx, cy);
+                gc.lineTo(cx, cy - clipR);                   // to 12 o'clock on clip circle
+                gc.arc(cx, cy, clipR, clipR, 90, -arcDeg);  // clockwise arc to tip angle
+                gc.closePath();                              // line back to centre
+                gc.clip();
+
+                gc.setFill(Color.web(curColor));
+                gc.fillOval(tipX - tipR, tipY - tipR, tipR * 2, tipR * 2);
+                gc.restore();
             }
         }
 
-        // ── Subtle start-position tick at 12 o'clock ─────────────
+        // ── White notch at 12 o'clock — lap-boundary marker ──────
         gc.setStroke(Color.web("#FFFFFF"));
-        gc.setLineWidth(3);
-        gc.setLineCap(StrokeLineCap.BUTT);
-        gc.strokeLine(cx, cy - innerR - 1, cx, cy - outerR + 1);
+        gc.setLineWidth(4);
+        gc.strokeLine(cx, cy - innerR + 1, cx, cy - outerR - 1);
     }
 
 
@@ -279,10 +346,14 @@ public class TimerController {
         }
         remainingSeconds = setSeconds;
 
+        // Exit edit mode when the timer starts
+        if (isEditMode) exitEditMode();
+
         engine.startTracking();
         isTracking = true;
         startTimerButton.setDisable(true);
         stopTimerButton.setDisable(false);
+        if (editButton != null) editButton.setDisable(true);
         timerStatusLabel.setStyle("-fx-text-fill: #657972;");
         timerStatusLabel.setText("Tracking active — session will save when the timer ends.");
 
@@ -307,6 +378,7 @@ public class TimerController {
         isTracking = false;
         startTimerButton.setDisable(false);
         stopTimerButton.setDisable(true);
+        if (editButton != null) editButton.setDisable(false);
         timerStatusLabel.setStyle("-fx-text-fill: #657972;");
         timerStatusLabel.setText("Timer stopped. Drag to reset, or press Start to continue.");
         updateSessionButtons();
@@ -317,6 +389,7 @@ public class TimerController {
         isTracking = false;
         startTimerButton.setDisable(false);
         stopTimerButton.setDisable(true);
+        if (editButton != null) editButton.setDisable(false);
         timerStatusLabel.setStyle("-fx-text-fill: #5CC8A5;");
         timerStatusLabel.setText("Session complete! Great work.");
         updateSessionButtons();
@@ -495,6 +568,7 @@ public class TimerController {
         if (timerLabel    != null) timerLabel.setText("Total Study Time: 00:00:00");
         if (statusTextArea != null) statusTextArea.clear();
         isTracking = false;
+        if (editButton != null) editButton.setDisable(false);
         updateSessionButtons();
         // Reset dial to zero
         lapCount = 0; partialSeconds = 0; setSeconds = 0; remainingSeconds = 0;
@@ -502,7 +576,7 @@ public class TimerController {
         updateCountdownLabel(0);
         if (timerStatusLabel != null) {
             timerStatusLabel.setStyle("");
-            timerStatusLabel.setText("Drag the ring to set your time, or scroll to add hours.");
+            timerStatusLabel.setText("Drag the ring to set your time, or click ✏ Edit Time for precise hours.");
         }
     }
 
