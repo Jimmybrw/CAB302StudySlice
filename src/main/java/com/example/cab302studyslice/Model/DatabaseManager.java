@@ -390,6 +390,74 @@ public class DatabaseManager {
         }
     }
 
+    public static List<String> getTopApps(int userId, int limit) {
+        String sql = "SELECT sa.app_name, SUM(sa.duration) AS total " +
+                     "FROM session_activities sa " +
+                     "INNER JOIN sessions s ON s.ID = sa.session_ID " +
+                     "WHERE s.User_ID = ? " +
+                     "GROUP BY sa.app_name ORDER BY total DESC LIMIT ?";
+        List<String> apps = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, limit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) apps.add(rs.getString("app_name"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting top apps: " + e.getMessage());
+        }
+        return apps;
+    }
+
+    public static int getLatestWrappedScore(int userId) {
+        String sql = "SELECT w.score FROM wrapped w " +
+                     "INNER JOIN sessions s ON s.ID = w.session_ID " +
+                     "WHERE s.User_ID = ? ORDER BY w.wrapped_ID DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("score");
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting latest score: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static int getBestSessionSeconds(int userId) {
+        String sql = "SELECT TIMESTAMPDIFF(SECOND, start_time, end_time) AS secs " +
+                     "FROM sessions WHERE User_ID = ? AND start_time IS NOT NULL AND end_time IS NOT NULL " +
+                     "ORDER BY secs DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("secs");
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting best session: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public static int getTodaySessionSeconds(int userId) {
+        String sql = "SELECT SUM(TIMESTAMPDIFF(SECOND, start_time, end_time)) AS today_secs " +
+                     "FROM sessions WHERE User_ID = ? AND DATE(start_time) = CURDATE() " +
+                     "AND start_time IS NOT NULL AND end_time IS NOT NULL";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("today_secs");
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting today's session time: " + e.getMessage());
+        }
+        return 0;
+    }
+
     public static int getLatestSessionId(int userId) {
         String sql = "SELECT ID FROM sessions WHERE User_ID = ? ORDER BY ID DESC LIMIT 1";
         try (Connection conn = getConnection();
@@ -402,6 +470,75 @@ public class DatabaseManager {
             System.err.println("Error getting latest session ID: " + e.getMessage());
         }
         return -1;
+    }
+
+    /**
+     * Deletes a session and all linked data (activities + wrapped) in one transaction.
+     */
+    public static boolean deleteSession(int sessionId) {
+        try (Connection conn = getConnection()) {
+            boolean originalAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            try {
+                // Delete child rows first to respect foreign-key constraints
+                try (PreparedStatement s = conn.prepareStatement(
+                        "DELETE FROM wrapped WHERE session_ID = ?")) {
+                    s.setInt(1, sessionId);
+                    s.executeUpdate();
+                }
+                try (PreparedStatement s = conn.prepareStatement(
+                        "DELETE FROM session_activities WHERE session_ID = ?")) {
+                    s.setInt(1, sessionId);
+                    s.executeUpdate();
+                }
+                try (PreparedStatement s = conn.prepareStatement(
+                        "DELETE FROM sessions WHERE ID = ?")) {
+                    s.setInt(1, sessionId);
+                    s.executeUpdate();
+                }
+                conn.commit();
+                return true;
+            } catch (Exception e) {
+                conn.rollback();
+                System.err.println("Error deleting session: " + e.getMessage());
+                return false;
+            } finally {
+                conn.setAutoCommit(originalAutoCommit);
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting session: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Fetches the most-recent wrapped record for a given session from the DB.
+     * Returns null if no record exists yet.
+     */
+    public static AiAPI.WrappedData getWrappedDataForSession(int sessionId) {
+        String sql = "SELECT score, record_total_time, most_used_app, ranking, " +
+                     "bad_habit, compared_to_sessions, streak_current " +
+                     "FROM wrapped WHERE session_ID = ? ORDER BY wrapped_ID DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, sessionId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    AiAPI.WrappedData data = new AiAPI.WrappedData();
+                    data.score            = rs.getInt("score");
+                    data.recordTotalTime  = rs.getBoolean("record_total_time");
+                    data.mostUsedApp      = rs.getString("most_used_app");
+                    data.ranking          = rs.getInt("ranking");
+                    data.badHabit         = rs.getString("bad_habit");
+                    data.comparedToSessions = rs.getString("compared_to_sessions");
+                    data.streakCurrent    = rs.getInt("streak_current");
+                    return data;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting wrapped data for session: " + e.getMessage());
+        }
+        return null;
     }
 
     public static boolean insertWrappedData(int sessionId, boolean recordTotalTime, String mostUsedApp,

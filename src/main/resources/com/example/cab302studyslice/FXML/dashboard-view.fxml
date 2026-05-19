@@ -58,7 +58,7 @@
                 <HBox spacing="10" alignment="CENTER" styleClass="dashboard_subSections">
                     <Button text="CURRENT SESSION" styleClass="dashboard-section-chip"/>
                     <Button text="EXPLORE SESSIONS" onAction="#onExploreClicked" styleClass="dashboard-section-chip"/>
-                    <Button text="TRACKING" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
+                    <Button text="TIMER" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
                 </HBox>
                 <Label text="Session Time" styleClass="dashboard-card-label"/>
 
@@ -79,30 +79,22 @@
                             style="-fx-font-size: 13px; -fx-padding: 10 10;"
                             maxWidth="Infinity"
                             HBox.hgrow="ALWAYS"/>
-                    <Button text="Save"
+                    <Button fx:id="saveButton"
+                            text="Save"
                             onAction="#handleSaveSession"
                             styleClass="dashboard-secondary-button"
                             style="-fx-font-size: 13px; -fx-padding: 10 10;"
                             maxWidth="Infinity"
-                            HBox.hgrow="ALWAYS"/>
-                    <Button text="Delete"
+                            HBox.hgrow="ALWAYS"
+                            disable="true"/>
+                    <Button fx:id="deleteButton"
+                            text="Delete"
                             onAction="#handleDeleteSession"
                             styleClass="dashboard-secondary-button"
                             style="-fx-font-size: 13px; -fx-padding: 10 10;"
                             maxWidth="Infinity"
-                            HBox.hgrow="ALWAYS"/>
-                    <Button text="Timer"
-                            onAction="#onTimerClicked"
-                            styleClass="dashboard-secondary-button"
-                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                            maxWidth="Infinity"
-                            HBox.hgrow="ALWAYS"/>
-                    <Button text="Unwrap (Test)"
-                            onAction="#onWrappedTestClicked"
-                            styleClass="dashboard-secondary-button"
-                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                            maxWidth="Infinity"
-                            HBox.hgrow="ALWAYS"/>
+                            HBox.hgrow="ALWAYS"
+                            disable="true"/>
                 </HBox>
             </VBox>
 
@@ -111,7 +103,7 @@
                 <!-- Activity log -->
                 <VBox spacing="16" styleClass="dashboard-card dashboard-log-card" HBox.hgrow="ALWAYS">
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="ACTIVITY LOG" styleClass="dashboard-section-chip"/>
+                        <Label text="ACTIVITY LOG" styleClass="dashboard-chip-grey" style="-fx-background-radius: 999; -fx-padding: 6 14; -fx-font-size: 12px; -fx-font-weight: bold;"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label text="Waiting for session" styleClass="dashboard-waiting-pill"/>
                     </HBox>
@@ -130,17 +122,17 @@
 
                     <VBox spacing="12" styleClass="dashboard-snapshot-item">
                         <Label text="Most Used App" styleClass="dashboard-mini-label"/>
-                        <Label text="-" styleClass="dashboard-snapshot-value"/>
+                        <Label fx:id="snapMostUsedApp" text="-" styleClass="dashboard-snapshot-value" wrapText="true"/>
                     </VBox>
 
                     <VBox spacing="12" styleClass="dashboard-snapshot-item">
-                        <Label text="Top Website" styleClass="dashboard-mini-label"/>
-                        <Label text="-" styleClass="dashboard-snapshot-value"/>
+                        <Label text="2nd Most Used" styleClass="dashboard-mini-label"/>
+                        <Label fx:id="snapSecondApp" text="-" styleClass="dashboard-snapshot-value" wrapText="true"/>
                     </VBox>
 
                     <VBox spacing="12" styleClass="dashboard-snapshot-item">
-                        <Label text="Productivity" styleClass="dashboard-mini-label"/>
-                        <Label text="-" styleClass="dashboard-snapshot-value"/>
+                        <Label text="Latest Score" styleClass="dashboard-mini-label"/>
+                        <Label fx:id="snapProductivity" text="-" styleClass="dashboard-snapshot-value"/>
                     </VBox>
                 </VBox>
             </HBox>

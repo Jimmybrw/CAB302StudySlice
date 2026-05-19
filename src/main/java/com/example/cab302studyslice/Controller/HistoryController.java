@@ -4,14 +4,20 @@ import com.example.cab302studyslice.Model.*;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.util.Comparator;
 import java.util.List;
 
 //Controller for the History page
@@ -96,7 +102,7 @@ public class HistoryController {
         historyContainer.getChildren().add(card);
     }
 
-    //Creates aa visual card for one save study session
+    //Creates a visual card for one saved study session
     private void addSessionCard(SessionHistoryEntry session) {
         VBox card = new VBox(8);
         card.setAlignment(Pos.TOP_LEFT);
@@ -119,76 +125,166 @@ public class HistoryController {
         activitiesLabel.getStyleClass().add("history-session-activities");
         activitiesLabel.setWrapText(true);
 
-        Button aiButton = new Button("Ask AI");
-        aiButton.getStyleClass().add("dashboard-secondary-button");
-        aiButton.setOnAction(e -> {
-            aiButton.setText("Loading...");
-            aiButton.setDisable(true);
-            List<SessionHistoryEntry> allSessions = DatabaseManager.getSessionHistoryByUserId(User.getCurrentUserId());
+        Button unwrapButton = new Button("Unwrap");
+        unwrapButton.getStyleClass().add("dashboard-primary-button");
+        unwrapButton.setOnAction(e -> launchUnwrap(session, unwrapButton));
+
+        Button deleteButton = new Button("Delete");
+        deleteButton.getStyleClass().add("dashboard-secondary-button");
+        deleteButton.setStyle("-fx-background-color: #C0392B; -fx-text-fill: white;");
+        deleteButton.setOnAction(e -> confirmDeleteSession(session));
+
+        HBox actions = new HBox(8, unwrapButton, deleteButton);
+        actions.setAlignment(Pos.CENTER_LEFT);
+
+        card.getChildren().addAll(titleLabel, timeLabel, dateLabel, activitiesLabel, actions);
+        historyContainer.getChildren().add(card);
+    }
+
+    /**
+     * Fetches (or generates) wrapped data for the session, stores it in
+     * WrappedDataHolder, then launches the animation sequence.
+     */
+    private void launchUnwrap(SessionHistoryEntry session, Button unwrapButton) {
+        unwrapButton.setText("Loading...");
+        unwrapButton.setDisable(true);
+
+        int userId = User.getCurrentUserId();
+
+        new Thread(() -> {
+            List<SessionHistoryEntry> allSessions =
+                    DatabaseManager.getSessionHistoryByUserId(userId);
+
+            // 1. Try the DB first
+            AiAPI.WrappedData data =
+                    DatabaseManager.getWrappedDataForSession(session.getSessionId());
+
+            // 2. If not cached yet, ask the AI and save it
+            if (data == null) {
+                data = AiAPI.analyzeSessionStructured(session, allSessions);
+                if (data != null) {
+                    DatabaseManager.insertWrappedData(
+                            session.getSessionId(),
+                            data.recordTotalTime,
+                            data.mostUsedApp,
+                            data.ranking,
+                            data.badHabit,
+                            data.comparedToSessions,
+                            data.streakCurrent,
+                            data.score
+                    );
+                }
+            }
+
+            // 3. Always set totalSessions from the live list
+            if (data != null) {
+                data.totalSessions = allSessions.size();
+            }
+
+            String goodHabit = deriveGoodHabit(session);
+            final AiAPI.WrappedData finalData = data;
+
+            Platform.runLater(() -> {
+                unwrapButton.setText("Unwrap");
+                unwrapButton.setDisable(false);
+
+                if (finalData == null) {
+                    Alert err = new Alert(Alert.AlertType.ERROR);
+                    err.setTitle("Unwrap Error");
+                    err.setHeaderText("Could not generate session analysis. Please try again.");
+                    err.showAndWait();
+                    return;
+                }
+
+                WrappedDataHolder.set(finalData, session, goodHabit);
+                ViewManager.switchScene("wrapped-intro-view.fxml");
+            });
+        }).start();
+    }
+
+    /**
+     * Shows an UNDECORATED confirmation popup before permanently deleting a session.
+     */
+    private void confirmDeleteSession(SessionHistoryEntry session) {
+        Stage owner = (historyContainer != null && historyContainer.getScene() != null)
+                ? (Stage) historyContainer.getScene().getWindow() : null;
+
+        Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        if (owner != null) dialog.initOwner(owner);
+        dialog.setResizable(false);
+
+        Label heading = new Label("Delete Session");
+        heading.getStyleClass().add("dashboard-card-label");
+
+        String name = session.getTitle().isBlank() ? "Untitled Session" : session.getTitle();
+        Label body = new Label("Are you sure you want to delete \"" + name
+                + "\"?\nThis will also remove its activity log and any Unwrap data. This cannot be undone.");
+        body.setWrapText(true);
+        body.getStyleClass().add("dashboard-helper-text");
+        body.setMaxWidth(320);
+
+        Button confirmBtn = new Button("Delete");
+        confirmBtn.getStyleClass().add("dashboard-primary-button");
+        confirmBtn.setStyle("-fx-background-color: #C0392B; -fx-text-fill: white;");
+        confirmBtn.setOnAction(e -> {
+            dialog.close();
             new Thread(() -> {
-                AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(session, allSessions);
+                boolean deleted = DatabaseManager.deleteSession(session.getSessionId());
                 Platform.runLater(() -> {
-                    aiButton.setText("Ask AI");
-                    aiButton.setDisable(false);
-
-                    if (data == null) {
+                    if (deleted) {
+                        loadHistoryFromDatabase();
+                    } else {
                         Alert err = new Alert(Alert.AlertType.ERROR);
-                        err.setTitle("AI Error");
-                        err.setHeaderText("Could not get AI analysis. Please try again.");
+                        err.setTitle("Error");
+                        err.setHeaderText("Could not delete the session. Please try again.");
                         err.showAndWait();
-                        return;
                     }
-
-                    String display =
-                            "Score: " + data.score + "/100\n" +
-                            "Ranking: " + data.ranking + "/" + data.totalSessions + "\n" +
-                            "Record Total Time: " + (data.recordTotalTime ? "Yes" : "No") + "\n" +
-                            "Most Used App: " + data.mostUsedApp + "\n" +
-                            "Bad Habit: " + data.badHabit + "\n" +
-                            "Compared to Sessions: " + data.comparedToSessions + "\n" +
-                            "Current Streak: " + data.streakCurrent;
-
-                    TextArea textArea = new TextArea(display);
-                    textArea.setEditable(false);
-                    textArea.setWrapText(true);
-                    textArea.setPrefWidth(500);
-                    textArea.setPrefHeight(200);
-
-                    Button saveButton = new Button("Save to Database");
-                    saveButton.getStyleClass().add("dashboard-primary-button");
-                    saveButton.setOnAction(ev -> {
-                        saveButton.setText("Saving...");
-                        saveButton.setDisable(true);
-                        new Thread(() -> {
-                            boolean saved = DatabaseManager.insertWrappedData(
-                                    session.getSessionId(),
-                                    data.recordTotalTime,
-                                    data.mostUsedApp,
-                                    data.ranking,
-                                    data.badHabit,
-                                    data.comparedToSessions,
-                                    data.streakCurrent,
-                                    data.score
-                            );
-                            Platform.runLater(() -> {
-                                saveButton.setText(saved ? "Saved!" : "Failed - try again");
-                                saveButton.setDisable(saved);
-                            });
-                        }).start();
-                    });
-
-                    VBox content = new VBox(10, textArea, saveButton);
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("AI Analysis - " + session.getTitle());
-                    alert.setHeaderText("Session Analysis");
-                    alert.getDialogPane().setContent(content);
-                    alert.getDialogPane().setPrefWidth(550);
-                    alert.showAndWait();
                 });
             }).start();
         });
 
-        card.getChildren().addAll(titleLabel, timeLabel, dateLabel, activitiesLabel, aiButton);
-        historyContainer.getChildren().add(card);
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.getStyleClass().add("dashboard-secondary-button");
+        cancelBtn.setOnAction(e -> dialog.close());
+
+        HBox buttons = new HBox(10, confirmBtn, cancelBtn);
+        buttons.setAlignment(Pos.CENTER);
+
+        VBox root = new VBox(16, heading, body, buttons);
+        root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
+        root.setPadding(new Insets(24));
+        root.setPrefWidth(380);
+        root.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(root);
+        scene.setFill(null);
+        scene.getStylesheets().add(
+                getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
+        dialog.setScene(scene);
+        dialog.show();
+    }
+
+    /**
+     * Derives a "good habit" sentence from the session's activity breakdown.
+     * Used on the Wrapped good-habit slide (not stored in DB).
+     */
+    private String deriveGoodHabit(SessionHistoryEntry session) {
+        if (session.getActivities().isEmpty()) {
+            return "Staying committed to your study goals";
+        }
+        Activity top = session.getActivities().stream()
+                .max(Comparator.comparingInt(Activity::getDuration))
+                .orElse(null);
+        if (top == null) return "Consistent focus throughout the session";
+
+        int totalSecs = session.getTotalSeconds();
+        double pct = totalSecs > 0 ? (100.0 * top.getDuration() / totalSecs) : 0;
+        if (pct > 50) {
+            return "Deep focus on " + top.getAppName();
+        }
+        return "Balanced workflow across multiple apps";
     }
 }
