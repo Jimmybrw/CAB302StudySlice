@@ -7,7 +7,6 @@ import javafx.util.Duration;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 
 public class WrappedGoodHabitController {
     @FXML
@@ -27,7 +26,6 @@ public class WrappedGoodHabitController {
         loadPlaceHolderData();
         playSmileFaceIntro();
         playRevealAnimation();
-        playNextButtonPulse();
     }
 
     private void loadPlaceHolderData() {
@@ -62,8 +60,13 @@ public class WrappedGoodHabitController {
         wobble.setCycleCount(2);
         wobble.setAutoReverse(true);
 
-        ParallelTransition intro = new ParallelTransition(fadeIn, riseIn);
-        intro.play();
+        // ParallelTransition intro = new ParallelTransition(fadeIn, riseIn);
+        // intro.play();
+        SequentialTransition introSequence = new SequentialTransition(
+                new ParallelTransition(fadeIn, riseIn),
+                wobble
+        );
+        introSequence.play();
     }
 
     private void playRevealAnimation() {
@@ -94,8 +97,8 @@ public class WrappedGoodHabitController {
         supportFade.setToValue(1);
 
         TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), goodHabitSupportLabel);
-        supportSlide.setFromX(16);
-        supportSlide.setFromY(0);
+        supportSlide.setFromY(16);
+        supportSlide.setToY(0);
 
         ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
 
@@ -110,6 +113,7 @@ public class WrappedGoodHabitController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(scoreReveal, supportReveal, buttonReveal);
+        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 
@@ -129,10 +133,11 @@ public class WrappedGoodHabitController {
         slideOut.setToY(-220);
 
         FadeTransition fadeOut = new FadeTransition(Duration.millis(420), smileyFaceGroup);
+        fadeOut.setFromValue(smileyFaceGroup.getOpacity());
         fadeOut.setToValue(0);
 
         ParallelTransition outro = new ParallelTransition(slideOut, fadeOut);
-        outro.setOnFinished(event -> ViewManager.switchScene("wrapped-sessionRanking-view.fxml"));
+        outro.setOnFinished(event -> ViewManager.switchScene("wrapped-comparison-view.fxml"));
         outro.play();
     }
 
@@ -147,8 +152,6 @@ public class WrappedGoodHabitController {
 
     @FXML
     private void onNextClick() {
-
         playSmileyFaceExit();
-        ViewManager.switchScene("wrapped-comparison-view.fxml");
     }
 }

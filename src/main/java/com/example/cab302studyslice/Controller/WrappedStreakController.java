@@ -63,7 +63,7 @@ public class WrappedStreakController {
         streakValueLabel.setTranslateY(16);
 
         streakSupportLabel.setOpacity(0);
-        streakValueLabel.setTranslateY(16);
+        streakSupportLabel.setTranslateY(16);
 
         exitButton.setOpacity(0);
         exitButton.setTranslateY(14);

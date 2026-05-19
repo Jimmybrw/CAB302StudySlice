@@ -42,13 +42,12 @@ public class WrapperTotalTimeController {
         setUpClockHands();
         animateBackground();
         playClockThenRevealAnimation();
-        playNextButtonPulse();
     }
 
     // Placeholder data, replace later with actual data
     private void loadPlaceHolderData(){
         totalTimeLabel.setText("5 hours and 15 minutes");
-        supportTextLabel.setText("That is a serious study stretch.Your future self probably owes you a snack.");
+        supportTextLabel.setText("That is a serious study stretch. Your future self probably owes you a snack.");
     }
 
     // set clock hands' initial pivot and resting angles
@@ -78,7 +77,7 @@ public class WrapperTotalTimeController {
         moveY.setFromY(-30);
         moveY.setToY(30);
         moveY.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
+        moveY.setAutoReverse(true);
 
         ParallelTransition animation = new ParallelTransition(move, moveY);
         animation.play();
@@ -138,7 +137,7 @@ public class WrapperTotalTimeController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(timeReveal, supportReveal, buttonReveal);
-
+        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 

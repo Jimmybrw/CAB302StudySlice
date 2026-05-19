@@ -28,7 +28,6 @@ public class WrappedTopAppController {
         loadPlaceHolderData();
         animateBackground();
         playRevealAnimation();
-        playNextButtonPulse();
     }
 
     private void loadPlaceHolderData() {
@@ -51,7 +50,7 @@ public class WrappedTopAppController {
         moveY.setFromY(-30);
         moveY.setToY(30);
         moveY.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
+        moveY.setAutoReverse(true);
 
         ParallelTransition animation = new ParallelTransition(move, moveY);
         animation.play();
@@ -92,7 +91,7 @@ public class WrappedTopAppController {
         supportFade.setToValue(1);
 
         TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), topAppSupportLabel);
-        supportSlide.setFromX(16);
+        supportSlide.setFromY(16);
         supportSlide.setFromY(0);
 
         ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
@@ -108,6 +107,7 @@ public class WrappedTopAppController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(appReveal, supportReveal, buttonReveal);
+        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 

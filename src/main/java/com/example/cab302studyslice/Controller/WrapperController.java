@@ -17,10 +17,6 @@ public class WrapperController {
     @FXML
     private Label subtitleLabel;
     @FXML
-    private Label pageIndicatorLabel;
-    @FXML
-    private Button backButton;
-    @FXML
     private Button nextButton;
 
 
@@ -28,7 +24,6 @@ public class WrapperController {
     public void initialize(){
         animateBackground();
         playIntroAnimation();
-        playNextButtonPulse();
     }
 
     @FXML private Region animatedOverlay;
@@ -118,7 +113,7 @@ public class WrapperController {
         ParallelTransition buttonAnim = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(brandAnim, titleAnim, subtitleAnim, buttonAnim);
-
+        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 
@@ -137,6 +132,7 @@ public class WrapperController {
     // NAVIGATION BUTTONS
     // -----------------------------
 
+    // back to dashboard
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("dashboard-view.fxml");

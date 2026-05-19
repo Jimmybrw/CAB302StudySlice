@@ -25,12 +25,11 @@ public class WrappedRankingController {
         loadPlaceHolderData();
         animateBackground();
         playRankingRevealAnimation("2nd");
-        //playNextButtonPulse();
     }
 
     private void loadPlaceHolderData() {
         rankingLabelCurrent.setText("2nd");
-        rankingLabelNext.setText("Out of the 10 saved sessions, this was your second most focused study session.");
+        rankingSupportLabel.setText("Out of the 10 saved sessions, this was your second most focused study session.");
     }
 
     // -----------------------------
@@ -70,7 +69,7 @@ public class WrappedRankingController {
         nextButton.setOpacity(0);
         nextButton.setTranslateY(14);
 
-        rankingLabelCurrent.setText(ranks[1]);
+        rankingLabelCurrent.setText(ranks[0]);
         rankingLabelCurrent.setOpacity(1);
         rankingLabelCurrent.setTranslateY(0);
 
@@ -79,7 +78,7 @@ public class WrappedRankingController {
 
         SequentialTransition fullSequence = new SequentialTransition();
 
-        for (int i = 0; i < ranks.length; i++) {
+        for (int i = 1; i < ranks.length; i++) {
             String nextRank = ranks[i];
 
             PauseTransition step = new PauseTransition(Duration.ZERO);
@@ -146,11 +145,11 @@ public class WrappedRankingController {
     }
 
     private void playRevealAnimation() {
-        rankingSupportLabel.setOpacity(0);
+        /** rankingSupportLabel.setOpacity(0);
         rankingSupportLabel.setTranslateY(16);
 
         nextButton.setOpacity(0);
-        nextButton.setTranslateY(14);
+        nextButton.setTranslateY(14); */
 
         FadeTransition supportFade = new FadeTransition(Duration.millis(450), rankingSupportLabel);
         supportFade.setFromValue(0);

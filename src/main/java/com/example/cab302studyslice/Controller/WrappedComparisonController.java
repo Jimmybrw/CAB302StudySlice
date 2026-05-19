@@ -14,8 +14,6 @@ public class WrappedComparisonController {
     @FXML
     private Label comparisonSupportLabel;
     @FXML
-    private Button backButton;
-    @FXML
     private Button nextButton;
 
 
@@ -23,7 +21,6 @@ public class WrappedComparisonController {
     public void initialize(){
         animateBackground();
         playIntroAnimation();
-        playNextButtonPulse();
     }
 
     @FXML private Region animatedOverlay;
@@ -43,7 +40,7 @@ public class WrappedComparisonController {
         moveY.setFromY(-30);
         moveY.setToY(30);
         moveY.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
+        moveY.setAutoReverse(true);
 
         ParallelTransition animation = new ParallelTransition(move, moveY);
         animation.play();
@@ -101,7 +98,7 @@ public class WrappedComparisonController {
         ParallelTransition buttonAnim = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(titleAnim, subtitleAnim, buttonAnim);
-
+        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 
