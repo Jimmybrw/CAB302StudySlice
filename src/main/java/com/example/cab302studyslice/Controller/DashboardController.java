@@ -3,11 +3,13 @@ package com.example.cab302studyslice.Controller;
 import com.example.cab302studyslice.Model.TrackingEngine;
 import com.example.cab302studyslice.View.ViewManager;
 import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.Activity;
 import com.example.cab302studyslice.Model.HistoryStore;
 import com.example.cab302studyslice.Model.DatabaseManager;
 import com.example.cab302studyslice.Model.SessionHistoryEntry;
 import com.example.cab302studyslice.Model.SessionSaveService;
 import com.example.cab302studyslice.Model.User;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -25,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -200,11 +203,11 @@ public class DashboardController {
 
     private void showNoSessionDataPopup() {
         Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
         if (toggleButton != null && toggleButton.getScene() != null) {
             dialog.initOwner(toggleButton.getScene().getWindow());
         }
-        dialog.setTitle("Error");
         dialog.setResizable(false);
 
         Label errorLabel = new Label("Error: No Session Data");
@@ -216,10 +219,12 @@ public class DashboardController {
 
         VBox root = new VBox(12, errorLabel, okButton);
         root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
         root.setPadding(new Insets(20));
         root.setPrefWidth(300);
 
         Scene scene = new Scene(root);
+        scene.setFill(null);
         scene.getStylesheets().add(getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
         dialog.setScene(scene);
         dialog.showAndWait();
@@ -234,11 +239,13 @@ public class DashboardController {
             toggleButton.setText("Start Tracking");
             isTracking = false;
         }
+        // Capture the main window before opening the modal dialog
+        final Stage mainStage = (toggleButton != null && toggleButton.getScene() != null)
+                ? (Stage) toggleButton.getScene().getWindow() : null;
+
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        if (toggleButton != null && toggleButton.getScene() != null) {
-            dialog.initOwner(toggleButton.getScene().getWindow());
-        }
+        if (mainStage != null) dialog.initOwner(mainStage);
         dialog.setTitle("Save Session");
         dialog.setResizable(false);
 
@@ -307,6 +314,7 @@ public class DashboardController {
                 if (newest == null) return;
                 AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(newest, allSessions);
                 if (data != null) {
+                    data.totalSessions = allSessions.size();
                     DatabaseManager.insertWrappedData(
                             newest.getSessionId(),
                             data.recordTotalTime,
@@ -317,6 +325,9 @@ public class DashboardController {
                             data.streakCurrent,
                             data.score
                     );
+                    final AiAPI.WrappedData finalData = data;
+                    final SessionHistoryEntry finalSession = newest;
+                    Platform.runLater(() -> showUnwrapPrompt(finalSession, finalData, mainStage));
                 }
             }).start();
         });
@@ -487,6 +498,69 @@ public class DashboardController {
         dialog.showAndWait();
     }
 
+    // ──────────────────────────────────────────────────────────────────────────
+    //  Unwrap prompt — shown after AI analysis completes in the background
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private void showUnwrapPrompt(SessionHistoryEntry session, AiAPI.WrappedData data, Stage owner) {
+        Stage prompt = new Stage();
+        prompt.initStyle(StageStyle.TRANSPARENT);
+        if (owner != null) {
+            prompt.initModality(Modality.APPLICATION_MODAL);
+            prompt.initOwner(owner);
+        }
+        prompt.setResizable(false);
+
+        Label heading = new Label("Your session has been analysed!");
+        heading.getStyleClass().add("dashboard-card-label");
+
+        Label body = new Label("Want to see how \"" + session.getTitle()
+                + "\" stacked up? Unwrap your results now.");
+        body.setWrapText(true);
+        body.getStyleClass().add("dashboard-helper-text");
+        body.setMaxWidth(320);
+
+        Button unwrapBtn = new Button("Unwrap");
+        unwrapBtn.getStyleClass().add("dashboard-primary-button");
+        unwrapBtn.setOnAction(e -> {
+            prompt.close();
+            WrappedDataHolder.set(data, session, deriveGoodHabit(session));
+            ViewManager.switchScene("wrapped-intro-view.fxml");
+        });
+
+        Button laterBtn = new Button("Maybe Later");
+        laterBtn.getStyleClass().add("dashboard-secondary-button");
+        laterBtn.setOnAction(e -> prompt.close());
+
+        HBox buttons = new HBox(10, unwrapBtn, laterBtn);
+        buttons.setAlignment(Pos.CENTER);
+
+        VBox root = new VBox(16, heading, body, buttons);
+        root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
+        root.setPadding(new Insets(24));
+        root.setPrefWidth(380);
+        root.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(root);
+        scene.setFill(null);
+        scene.getStylesheets().add(
+                getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
+        prompt.setScene(scene);
+        prompt.show();
+    }
+
+    private String deriveGoodHabit(SessionHistoryEntry session) {
+        if (session.getActivities().isEmpty()) return "Staying committed to your study goals";
+        Activity top = session.getActivities().stream()
+                .max(java.util.Comparator.comparingInt(Activity::getDuration))
+                .orElse(null);
+        if (top == null) return "Consistent focus throughout the session";
+        int totalSecs = session.getTotalSeconds();
+        double pct = totalSecs > 0 ? (100.0 * top.getDuration() / totalSecs) : 0;
+        return pct > 50 ? "Deep focus on " + top.getAppName() : "Balanced workflow across multiple apps";
+    }
+
     @FXML
     private void onTrackingClicked() {
         ViewManager.switchScene("timer-view.fxml");
@@ -529,11 +603,11 @@ public class DashboardController {
 
     private void showTimerCompletePopup(Stage owner) {
         Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
         if (owner != null) {
             dialog.initOwner(owner);
         }
-        dialog.setTitle("Timer Complete");
         dialog.setResizable(false);
 
         Label infoLabel = new Label("Time is up!");
@@ -545,11 +619,13 @@ public class DashboardController {
 
         VBox root = new VBox(12, infoLabel, okButton);
         root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
         root.setPadding(new Insets(20));
         root.setAlignment(Pos.CENTER);
         root.setPrefWidth(260);
 
         Scene scene = new Scene(root);
+        scene.setFill(null);
         scene.getStylesheets().add(getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
         dialog.setScene(scene);
         dialog.showAndWait();
@@ -580,8 +656,4 @@ public class DashboardController {
         }
     }
 
-    @FXML
-    private void onWrappedTestClicked() {
-        ViewManager.switchScene("wrapped-intro-view.fxml");
-    }
 }

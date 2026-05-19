@@ -472,6 +472,75 @@ public class DatabaseManager {
         return -1;
     }
 
+    /**
+     * Deletes a session and all linked data (activities + wrapped) in one transaction.
+     */
+    public static boolean deleteSession(int sessionId) {
+        try (Connection conn = getConnection()) {
+            boolean originalAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            try {
+                // Delete child rows first to respect foreign-key constraints
+                try (PreparedStatement s = conn.prepareStatement(
+                        "DELETE FROM wrapped WHERE session_ID = ?")) {
+                    s.setInt(1, sessionId);
+                    s.executeUpdate();
+                }
+                try (PreparedStatement s = conn.prepareStatement(
+                        "DELETE FROM session_activities WHERE session_ID = ?")) {
+                    s.setInt(1, sessionId);
+                    s.executeUpdate();
+                }
+                try (PreparedStatement s = conn.prepareStatement(
+                        "DELETE FROM sessions WHERE ID = ?")) {
+                    s.setInt(1, sessionId);
+                    s.executeUpdate();
+                }
+                conn.commit();
+                return true;
+            } catch (Exception e) {
+                conn.rollback();
+                System.err.println("Error deleting session: " + e.getMessage());
+                return false;
+            } finally {
+                conn.setAutoCommit(originalAutoCommit);
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting session: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Fetches the most-recent wrapped record for a given session from the DB.
+     * Returns null if no record exists yet.
+     */
+    public static AiAPI.WrappedData getWrappedDataForSession(int sessionId) {
+        String sql = "SELECT score, record_total_time, most_used_app, ranking, " +
+                     "bad_habit, compared_to_sessions, streak_current " +
+                     "FROM wrapped WHERE session_ID = ? ORDER BY wrapped_ID DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, sessionId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    AiAPI.WrappedData data = new AiAPI.WrappedData();
+                    data.score            = rs.getInt("score");
+                    data.recordTotalTime  = rs.getBoolean("record_total_time");
+                    data.mostUsedApp      = rs.getString("most_used_app");
+                    data.ranking          = rs.getInt("ranking");
+                    data.badHabit         = rs.getString("bad_habit");
+                    data.comparedToSessions = rs.getString("compared_to_sessions");
+                    data.streakCurrent    = rs.getInt("streak_current");
+                    return data;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting wrapped data for session: " + e.getMessage());
+        }
+        return null;
+    }
+
     public static boolean insertWrappedData(int sessionId, boolean recordTotalTime, String mostUsedApp,
                                             int ranking, String badHabit, String comparedToSessions, int streakCurrent, int score) {
         String sql = "INSERT INTO wrapped (wrapped_ID, session_ID, score, record_total_time, most_used_app, ranking, bad_habit, compared_to_sessions, streak_current) " +

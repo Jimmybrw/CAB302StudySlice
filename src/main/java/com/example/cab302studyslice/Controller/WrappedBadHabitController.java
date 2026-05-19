@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.util.Duration;
@@ -25,17 +27,27 @@ public class WrappedBadHabitController {
 
     @FXML
     public void initialize(){
-        loadPlaceHolderData();
+        loadData();
         playFrownFaceIntro();
         playRevealAnimation();
         playNextButtonPulse();
     }
 
-    private void loadPlaceHolderData() {
-        badHabitLabel.setText("Messages");
-        badHabitSupportLabel.setText(
-                "This was the biggest interruption in your session and and had the strongest effect on your focus score."
-        );
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+            String habit = (data.badHabit != null && !data.badHabit.isBlank())
+                    ? data.badHabit : "Frequent app switching";
+            badHabitLabel.setText(habit);
+            badHabitSupportLabel.setText(
+                    "This was the biggest interruption in your session and had the strongest effect on your focus score."
+            );
+        } else {
+            badHabitLabel.setText("Messages");
+            badHabitSupportLabel.setText(
+                    "This was the biggest interruption in your session and had the strongest effect on your focus score."
+            );
+        }
     }
 
     // -----------------------------

@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.util.Duration;
@@ -22,15 +24,66 @@ public class WrappedRankingController {
 
     @FXML
     private void initialize() {
-        loadPlaceHolderData();
         animateBackground();
-        playRankingRevealAnimation("2nd");
-        //playNextButtonPulse();
+        if (WrappedDataHolder.hasData()) {
+            loadRealData();
+        } else {
+            loadPlaceHolderData();
+            playRankingRevealAnimation(buildRankSteps(10, 2));
+        }
+    }
+
+    private void loadRealData() {
+        AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+        int rank  = Math.max(1, data.ranking);
+        int total = Math.max(rank, data.totalSessions > 0 ? data.totalSessions : 1);
+        String rankStr = ordinalSuffix(rank);
+        rankingSupportLabel.setText(
+                "Out of " + total + " saved sessions, this was your " + rankStr + " most focused study session."
+        );
+        playRankingRevealAnimation(buildRankSteps(total, rank));
     }
 
     private void loadPlaceHolderData() {
-        rankingLabelCurrent.setText("2nd");
-        rankingLabelNext.setText("Out of the 10 saved sessions, this was your second most focused study session.");
+        rankingSupportLabel.setText("Out of 10 saved sessions, this was your 2nd most focused study session.");
+    }
+
+    /**
+     * Builds 5 step values for the rolling count-down animation.
+     * ALL steps are plain numbers — ordinals are too long for the label at large font sizes.
+     * steps[0] = total (start)
+     * steps[1..3] = intermediate values counting down
+     * steps[4] = finalRank (end) — the ordinal already appears in the support text below
+     */
+    private String[] buildRankSteps(int total, int finalRank) {
+        String[] steps = new String[5];
+        steps[0] = String.valueOf(total);
+
+        if (total <= 1 || total == finalRank) {
+            // Edge case: ranked last or only one session — nothing to count down
+            for (int i = 1; i <= 4; i++) steps[i] = String.valueOf(finalRank);
+            return steps;
+        }
+
+        int range = total - finalRank;
+        for (int i = 1; i <= 3; i++) {
+            int value = total - (int) Math.round((double) range * i / 4.0);
+            value = Math.max(value, finalRank + 1);
+            value = Math.min(value, total - 1);
+            steps[i] = String.valueOf(value);
+        }
+        steps[4] = String.valueOf(finalRank);  // plain number — ordinal is in the support label
+        return steps;
+    }
+
+    private String ordinalSuffix(int n) {
+        if (n >= 11 && n <= 13) return n + "th";
+        switch (n % 10) {
+            case 1:  return n + "st";
+            case 2:  return n + "nd";
+            case 3:  return n + "rd";
+            default: return n + "th";
+        }
     }
 
     // -----------------------------
@@ -61,8 +114,7 @@ public class WrappedRankingController {
         fade.play();
     }
 
-    private void playRankingRevealAnimation(String finalRank) {
-        String[] ranks = {"10", "7", "5", "3", finalRank};
+    private void playRankingRevealAnimation(String[] ranks) {
 
         rankingSupportLabel.setOpacity(0);
         rankingSupportLabel.setTranslateY(16);
@@ -70,16 +122,17 @@ public class WrappedRankingController {
         nextButton.setOpacity(0);
         nextButton.setTranslateY(14);
 
-        rankingLabelCurrent.setText(ranks[1]);
+        // Start at ranks[0] (the total sessions count) and roll DOWN to the final rank
+        rankingLabelCurrent.setText(ranks[0]);
         rankingLabelCurrent.setOpacity(1);
         rankingLabelCurrent.setTranslateY(0);
 
         rankingLabelNext.setOpacity(0);
-        rankingLabelNext.setTranslateY(0);
+        rankingLabelNext.setTranslateY(-70);
 
         SequentialTransition fullSequence = new SequentialTransition();
 
-        for (int i = 0; i < ranks.length; i++) {
+        for (int i = 1; i < ranks.length; i++) {
             String nextRank = ranks[i];
 
             PauseTransition step = new PauseTransition(Duration.ZERO);

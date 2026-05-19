@@ -19,6 +19,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.time.LocalDateTime;
@@ -402,9 +403,9 @@ public class TimerController {
 
         // Completion popup
         Stage popup = new Stage();
+        popup.initStyle(StageStyle.TRANSPARENT);
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.initOwner(stage);
-        popup.setTitle("Session Complete");
         popup.setResizable(false);
 
         Label doneLabel = new Label("Time's up! Great work.");
@@ -427,11 +428,13 @@ public class TimerController {
 
         VBox root = new VBox(16, doneLabel, subLabel, buttons);
         root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
         root.setPadding(new Insets(24));
         root.setPrefWidth(360);
         root.setAlignment(Pos.CENTER);
 
         Scene popScene = new Scene(root);
+        popScene.setFill(null);
         popScene.getStylesheets().add(
                 getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
         popup.setScene(popScene);
@@ -466,10 +469,13 @@ public class TimerController {
             stopTimerButton.setDisable(true);
         }
 
+        // Capture main window before the modal opens
+        final Stage mainStage = (timerCanvas != null && timerCanvas.getScene() != null)
+                ? (Stage) timerCanvas.getScene().getWindow() : null;
+
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        if (timerCanvas != null && timerCanvas.getScene() != null)
-            dialog.initOwner(timerCanvas.getScene().getWindow());
+        if (mainStage != null) dialog.initOwner(mainStage);
         dialog.setTitle("Save Session");
         dialog.setResizable(false);
 
@@ -521,7 +527,7 @@ public class TimerController {
             resetCurrentSession();
             dialog.close();
 
-            // Silent AI wrap in background
+            // Silent AI wrap in background — shows unwrap prompt when ready
             new Thread(() -> {
                 int latestId = DatabaseManager.getLatestSessionId(uid);
                 if (latestId <= 0) return;
@@ -531,9 +537,13 @@ public class TimerController {
                 if (newest == null) return;
                 AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(newest, all);
                 if (data == null) return;
+                data.totalSessions = all.size();
                 DatabaseManager.insertWrappedData(newest.getSessionId(), data.recordTotalTime,
                         data.mostUsedApp, data.ranking, data.badHabit,
                         data.comparedToSessions, data.streakCurrent, data.score);
+                final AiAPI.WrappedData finalData = data;
+                final SessionHistoryEntry finalSession = newest;
+                Platform.runLater(() -> showUnwrapPrompt(finalSession, finalData, mainStage));
             }).start();
         });
 
@@ -599,6 +609,69 @@ public class TimerController {
         long m = (totalSeconds % 3600) / 60;
         long s = totalSeconds % 60;
         return String.format("%02d:%02d:%02d", h, m, s);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    //  Unwrap prompt — shown after AI analysis completes in the background
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private void showUnwrapPrompt(SessionHistoryEntry session, AiAPI.WrappedData data, Stage owner) {
+        Stage prompt = new Stage();
+        prompt.initStyle(StageStyle.TRANSPARENT);
+        if (owner != null) {
+            prompt.initModality(Modality.APPLICATION_MODAL);
+            prompt.initOwner(owner);
+        }
+        prompt.setResizable(false);
+
+        Label heading = new Label("Your session has been analysed!");
+        heading.getStyleClass().add("dashboard-card-label");
+
+        Label body = new Label("Want to see how \"" + session.getTitle()
+                + "\" stacked up? Unwrap your results now.");
+        body.setWrapText(true);
+        body.getStyleClass().add("dashboard-helper-text");
+        body.setMaxWidth(320);
+
+        Button unwrapBtn = new Button("Unwrap");
+        unwrapBtn.getStyleClass().add("dashboard-primary-button");
+        unwrapBtn.setOnAction(e -> {
+            prompt.close();
+            WrappedDataHolder.set(data, session, deriveGoodHabit(session));
+            ViewManager.switchScene("wrapped-intro-view.fxml");
+        });
+
+        Button laterBtn = new Button("Maybe Later");
+        laterBtn.getStyleClass().add("dashboard-secondary-button");
+        laterBtn.setOnAction(e -> prompt.close());
+
+        HBox buttons = new HBox(10, unwrapBtn, laterBtn);
+        buttons.setAlignment(Pos.CENTER);
+
+        VBox root = new VBox(16, heading, body, buttons);
+        root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
+        root.setPadding(new Insets(24));
+        root.setPrefWidth(380);
+        root.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(root);
+        scene.setFill(null);
+        scene.getStylesheets().add(
+                getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
+        prompt.setScene(scene);
+        prompt.show();
+    }
+
+    private String deriveGoodHabit(SessionHistoryEntry session) {
+        if (session.getActivities().isEmpty()) return "Staying committed to your study goals";
+        Activity top = session.getActivities().stream()
+                .max(java.util.Comparator.comparingInt(Activity::getDuration))
+                .orElse(null);
+        if (top == null) return "Consistent focus throughout the session";
+        int totalSecs = session.getTotalSeconds();
+        double pct = totalSecs > 0 ? (100.0 * top.getDuration() / totalSecs) : 0;
+        return pct > 50 ? "Deep focus on " + top.getAppName() : "Balanced workflow across multiple apps";
     }
 
     // Hidden toggle button — kept for engine compatibility

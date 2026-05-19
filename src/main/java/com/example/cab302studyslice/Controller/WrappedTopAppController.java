@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -25,15 +27,25 @@ public class WrappedTopAppController {
 
     @FXML
     private void initialize() {
-        loadPlaceHolderData();
+        loadData();
         animateBackground();
         playRevealAnimation();
         playNextButtonPulse();
     }
 
-    private void loadPlaceHolderData() {
-        topAppLabel.setText("Word Document");
-        topAppSupportLabel.setText("This was your main study space for this session. Looks like the assignment grind was real.");
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+            String app = (data.mostUsedApp != null && !data.mostUsedApp.isBlank())
+                    ? data.mostUsedApp : "Unknown";
+            topAppLabel.setText(app);
+            topAppSupportLabel.setText(
+                    "This was your main study space for this session. Looks like the " + app + " grind was real."
+            );
+        } else {
+            topAppLabel.setText("Word Document");
+            topAppSupportLabel.setText("This was your main study space for this session. Looks like the assignment grind was real.");
+        }
     }
 
     // -----------------------------

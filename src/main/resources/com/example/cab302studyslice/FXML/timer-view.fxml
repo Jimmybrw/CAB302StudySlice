@@ -27,7 +27,7 @@
             <HBox alignment="CENTER_LEFT">
                 <VBox spacing="6">
                     <Label text="StudySlice" styleClass="dashboard-kicker"/>
-                    <Label text="Tracking" styleClass="dashboard-title"/>
+                    <Label text="Timer" styleClass="dashboard-title"/>
                     <Label text="Spin the dial to set your session timer." styleClass="dashboard-subtitle"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>

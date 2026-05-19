@@ -1,5 +1,6 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.scene.Group;
@@ -24,17 +25,24 @@ public class WrappedGoodHabitController {
 
     @FXML
     public void initialize(){
-        loadPlaceHolderData();
+        loadData();
         playSmileFaceIntro();
         playRevealAnimation();
         playNextButtonPulse();
     }
 
-    private void loadPlaceHolderData() {
-        goodHabitLabel.setText("Staying in one task");
-        goodHabitSupportLabel.setText(
-                "Your strongest habit was staying focused in one work stream for a longer stretch."
-        );
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            goodHabitLabel.setText(WrappedDataHolder.getGoodHabit());
+            goodHabitSupportLabel.setText(
+                    "Your strongest habit was staying focused in one work stream for a longer stretch."
+            );
+        } else {
+            goodHabitLabel.setText("Staying in one task");
+            goodHabitSupportLabel.setText(
+                    "Your strongest habit was staying focused in one work stream for a longer stretch."
+            );
+        }
     }
 
     // -----------------------------

@@ -58,7 +58,7 @@
                 <HBox spacing="10" alignment="CENTER" styleClass="dashboard_subSections">
                     <Button text="CURRENT SESSION" styleClass="dashboard-section-chip"/>
                     <Button text="EXPLORE SESSIONS" onAction="#onExploreClicked" styleClass="dashboard-section-chip"/>
-                    <Button text="TRACKING" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
+                    <Button text="TIMER" onAction="#onTrackingClicked" styleClass="dashboard-section-chip"/>
                 </HBox>
                 <Label text="Session Time" styleClass="dashboard-card-label"/>
 
@@ -95,12 +95,6 @@
                             maxWidth="Infinity"
                             HBox.hgrow="ALWAYS"
                             disable="true"/>
-                    <Button text="Unwrap (Test)"
-                            onAction="#onWrappedTestClicked"
-                            styleClass="dashboard-secondary-button"
-                            style="-fx-font-size: 13px; -fx-padding: 10 10;"
-                            maxWidth="Infinity"
-                            HBox.hgrow="ALWAYS"/>
                 </HBox>
             </VBox>
 
