@@ -16,11 +16,8 @@
                 maxWidth="Infinity" maxHeight="Infinity">
 
         <top>
-            <ToolBar prefHeight="40">
-                <Button fx:id="hamburgerButton"
-                        text="☰"
-                        onAction="#toggleMenu"
-                        styleClass="hamburger-button"/>
+            <ToolBar fx:id="topToolbar" prefHeight="40">
+
             </ToolBar>
         </top>
         <center>
@@ -31,7 +28,7 @@
                 <Label text="Start tracking when you're ready. Your activity log will update below."
                        styleClass="dashboard-helper-text"/>
 
-                <!-- your existing HBox of buttons -->
+
                 <HBox spacing="8">
                     <Button text="Start Tracking"
                             fx:id="toggleButton"
@@ -90,7 +87,7 @@
     </BorderPane>
 
 
-    <!-- SLIDE-OUT SIDEBAR (floats above content) -->
+    <!-- SLIDE-OUT SIDEBAR -->
     <VBox fx:id="sideMenu"
           mouseTransparent="true"
           spacing="20"
@@ -98,6 +95,12 @@
           styleClass="sidebar"
           translateX="-180"
           StackPane.alignment="TOP_LEFT">
+
+        <VBox.margin>
+            <Insets top="40"/>
+        </VBox.margin>
+
+
         <Label text="STUDY SLICE" styleClass="sidebar-title"/>
         <Button text="Dashboard" fx:id="dashboardButton" onAction="#goToDashboard" styleClass="sidebar-button"/>
         <Button text="Timer" styleClass="sidebar-button-selected"/>
@@ -105,5 +108,13 @@
         <Button text="Settings" styleClass="sidebar-button"/>
         <Button text="Log Out" styleClass="sidebar-button"/>
     </VBox>
+
+
+    <Button fx:id="hamburgerButton"
+            text="☰"
+            onAction="#toggleMenu"
+            styleClass="hamburger-button"
+            StackPane.alignment="TOP_LEFT"
+            style="-fx-translate-y: 8; -fx-translate-x: 8;"/>
 
 </StackPane>

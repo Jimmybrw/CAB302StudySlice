@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.fxml.FXML;
@@ -19,8 +21,23 @@ public class WrappedComparisonController {
 
     @FXML
     public void initialize(){
+        loadData();
         animateBackground();
         playIntroAnimation();
+    }
+
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+            boolean isGood = "good".equalsIgnoreCase(data.comparedToSessions);
+            comparisonLabel.setText(isGood ? "Better than average" : "Below average");
+            comparisonSupportLabel.setText(isGood
+                    ? "This session outperformed most of your saved sessions. Consistency like this adds up fast."
+                    : "This session was a bit below your usual standard — every session is a chance to improve.");
+        } else {
+            comparisonLabel.setText("Better than average");
+            comparisonSupportLabel.setText("This session outperformed most of your saved sessions.");
+        }
     }
 
     @FXML private Region animatedOverlay;

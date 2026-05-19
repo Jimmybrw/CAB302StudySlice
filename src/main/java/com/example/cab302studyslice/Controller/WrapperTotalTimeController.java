@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.WrappedDataHolder;
+import com.example.cab302studyslice.Model.SessionHistoryEntry;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.fxml.FXML;
@@ -38,16 +40,45 @@ public class WrapperTotalTimeController {
 
     @FXML
     private void initialize(){
-        loadPlaceHolderData();
+        loadData();
         setUpClockHands();
         animateBackground();
         playClockThenRevealAnimation();
+        playNextButtonPulse();
     }
 
-    // Placeholder data, replace later with actual data
-    private void loadPlaceHolderData(){
-        totalTimeLabel.setText("5 hours and 15 minutes");
-        supportTextLabel.setText("That is a serious study stretch. Your future self probably owes you a snack.");
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            SessionHistoryEntry session = WrappedDataHolder.getSession();
+            int secs   = session.getTotalSeconds();
+            int hours   = secs / 3600;
+            int minutes = (secs % 3600) / 60;
+
+            String timeText;
+            if (hours > 0 && minutes > 0) {
+                timeText = hours + (hours == 1 ? " hour" : " hours")
+                         + " and " + minutes + (minutes == 1 ? " minute" : " minutes");
+            } else if (hours > 0) {
+                timeText = hours + (hours == 1 ? " hour" : " hours");
+            } else {
+                timeText = Math.max(minutes, 1) + (minutes == 1 ? " minute" : " minutes");
+            }
+            totalTimeLabel.setText(timeText);
+
+            String support;
+            if (hours >= 3) {
+                support = "That is a serious study stretch. Your future self owes you a snack.";
+            } else if (hours >= 1) {
+                support = "Solid work — a full hour-plus block of focus is no small thing.";
+            } else {
+                support = "Every minute counts. Short sessions still build the habit.";
+            }
+            supportTextLabel.setText(support);
+        } else {
+            // Fallback placeholder
+            totalTimeLabel.setText("5 hours and 15 minutes");
+            supportTextLabel.setText("That is a serious study stretch. Your future self probably owes you a snack.");
+        }
     }
 
     // set clock hands' initial pivot and resting angles
@@ -77,7 +108,7 @@ public class WrapperTotalTimeController {
         moveY.setFromY(-30);
         moveY.setToY(30);
         moveY.setCycleCount(Animation.INDEFINITE);
-        moveY.setAutoReverse(true);
+        move.setAutoReverse(true);
 
         ParallelTransition animation = new ParallelTransition(move, moveY);
         animation.play();
@@ -137,7 +168,7 @@ public class WrapperTotalTimeController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(timeReveal, supportReveal, buttonReveal);
-        sequence.setOnFinished(event -> playNextButtonPulse());
+
         sequence.play();
     }
 

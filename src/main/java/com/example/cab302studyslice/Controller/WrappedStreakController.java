@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.util.Duration;
@@ -20,14 +22,34 @@ public class WrappedStreakController {
 
     @FXML
     private void initialize() {
-        loadPlaceHolderData();
+        loadData();
         animateBackground();
         playRevealAnimation();
     }
 
-    private void loadPlaceHolderData() {
-        streakValueLabel.setText("3 days");
-        streakSupportLabel.setText("You've studied three days in a row. Keep the streak alive!");
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+            int streak = Math.max(0, data.streakCurrent);
+            streakValueLabel.setText(streak + (streak == 1 ? " day" : " days"));
+
+            String support;
+            if (streak >= 7) {
+                support = "A whole week of studying — that kind of consistency is rare. Keep it going!";
+            } else if (streak >= 3) {
+                support = "You've studied " + streak + " days in a row. Keep the streak alive!";
+            } else if (streak == 2) {
+                support = "Two days running — you're building a real habit here.";
+            } else if (streak == 1) {
+                support = "Every streak starts with one day. This is yours — come back tomorrow!";
+            } else {
+                support = "No active streak yet, but every session is the start of one.";
+            }
+            streakSupportLabel.setText(support);
+        } else {
+            streakValueLabel.setText("3 days");
+            streakSupportLabel.setText("You've studied three days in a row. Keep the streak alive!");
+        }
     }
 
     // -----------------------------

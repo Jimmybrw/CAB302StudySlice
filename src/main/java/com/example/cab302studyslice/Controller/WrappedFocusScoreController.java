@@ -1,5 +1,7 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -29,14 +31,32 @@ public class WrappedFocusScoreController {
 
     @FXML
     public void initialize(){
-        loadPlaceHolderData();
+        loadData();
         animateBackground();
         playRevealAnimation();
     }
 
-    private void loadPlaceHolderData(){
-        focusScoreLabel.setText("82%");
-        focusSupportLabel.setText("You stayed locked in for most of the session, with only a few attention dips.");
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+            focusScoreLabel.setText(data.score + "%");
+            if (data.score >= 80) {
+                focusSupportLabel.setText(
+                        "Excellent focus! You stayed locked in for most of the session with barely a distraction.");
+            } else if (data.score >= 60) {
+                focusSupportLabel.setText(
+                        "Solid session — you stayed on task for the most part with only a few attention dips.");
+            } else if (data.score >= 40) {
+                focusSupportLabel.setText(
+                        "A mixed session — some good stretches, but a few distractions knocked the score back.");
+            } else {
+                focusSupportLabel.setText(
+                        "Tough session — but every study block is progress and there is always next time.");
+            }
+        } else {
+            focusScoreLabel.setText("82%");
+            focusSupportLabel.setText("You stayed locked in for most of the session, with only a few attention dips.");
+        }
     }
 
     // -----------------------------

@@ -1,11 +1,14 @@
 package com.example.cab302studyslice.Controller;
 
+import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import com.example.cab302studyslice.View.ViewManager;
 import javafx.animation.*;
 import javafx.util.Duration;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.scene.Group;
 
 public class WrappedBadHabitController {
@@ -24,16 +27,27 @@ public class WrappedBadHabitController {
 
     @FXML
     public void initialize(){
-        loadPlaceHolderData();
+        loadData();
         playFrownFaceIntro();
         playRevealAnimation();
+        playNextButtonPulse();
     }
 
-    private void loadPlaceHolderData() {
-        badHabitLabel.setText("Messages");
-        badHabitSupportLabel.setText(
-                "This was the biggest interruption in your session and had the strongest effect on your focus score."
-        );
+    private void loadData() {
+        if (WrappedDataHolder.hasData()) {
+            AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
+            String habit = (data.badHabit != null && !data.badHabit.isBlank())
+                    ? data.badHabit : "Frequent app switching";
+            badHabitLabel.setText(habit);
+            badHabitSupportLabel.setText(
+                    "This was the biggest interruption in your session and had the strongest effect on your focus score."
+            );
+        } else {
+            badHabitLabel.setText("Messages");
+            badHabitSupportLabel.setText(
+                    "This was the biggest interruption in your session and had the strongest effect on your focus score."
+            );
+        }
     }
 
     // -----------------------------
@@ -44,12 +58,12 @@ public class WrappedBadHabitController {
         frownFaceGroup.setScaleX(2.8);
         frownFaceGroup.setScaleY(2.8);
 
-        frownFaceGroup.setOpacity(0);
+        frownFaceGroup.setOpacity(0.22);
         frownFaceGroup.setTranslateY(-260);
 
         FadeTransition fadeIn = new FadeTransition(Duration.millis(350),  frownFaceGroup);
         fadeIn.setFromValue(0);
-        fadeIn.setToValue(0.22);
+        fadeIn.setToValue(1);
 
         TranslateTransition dropIn = new TranslateTransition(Duration.millis(650),  frownFaceGroup);
         dropIn.setFromY(-260);
@@ -61,13 +75,8 @@ public class WrappedBadHabitController {
         wobble.setCycleCount(2);
         wobble.setAutoReverse(true);
 
-        // ParallelTransition intro = new ParallelTransition(fadeIn, dropIn);
-        // intro.play();
-        SequentialTransition introSequence = new SequentialTransition(
-                new ParallelTransition(fadeIn, dropIn),
-                wobble
-        );
-        introSequence.play();
+        ParallelTransition intro = new ParallelTransition(fadeIn, dropIn);
+        intro.play();
     }
 
     private void playRevealAnimation() {
@@ -98,8 +107,8 @@ public class WrappedBadHabitController {
         supportFade.setToValue(1);
 
         TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), badHabitSupportLabel);
-        supportSlide.setFromY(16);
-        supportSlide.setToY(0);
+        supportSlide.setFromX(16);
+        supportSlide.setFromY(0);
 
         ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
 
@@ -114,7 +123,6 @@ public class WrappedBadHabitController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(scoreReveal, supportReveal, buttonReveal);
-        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 
@@ -134,8 +142,6 @@ public class WrappedBadHabitController {
         slideOut.setToY(420);
 
         FadeTransition fadeOut = new FadeTransition(Duration.millis(420), frownFaceGroup);
-        fadeOut.setFromValue(frownFaceGroup.getOpacity());
-        fadeOut.setToValue(0);
 
         ParallelTransition outro = new ParallelTransition(slideOut, fadeOut);
         outro.setOnFinished(event -> ViewManager.switchScene("wrapped-goodHabit-view.fxml"));

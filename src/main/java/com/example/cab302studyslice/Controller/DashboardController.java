@@ -3,11 +3,13 @@ package com.example.cab302studyslice.Controller;
 import com.example.cab302studyslice.Model.TrackingEngine;
 import com.example.cab302studyslice.View.ViewManager;
 import com.example.cab302studyslice.Model.AiAPI;
+import com.example.cab302studyslice.Model.Activity;
 import com.example.cab302studyslice.Model.HistoryStore;
 import com.example.cab302studyslice.Model.DatabaseManager;
 import com.example.cab302studyslice.Model.SessionHistoryEntry;
 import com.example.cab302studyslice.Model.SessionSaveService;
 import com.example.cab302studyslice.Model.User;
+import com.example.cab302studyslice.Model.WrappedDataHolder;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -25,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -45,12 +48,19 @@ public class DashboardController {
     @FXML private Label timerLabel;
     @FXML private TextArea statusTextArea;
     @FXML private Button toggleButton;
+    @FXML private Button saveButton;
+    @FXML private Button deleteButton;
 
     // Quick stats labels
     @FXML private Label statTodayTime;
     @FXML private Label statSessions;
     @FXML private Label statStreak;
     @FXML private Label statBestSession;
+
+    // Session snapshot labels
+    @FXML private Label snapMostUsedApp;
+    @FXML private Label snapSecondApp;
+    @FXML private Label snapProductivity;
 
     // Static engine to persist tracking across scene switches
     private static TrackingEngine engine = new TrackingEngine();
@@ -62,7 +72,6 @@ public class DashboardController {
         if (userId <= 0) return;
 
         List<SessionHistoryEntry> sessions = DatabaseManager.getSessionHistoryByUserId(userId);
-        if (sessions.isEmpty()) return;
 
         LocalDate today = LocalDate.now();
         int todaySeconds = 0;
@@ -72,38 +81,34 @@ public class DashboardController {
         for (SessionHistoryEntry s : sessions) {
             int secs = s.getTotalSeconds();
             if (secs > bestSeconds) bestSeconds = secs;
-            LocalDateTime start = s.getStartTime();
-            if (start != null) {
-                LocalDate date = start.toLocalDate();
+
+            LocalDateTime anchor = s.getStartTime() != null ? s.getStartTime() : s.getEndTime();
+            if (anchor != null) {
+                LocalDate date = anchor.toLocalDate();
                 sessionDates.add(date);
                 if (date.equals(today)) todaySeconds += secs;
             }
         }
 
-        // Streak: count consecutive days ending today or yesterday
         int streak = 0;
         LocalDate check = today;
-        while (sessionDates.contains(check)) {
-            streak++;
-            check = check.minusDays(1);
-        }
+        while (sessionDates.contains(check)) { streak++; check = check.minusDays(1); }
         if (streak == 0) {
             check = today.minusDays(1);
-            while (sessionDates.contains(check)) {
-                streak++;
-                check = check.minusDays(1);
-            }
-        }
-
-        int allTimeSeconds = sessions.stream().mapToInt(SessionHistoryEntry::getTotalSeconds).sum();
-        if (timerLabel != null && !isTracking) {
-            timerLabel.setText("Total Study Time: " + formatTime(allTimeSeconds));
+            while (sessionDates.contains(check)) { streak++; check = check.minusDays(1); }
         }
 
         statTodayTime.setText(formatShortTime(todaySeconds));
         statSessions.setText(String.valueOf(sessions.size()));
         statStreak.setText(streak + (streak == 1 ? " day" : " days"));
         statBestSession.setText(formatShortTime(bestSeconds));
+
+        // Session snapshot
+        List<String> topApps = DatabaseManager.getTopApps(userId, 2);
+        snapMostUsedApp.setText(topApps.size() > 0 ? topApps.get(0) : "-");
+        snapSecondApp.setText(topApps.size() > 1 ? topApps.get(1) : "-");
+        int score = DatabaseManager.getLatestWrappedScore(userId);
+        snapProductivity.setText(score >= 0 ? score + "/100" : "-");
     }
 
     private String formatShortTime(int totalSeconds) {
@@ -122,12 +127,13 @@ public class DashboardController {
                 if (text.contains("\n")) {
                     String[] parts = text.split("\n", 2);
                     if (timerLabel != null) {
-                        timerLabel.setText(parts[0]); // First line is the total time
+                        timerLabel.setText(parts[0]);
                     }
                     if (statusTextArea != null) {
-                        statusTextArea.setText(parts[1]); // Remaining lines are the activity log
+                        statusTextArea.setText(parts[1]);
                     }
                 }
+                updateSessionButtons();
             });
         });
 
@@ -136,6 +142,12 @@ public class DashboardController {
             toggleButton.setText("Stop Tracking");
         }
     }
+    private void updateSessionButtons() {
+        boolean hasData = hasSessionData();
+        if (saveButton != null) saveButton.setDisable(!hasData);
+        if (deleteButton != null) deleteButton.setDisable(!hasData);
+    }
+
     //Start or stop tracking depending on the current tracking state
     @FXML
     private void handleToggleTracking() {
@@ -145,10 +157,9 @@ public class DashboardController {
             isTracking = true;
         } else {
             engine.stopTracking();
-
             toggleButton.setText("Start Tracking");
             isTracking = false;
-
+            updateSessionButtons();
         }
     }
 
@@ -192,11 +203,11 @@ public class DashboardController {
 
     private void showNoSessionDataPopup() {
         Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
         if (toggleButton != null && toggleButton.getScene() != null) {
             dialog.initOwner(toggleButton.getScene().getWindow());
         }
-        dialog.setTitle("Error");
         dialog.setResizable(false);
 
         Label errorLabel = new Label("Error: No Session Data");
@@ -208,10 +219,12 @@ public class DashboardController {
 
         VBox root = new VBox(12, errorLabel, okButton);
         root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
         root.setPadding(new Insets(20));
         root.setPrefWidth(300);
 
         Scene scene = new Scene(root);
+        scene.setFill(null);
         scene.getStylesheets().add(getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
         dialog.setScene(scene);
         dialog.showAndWait();
@@ -220,15 +233,19 @@ public class DashboardController {
     //Save the current session after validating title, user, and tracked data
     @FXML
     private void handleSaveSession() {
-        if (!hasSessionData()) {
-            showNoSessionDataPopup();
-            return;
+        if (!hasSessionData()) return;
+        if (isTracking) {
+            engine.stopTracking();
+            toggleButton.setText("Start Tracking");
+            isTracking = false;
         }
+        // Capture the main window before opening the modal dialog
+        final Stage mainStage = (toggleButton != null && toggleButton.getScene() != null)
+                ? (Stage) toggleButton.getScene().getWindow() : null;
+
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        if (toggleButton != null && toggleButton.getScene() != null) {
-            dialog.initOwner(toggleButton.getScene().getWindow());
-        }
+        if (mainStage != null) dialog.initOwner(mainStage);
         dialog.setTitle("Save Session");
         dialog.setResizable(false);
 
@@ -284,6 +301,7 @@ public class DashboardController {
             HistoryStore.addSession(buildSessionText(sessionName));
             resetCurrentSession();
             dialog.close();
+            loadQuickStats();
 
             final int userId = User.getCurrentUserId();
             new Thread(() -> {
@@ -296,6 +314,7 @@ public class DashboardController {
                 if (newest == null) return;
                 AiAPI.WrappedData data = AiAPI.analyzeSessionStructured(newest, allSessions);
                 if (data != null) {
+                    data.totalSessions = allSessions.size();
                     DatabaseManager.insertWrappedData(
                             newest.getSessionId(),
                             data.recordTotalTime,
@@ -306,6 +325,9 @@ public class DashboardController {
                             data.streakCurrent,
                             data.score
                     );
+                    final AiAPI.WrappedData finalData = data;
+                    final SessionHistoryEntry finalSession = newest;
+                    Platform.runLater(() -> showUnwrapPrompt(finalSession, finalData, mainStage));
                 }
             }).start();
         });
@@ -323,9 +345,11 @@ public class DashboardController {
 
     @FXML
     private void handleDeleteSession() {
-        if (!hasSessionData()) {
-            showNoSessionDataPopup();
-            return;
+        if (!hasSessionData()) return;
+        if (isTracking) {
+            engine.stopTracking();
+            toggleButton.setText("Start Tracking");
+            isTracking = false;
         }
         resetCurrentSession();
     }
@@ -335,15 +359,12 @@ public class DashboardController {
         engine.stopTracking();
         engine.reset();
 
-        if (timerLabel != null) {
-            timerLabel.setText("Total Study Time: 00:00:00");
-        }
-        if (statusTextArea != null) {
-            statusTextArea.clear();
-        }
+        if (timerLabel != null) timerLabel.setText("Total Study Time: 00:00:00");
+        if (statusTextArea != null) statusTextArea.clear();
 
         toggleButton.setText("Start Tracking");
         isTracking = false;
+        updateSessionButtons();
     }
 
     // -----------------------------
@@ -477,6 +498,69 @@ public class DashboardController {
         dialog.showAndWait();
     }
 
+    // ──────────────────────────────────────────────────────────────────────────
+    //  Unwrap prompt — shown after AI analysis completes in the background
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private void showUnwrapPrompt(SessionHistoryEntry session, AiAPI.WrappedData data, Stage owner) {
+        Stage prompt = new Stage();
+        prompt.initStyle(StageStyle.TRANSPARENT);
+        if (owner != null) {
+            prompt.initModality(Modality.APPLICATION_MODAL);
+            prompt.initOwner(owner);
+        }
+        prompt.setResizable(false);
+
+        Label heading = new Label("Your session has been analysed!");
+        heading.getStyleClass().add("dashboard-card-label");
+
+        Label body = new Label("Want to see how \"" + session.getTitle()
+                + "\" stacked up? Unwrap your results now.");
+        body.setWrapText(true);
+        body.getStyleClass().add("dashboard-helper-text");
+        body.setMaxWidth(320);
+
+        Button unwrapBtn = new Button("Unwrap");
+        unwrapBtn.getStyleClass().add("dashboard-primary-button");
+        unwrapBtn.setOnAction(e -> {
+            prompt.close();
+            WrappedDataHolder.set(data, session, deriveGoodHabit(session));
+            ViewManager.switchScene("wrapped-intro-view.fxml");
+        });
+
+        Button laterBtn = new Button("Maybe Later");
+        laterBtn.getStyleClass().add("dashboard-secondary-button");
+        laterBtn.setOnAction(e -> prompt.close());
+
+        HBox buttons = new HBox(10, unwrapBtn, laterBtn);
+        buttons.setAlignment(Pos.CENTER);
+
+        VBox root = new VBox(16, heading, body, buttons);
+        root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
+        root.setPadding(new Insets(24));
+        root.setPrefWidth(380);
+        root.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(root);
+        scene.setFill(null);
+        scene.getStylesheets().add(
+                getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
+        prompt.setScene(scene);
+        prompt.show();
+    }
+
+    private String deriveGoodHabit(SessionHistoryEntry session) {
+        if (session.getActivities().isEmpty()) return "Staying committed to your study goals";
+        Activity top = session.getActivities().stream()
+                .max(java.util.Comparator.comparingInt(Activity::getDuration))
+                .orElse(null);
+        if (top == null) return "Consistent focus throughout the session";
+        int totalSecs = session.getTotalSeconds();
+        double pct = totalSecs > 0 ? (100.0 * top.getDuration() / totalSecs) : 0;
+        return pct > 50 ? "Deep focus on " + top.getAppName() : "Balanced workflow across multiple apps";
+    }
+
     @FXML
     private void onTrackingClicked() {
         ViewManager.switchScene("timer-view.fxml");
@@ -519,11 +603,11 @@ public class DashboardController {
 
     private void showTimerCompletePopup(Stage owner) {
         Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
         if (owner != null) {
             dialog.initOwner(owner);
         }
-        dialog.setTitle("Timer Complete");
         dialog.setResizable(false);
 
         Label infoLabel = new Label("Time is up!");
@@ -535,11 +619,13 @@ public class DashboardController {
 
         VBox root = new VBox(12, infoLabel, okButton);
         root.getStyleClass().add("dashboard-card");
+        root.setStyle("-fx-background-radius: 16; -fx-border-radius: 16;");
         root.setPadding(new Insets(20));
         root.setAlignment(Pos.CENTER);
         root.setPrefWidth(260);
 
         Scene scene = new Scene(root);
+        scene.setFill(null);
         scene.getStylesheets().add(getClass().getResource("/com/example/cab302studyslice/styles.css").toExternalForm());
         dialog.setScene(scene);
         dialog.showAndWait();
@@ -570,8 +656,4 @@ public class DashboardController {
         }
     }
 
-    @FXML
-    private void onWrappedTestClicked() {
-        ViewManager.switchScene("wrapped-intro-view.fxml");
-    }
 }

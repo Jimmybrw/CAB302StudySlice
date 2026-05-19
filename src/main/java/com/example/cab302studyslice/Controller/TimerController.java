@@ -37,6 +37,7 @@ public class TimerController {
     @FXML private VBox sideMenu;
     @FXML private Button hamburgerButton;
 
+
     private boolean menuOpen = false;
 
 
