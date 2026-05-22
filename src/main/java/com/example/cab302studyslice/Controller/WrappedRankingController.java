@@ -10,6 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
+/**
+ * Controller for the wrapped ranking page.
+ * This page shows how the current study session ranks against the user's
+ * previous saved sessions based on focus score, using a rolling countdown
+ * animation before revealing the final placement.
+ */
 public class WrappedRankingController {
     @FXML
     private Region animatedOverlay;
@@ -22,6 +28,10 @@ public class WrappedRankingController {
     @FXML
     private Button nextButton;
 
+    /**
+     * Initialises the wrapped ranking page by starting the background animation
+     * and loading either real wrapped ranking data or placeholder content.
+     */
     @FXML
     private void initialize() {
         animateBackground();
@@ -33,6 +43,11 @@ public class WrappedRankingController {
         }
     }
 
+    /**
+     * Loads ranking data from the wrapped session summary and updates the
+     * support text for the selected session before starting the rolling
+     * rank reveal animation.
+     */
     private void loadRealData() {
         AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
         int rank  = Math.max(1, data.ranking);
@@ -44,6 +59,10 @@ public class WrappedRankingController {
         playRankingRevealAnimation(buildRankSteps(total, rank));
     }
 
+    /**
+     * Loads placeholder support text for the ranking page when wrapped
+     * session data is unavailable.
+     */
     private void loadPlaceHolderData() {
         rankingSupportLabel.setText("Out of 10 saved sessions, this was your 2nd most focused study session.");
     }
@@ -54,6 +73,10 @@ public class WrappedRankingController {
      * steps[0] = total (start)
      * steps[1..3] = intermediate values counting down
      * steps[4] = finalRank (end) — the ordinal already appears in the support text below
+     *
+     * @param total the total number of saved sessions being compared
+     * @param finalRank the final rank of the current session
+     * @return an array of five numeric strings used in the rolling animation
      */
     private String[] buildRankSteps(int total, int finalRank) {
         String[] steps = new String[5];
@@ -76,6 +99,12 @@ public class WrappedRankingController {
         return steps;
     }
 
+    /**
+     * Converts a ranking number into its ordinal string form.
+     *
+     * @param n the ranking number
+     * @return the ordinal representation of the number, such as 1st, 2nd, or 3rd
+     */
     private String ordinalSuffix(int n) {
         if (n >= 11 && n <= 13) return n + "th";
         switch (n % 10) {
@@ -86,10 +115,10 @@ public class WrappedRankingController {
         }
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create subtle movement
+     * and depth behind the wrapped page content.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -114,6 +143,12 @@ public class WrappedRankingController {
         fade.play();
     }
 
+    /**
+     * Plays the rolling rank animation by moving through a sequence of
+     * descending numeric values before landing on the final session rank.
+     *
+     * @param ranks the sequence of rank values used for the rolling reveal
+     */
     private void playRankingRevealAnimation(String[] ranks) {
 
         rankingSupportLabel.setOpacity(0);
@@ -180,6 +215,9 @@ public class WrappedRankingController {
         fullSequence.play();
     }
 
+    /**
+     * Plays a short emphasis animation once the final rank value has landed.
+     */
     private void playFinalRankPop() {
         ScaleTransition popUp = new ScaleTransition(Duration.millis(160), rankingLabelCurrent);
         popUp.setFromX(1.0);
@@ -198,6 +236,10 @@ public class WrappedRankingController {
         pop.play();
     }
 
+    /**
+     * Reveals the support text and next button after the final ranking
+     * value has been displayed.
+     */
     private void playRevealAnimation() {
         rankingSupportLabel.setOpacity(0);
         rankingSupportLabel.setTranslateY(16);
@@ -230,6 +272,10 @@ public class WrappedRankingController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -241,15 +287,17 @@ public class WrappedRankingController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the wrapped comparison page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-comparison-view.fxml");
     }
 
+    /**
+     * Navigates to the wrapped streak page.
+     */
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-streak-view.fxml");

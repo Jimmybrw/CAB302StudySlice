@@ -15,6 +15,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
+/**
+ * Controller for the wrapped focus score page.
+ * This page displays the calculated focus score for the selected study session
+ * and provides a short interpretation of the user's concentration level.
+ */
 public class WrappedFocusScoreController {
 
     @FXML
@@ -29,6 +34,10 @@ public class WrappedFocusScoreController {
     @FXML
     private Button nextButton;
 
+    /**
+     * Initialises the wrapped focus score page by loading wrapped session data,
+     * starting the animated background, and revealing the page content.
+     */
     @FXML
     public void initialize(){
         loadData();
@@ -36,6 +45,11 @@ public class WrappedFocusScoreController {
         playRevealAnimation();
     }
 
+    /**
+     * Loads the focus score from wrapped session data and selects appropriate
+     * support text based on the score range. Falls back to placeholder content
+     * if wrapped data is unavailable.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
@@ -59,10 +73,10 @@ public class WrappedFocusScoreController {
         }
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create subtle movement
+     * and depth behind the wrapped page content.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -87,6 +101,10 @@ public class WrappedFocusScoreController {
         fade.play();
     }
 
+    /**
+     * Reveals the focus score, support text, and next button in sequence
+     * after the page has loaded.
+     */
     private void playRevealAnimation() {
         focusScoreLabel.setOpacity(0);
         focusScoreLabel.setScaleX(0.75);
@@ -116,7 +134,7 @@ public class WrappedFocusScoreController {
 
         TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), focusSupportLabel);
         supportSlide.setFromY(16);
-        supportSlide.setFromY(0);
+        supportSlide.setToY(0);
 
         ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
 
@@ -135,6 +153,10 @@ public class WrappedFocusScoreController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -146,15 +168,17 @@ public class WrappedFocusScoreController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the wrapped top application page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-topApp-view.fxml");
     }
 
+    /**
+     * Navigates to the wrapped bad habit page.
+     */
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-badHabit-view.fxml");

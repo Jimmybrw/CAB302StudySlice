@@ -8,9 +8,13 @@ import javafx.util.Duration;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 import javafx.scene.Group;
 
+/**
+ * Controller for the wrapped bad habit page.
+ * This page highlights the user's biggest focus blocker or distraction
+ * from the selected study session and presents it as part of the wrapped summary flow.
+ */
 public class WrappedBadHabitController {
 
     @FXML
@@ -25,14 +29,22 @@ public class WrappedBadHabitController {
     @FXML
     private Button nextButton;
 
+    /**
+     * Initialises the wrapped bad habit page by loading wrapped session data,
+     * playing the decorative face animation, and revealing the page content.
+     */
     @FXML
     public void initialize(){
         loadData();
         playFrownFaceIntro();
         playRevealAnimation();
-        playNextButtonPulse();
     }
 
+    /**
+     * Loads the detected bad habit or focus blocker from wrapped session data
+     * and updates the page labels. Falls back to placeholder content if no
+     * wrapped data is available.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
@@ -50,20 +62,20 @@ public class WrappedBadHabitController {
         }
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Plays the introductory animation for the background frown face,
+     * bringing it into view before the text content is shown.
+     */
     private void playFrownFaceIntro() {
         frownFaceGroup.setScaleX(2.8);
         frownFaceGroup.setScaleY(2.8);
 
-        frownFaceGroup.setOpacity(0.22);
+        frownFaceGroup.setOpacity(0);
         frownFaceGroup.setTranslateY(-260);
 
         FadeTransition fadeIn = new FadeTransition(Duration.millis(350),  frownFaceGroup);
         fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
+        fadeIn.setToValue(0.22);
 
         TranslateTransition dropIn = new TranslateTransition(Duration.millis(650),  frownFaceGroup);
         dropIn.setFromY(-260);
@@ -75,10 +87,17 @@ public class WrappedBadHabitController {
         wobble.setCycleCount(2);
         wobble.setAutoReverse(true);
 
-        ParallelTransition intro = new ParallelTransition(fadeIn, dropIn);
-        intro.play();
+        SequentialTransition introSequence = new SequentialTransition(
+                new ParallelTransition(fadeIn, dropIn),
+                wobble
+        );
+        introSequence.play();
     }
 
+    /**
+     * Reveals the highlighted bad habit, support text, and next button
+     * in sequence after the page content has been prepared.
+     */
     private void playRevealAnimation() {
         badHabitLabel.setOpacity(0);
         badHabitLabel.setScaleX(0.75);
@@ -107,8 +126,8 @@ public class WrappedBadHabitController {
         supportFade.setToValue(1);
 
         TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), badHabitSupportLabel);
-        supportSlide.setFromX(16);
-        supportSlide.setFromY(0);
+        supportSlide.setFromY(16);
+        supportSlide.setToY(0);
 
         ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
 
@@ -123,9 +142,14 @@ public class WrappedBadHabitController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(scoreReveal, supportReveal, buttonReveal);
+        sequence.setOnFinished(event -> playNextButtonPulse());
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -137,26 +161,34 @@ public class WrappedBadHabitController {
         pulse.play();
     }
 
+    /**
+     * Plays the exit animation for the background frown face before
+     * navigating to the wrapped good habit page.
+     */
     private void playFrownFaceExit() {
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), frownFaceGroup);
         slideOut.setToY(420);
 
         FadeTransition fadeOut = new FadeTransition(Duration.millis(420), frownFaceGroup);
+        fadeOut.setFromValue(frownFaceGroup.getOpacity());
+        fadeOut.setToValue(0);
 
         ParallelTransition outro = new ParallelTransition(slideOut, fadeOut);
         outro.setOnFinished(event -> ViewManager.switchScene("wrapped-goodHabit-view.fxml"));
         outro.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the wrapped focus score page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-focusScore-view.fxml");
     }
 
+    /**
+     * Triggers the exit animation before moving to the wrapped good habit page.
+     */
     @FXML
     private void onNextClick() { playFrownFaceExit();}
 }

@@ -12,9 +12,21 @@ import javafx.scene.Group;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
+/**
+ * Controller for the wrapped total study time page.
+ * This page displays the total duration of the selected study session
+ * and uses a short animated clock sequence before revealing the session summary text.
+ */
 public class WrapperTotalTimeController {
 
+    /**
+     * Rotation transform applied to the hour hand of the animated clock.
+     */
     private Rotate hourHandRotate;
+
+    /**
+     * Rotation transform applied to the minute hand of the animated clock.
+     */
     private Rotate minuteHandRotate;
 
     @FXML
@@ -38,15 +50,23 @@ public class WrapperTotalTimeController {
     @FXML
     private Group minuteHandGroup;
 
+    /**
+     * Initialises the wrapped total time page by loading session data,
+     * preparing the clock animation, and starting the page animations.
+     */
     @FXML
     private void initialize(){
         loadData();
         setUpClockHands();
         animateBackground();
         playClockThenRevealAnimation();
-        playNextButtonPulse();
     }
 
+    /**
+     * Loads wrapped session data from the shared data holder and formats
+     * the total study time and support text for display.
+     * Falls back to placeholder content if wrapped session data is unavailable.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             SessionHistoryEntry session = WrappedDataHolder.getSession();
@@ -81,7 +101,10 @@ public class WrapperTotalTimeController {
         }
     }
 
-    // set clock hands' initial pivot and resting angles
+    /**
+     * Configures the pivot points and initial resting angles for the
+     * animated clock hands shown before the time summary is revealed.
+     */
     private void setUpClockHands(){
         hourHandRotate = new Rotate(0, 115, 115);
         minuteHandRotate = new Rotate(0, 115, 115);
@@ -93,10 +116,10 @@ public class WrapperTotalTimeController {
         minuteHandRotate.setAngle(0);
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create the subtle movement
+     * and visual depth behind thw wrapped page content.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -108,7 +131,7 @@ public class WrapperTotalTimeController {
         moveY.setFromY(-30);
         moveY.setToY(30);
         moveY.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
+        moveY.setAutoReverse(true);
 
         ParallelTransition animation = new ParallelTransition(move, moveY);
         animation.play();
@@ -121,7 +144,10 @@ public class WrapperTotalTimeController {
         fade.play();
     }
 
-    // animate text appearance
+    /**
+     * Reveals the total time summary text, support text, and next button
+     * after the clock animation has completed.
+     */
     private void playRevealAnimation() {
         totalTimeLabel.setOpacity(0);
         totalTimeLabel.setScaleX(0.85);
@@ -168,11 +194,14 @@ public class WrapperTotalTimeController {
         ParallelTransition buttonReveal = new ParallelTransition(buttonFade, buttonSlide);
 
         SequentialTransition sequence = new SequentialTransition(timeReveal, supportReveal, buttonReveal);
-
+        sequence.setOnFinished(actionEvent -> playNextButtonPulse());
         sequence.play();
     }
 
-    // display clock animation before revealing total time
+    /**
+     * Plays the introductory clock animation before revealing the total time
+     * summary for the selected session.
+     */
     private void playClockThenRevealAnimation() {
         totalTimeLabel.setOpacity(0);
         totalTimeLabel.setVisible(false);
@@ -244,7 +273,10 @@ public class WrapperTotalTimeController {
         sequence.play();
     }
 
-    // pulse the next button to prompt user to the next page
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -256,15 +288,17 @@ public class WrapperTotalTimeController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the rapped introduction page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-intro-view.fxml");
     }
 
+    /**
+     * Navigates to the wrapped top application page.
+     */
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-TopApp-view.fxml");

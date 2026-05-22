@@ -10,6 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
+/**
+ * Controller for the wrapped streak page.
+ * This page displays the user's current study streak and provides
+ * supporting feedback based on the length of the streak.
+ */
 public class WrappedStreakController {
     @FXML
     private Region animatedOverlay;
@@ -20,6 +25,10 @@ public class WrappedStreakController {
     @FXML
     private Button exitButton;
 
+    /**
+     * Initialises the wrapped streak page by loading wrapped session data,
+     * starting the animated background, and revealing the page content.
+     */
     @FXML
     private void initialize() {
         loadData();
@@ -27,6 +36,11 @@ public class WrappedStreakController {
         playRevealAnimation();
     }
 
+    /**
+     * Loads the current streak value from wrapped session data and sets
+     * support text based on the size of the streak. Falls back to
+     * placeholder content if wrapped data is unavailable.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
@@ -52,10 +66,10 @@ public class WrappedStreakController {
         }
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create subtle movement
+     * and depth behind the wrapped page content.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -80,6 +94,10 @@ public class WrappedStreakController {
         fade.play();
     }
 
+    /**
+     * Reveals the streak value, support text, and exit button in sequence
+     * after the page content has been prepared.
+     */
     private void playRevealAnimation() {
         streakValueLabel.setOpacity(0);
         streakValueLabel.setTranslateY(16);
@@ -125,6 +143,10 @@ public class WrappedStreakController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the exit button to highlight
+     * the final action at the end of the wrapped flow.
+     */
     private void playExitButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), exitButton);
         pulse.setFromX(1.0);
@@ -136,15 +158,17 @@ public class WrappedStreakController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the wrapped ranking page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-ranking-view.fxml");
     }
 
+    /**
+     * Exits the wrapped flow and returns the user to the dashboard page.
+     */
     @FXML
     private void onExitClick() {
         ViewManager.switchScene("dashboard-view.fxml");

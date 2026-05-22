@@ -15,6 +15,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
+/**
+ * Controller for the wrapped top application page.
+ * This page displays the most-used application from the selected study session
+ * and presents it as part of the wrapped session summary flow.
+ */
 public class WrappedTopAppController {
     @FXML
     private Region animatedOverlay;
@@ -25,6 +30,10 @@ public class WrappedTopAppController {
     @FXML
     private Button nextButton;
 
+    /**
+     * Initialises the wrapped top application page by loading wrapped session data,
+     * starting the animated background, and revealing the page content.
+     */
     @FXML
     private void initialize() {
         loadData();
@@ -32,6 +41,11 @@ public class WrappedTopAppController {
         playRevealAnimation();
     }
 
+    /**
+     * Loads the most-used application from wrapped session data and updates
+     * the main label and support text. Falls back to placeholder content if
+     * wrapped data is unavailable.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
@@ -47,10 +61,10 @@ public class WrappedTopAppController {
         }
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create subtle movement
+     * and depth behind the wrapped page content.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -75,6 +89,10 @@ public class WrappedTopAppController {
         fade.play();
     }
 
+    /**
+     * Reveals the top application summary, support text, and next button
+     * in sequence after the page has loaded.
+     */
     private void playRevealAnimation() {
         topAppLabel.setOpacity(0);
         topAppLabel.setScaleX(0.9);
@@ -104,7 +122,7 @@ public class WrappedTopAppController {
 
         TranslateTransition supportSlide = new TranslateTransition(Duration.millis(450), topAppSupportLabel);
         supportSlide.setFromY(16);
-        supportSlide.setFromY(0);
+        supportSlide.setToY(0);
 
         ParallelTransition supportReveal = new ParallelTransition(supportFade, supportSlide);
 
@@ -123,6 +141,10 @@ public class WrappedTopAppController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -134,15 +156,17 @@ public class WrappedTopAppController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the total time page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-totalTime-view.fxml");
     }
 
+    /**
+     * Navigates to the wrapped focus score page.
+     */
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-focusScore-view.fxml");

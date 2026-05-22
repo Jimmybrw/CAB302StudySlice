@@ -8,7 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
-
+/**
+ * Controller for the wrapped feature introduction page.
+ * This page introduces the user to the wrapped session summary flow
+ * and handles the opening animations and navigation to the next page.
+ */
 public class WrapperController {
     @FXML
     private Label brandLabel;
@@ -18,20 +22,23 @@ public class WrapperController {
     private Label subtitleLabel;
     @FXML
     private Button nextButton;
+    @FXML
+    private Region animatedOverlay;
 
-
+    /**
+     * Initialises the wrapped introduction page by starting the background
+     * animation and revealing the page content in sequence.
+     */
     @FXML
     public void initialize(){
         animateBackground();
         playIntroAnimation();
     }
 
-    @FXML private Region animatedOverlay;
-
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create subtle movement
+     * and visual depth on the wrapped introduction page.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -43,7 +50,7 @@ public class WrapperController {
         moveY.setFromY(-30);
         moveY.setToY(30);
         moveY.setCycleCount(Animation.INDEFINITE);
-        move.setAutoReverse(true);
+        moveY.setAutoReverse(true);
 
         ParallelTransition animation = new ParallelTransition(move, moveY);
         animation.play();
@@ -56,6 +63,10 @@ public class WrapperController {
         fade.play();
     }
 
+    /**
+     * Reveals the wrapped introduction page elements such as brand label, title, subtitle,
+     * and next button in sequence.
+     */
     private void playIntroAnimation() {
         brandLabel.setOpacity(0);
         brandLabel.setTranslateY(12);
@@ -117,6 +128,10 @@ public class WrapperController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to prompt
+     * user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -128,16 +143,17 @@ public class WrapperController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
-    // back to dashboard
+    /**
+     * Returns the user to the dashboard page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("dashboard-view.fxml");
     }
 
+    /**
+     * Navigates to the total study time wrapped page.
+     */
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-totalTime-view.fxml");

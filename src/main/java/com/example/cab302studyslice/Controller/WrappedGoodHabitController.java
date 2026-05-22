@@ -9,6 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+/**
+ * Controller for the wrapped good habit page.
+ * This page highlights the user's strongest positive study behaviour
+ * from the selected session and presents it as part of the wrapped summary flow.
+ */
 public class WrappedGoodHabitController {
     @FXML
     private Label goodHabitLabel;
@@ -22,6 +27,10 @@ public class WrappedGoodHabitController {
     @FXML
     private Button nextButton;
 
+    /**
+     * Initialises the wrapped good habit page by loading wrapped session data,
+     * playing the decorative face animation, and revealing the page content.
+     */
     @FXML
     public void initialize(){
         loadData();
@@ -29,6 +38,11 @@ public class WrappedGoodHabitController {
         playRevealAnimation();
     }
 
+    /**
+     * Loads the strongest positive study habit from wrapped session data and
+     * updates the page labels. Falls back to placeholder content if wrapped
+     * data is unavailable.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             goodHabitLabel.setText(WrappedDataHolder.getGoodHabit());
@@ -43,10 +57,10 @@ public class WrappedGoodHabitController {
         }
     }
 
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Plays the introductory animation for the background smiley face,
+     * bringing it into view before the text content is shown.
+     */
     private void playSmileFaceIntro() {
         smileyFaceGroup.setScaleX(2.8);
         smileyFaceGroup.setScaleY(2.8);
@@ -54,22 +68,20 @@ public class WrappedGoodHabitController {
         smileyFaceGroup.setOpacity(0);
         smileyFaceGroup.setTranslateY(260);
 
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(350),  smileyFaceGroup);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(350), smileyFaceGroup);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(0.22);
 
-        TranslateTransition riseIn = new TranslateTransition(Duration.millis(650),  smileyFaceGroup);
+        TranslateTransition riseIn = new TranslateTransition(Duration.millis(650), smileyFaceGroup);
         riseIn.setFromY(260);
         riseIn.setToY(0);
 
-        RotateTransition wobble = new RotateTransition(Duration.millis(180),  smileyFaceGroup);
+        RotateTransition wobble = new RotateTransition(Duration.millis(180), smileyFaceGroup);
         wobble.setFromAngle(-4);
         wobble.setToAngle(4);
         wobble.setCycleCount(2);
         wobble.setAutoReverse(true);
 
-        // ParallelTransition intro = new ParallelTransition(fadeIn, riseIn);
-        // intro.play();
         SequentialTransition introSequence = new SequentialTransition(
                 new ParallelTransition(fadeIn, riseIn),
                 wobble
@@ -77,6 +89,10 @@ public class WrappedGoodHabitController {
         introSequence.play();
     }
 
+    /**
+     * Reveals the highlighted good habit, support text, and next button
+     * in sequence after the page content has been prepared.
+     */
     private void playRevealAnimation() {
         goodHabitLabel.setOpacity(0);
         goodHabitLabel.setScaleX(0.75);
@@ -125,6 +141,10 @@ public class WrappedGoodHabitController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -136,6 +156,10 @@ public class WrappedGoodHabitController {
         pulse.play();
     }
 
+    /**
+     * Plays the exit animation for the background smiley face before
+     * navigating to the wrapped comparison page.
+     */
     private void playSmileyFaceExit() {
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), smileyFaceGroup);
         slideOut.setToY(-220);
@@ -149,15 +173,17 @@ public class WrappedGoodHabitController {
         outro.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the wrapped bad habit page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-badHabit-view.fxml");
     }
 
+    /**
+     * Triggers the exit animation before moving to the wrapped comparison page.
+     */
     @FXML
     private void onNextClick() {
         playSmileyFaceExit();

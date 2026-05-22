@@ -10,6 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
+/**
+ * Controller for the wrapped comparison page.
+ * This page compares the current study session to the user's previous saved sessions
+ * and presents a short performance summary as part of the wrapped flow.
+ */
 public class WrappedComparisonController {
     @FXML
     private Label comparisonLabel;
@@ -17,8 +22,13 @@ public class WrappedComparisonController {
     private Label comparisonSupportLabel;
     @FXML
     private Button nextButton;
+    @FXML
+    private Region animatedOverlay;
 
-
+    /**
+     * Initialises the wrapped comparison page by loading wrapped session data,
+     * starting the animated background, and revealing the page content.
+     */
     @FXML
     public void initialize(){
         loadData();
@@ -26,6 +36,12 @@ public class WrappedComparisonController {
         playIntroAnimation();
     }
 
+    /**
+     * Loads comparison data from the wrapped session summary and updates the
+     * page labels to reflect whether the session performed above or below
+     * the user's average. Falls back to placeholder content if wrapped data
+     * is unavailable.
+     */
     private void loadData() {
         if (WrappedDataHolder.hasData()) {
             AiAPI.WrappedData data = WrappedDataHolder.getWrappedData();
@@ -40,12 +56,10 @@ public class WrappedComparisonController {
         }
     }
 
-    @FXML private Region animatedOverlay;
-
-    // -----------------------------
-    // ANIMATION
-    // -----------------------------
-
+    /**
+     * Animates the decorative background overlay to create subtle movement
+     * and depth behind the wrapped page content.
+     */
     private void animateBackground() {
         TranslateTransition move = new TranslateTransition(Duration.seconds(10), animatedOverlay);
         move.setFromX(-50);
@@ -70,6 +84,10 @@ public class WrappedComparisonController {
         fade.play();
     }
 
+    /**
+     * Reveals the comparison heading, support text, and next button
+     * in sequence after the page content has been prepared.
+     */
     private void playIntroAnimation() {
 
         comparisonLabel.setOpacity(0);
@@ -119,6 +137,10 @@ public class WrappedComparisonController {
         sequence.play();
     }
 
+    /**
+     * Plays a repeating pulse animation on the next button to encourage
+     * the user to continue through the wrapped flow.
+     */
     private void playNextButtonPulse() {
         ScaleTransition pulse = new ScaleTransition(Duration.millis(900), nextButton);
         pulse.setFromX(1.0);
@@ -130,15 +152,17 @@ public class WrappedComparisonController {
         pulse.play();
     }
 
-    // -----------------------------
-    // NAVIGATION BUTTONS
-    // -----------------------------
-
+    /**
+     * Navigates back to the wrapped good habit page.
+     */
     @FXML
     private void onBackClick() {
         ViewManager.switchScene("wrapped-goodHabit-view.fxml");
     }
 
+    /**
+     * Navigates to the wrapped ranking page.
+     */
     @FXML
     private void onNextClick() {
         ViewManager.switchScene("wrapped-ranking-view.fxml");
