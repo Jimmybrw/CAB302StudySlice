@@ -13,6 +13,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manager for all database operations.
+ * Handles user authentication, session persistence, activity tracking, and wrapped data storage.
+ * Uses cloud-hosted MySQL database via Aiven with connection pooling support for testing.
+ */
 public class DatabaseManager {
 
     private static final String URL = "jdbc:mysql://studyslice-studyslice.d.aivencloud.com:27251/studyslice?sslMode=REQUIRED";
@@ -20,30 +25,66 @@ public class DatabaseManager {
     private static final String PASSWORD = "AVNS_dH9MQkrjlY36qW9GWBe";
     private static ConnectionProvider connectionProvider = DatabaseManager::openProductionConnection;
 
+    /**
+     * Functional interface for providing database connections.
+     * Allows testing with mock connections.
+     */
     @FunctionalInterface
     interface ConnectionProvider {
+        /**
+         * Gets a database connection.
+         *
+         * @return a database connection
+         * @throws Exception if connection fails
+         */
         Connection getConnection() throws Exception;
     }
 
-    // Opens a connection to the hosted database
+    /**
+     * Gets a database connection.
+     * Uses the configured connection provider (production or test).
+     *
+     * @return a database connection
+     * @throws Exception if connection fails
+     */
     public static Connection getConnection() throws Exception {
         return connectionProvider.getConnection();
     }
 
+    /**
+     * Sets a custom connection provider for testing purposes.
+     *
+     * @param provider the test connection provider, or null to reset to production
+     */
     static void setConnectionProviderForTesting(ConnectionProvider provider) {
         connectionProvider = provider == null ? DatabaseManager::openProductionConnection : provider;
     }
 
+    /**
+     * Resets the connection provider back to the production database.
+     */
     static void resetConnectionProviderForTesting() {
         connectionProvider = DatabaseManager::openProductionConnection;
     }
 
+    /**
+     * Opens a connection to the production cloud-hosted database.
+     *
+     * @return a database connection
+     * @throws Exception if connection fails
+     */
     private static Connection openProductionConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // Checks whether the entered login details exist in the users table
+    /**
+     * Validates user login credentials against the database.
+     *
+     * @param username the username to validate
+     * @param password the password to validate
+     * @return true if credentials exist in the users table, false otherwise
+     */
     public static boolean validateLogin(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
@@ -62,7 +103,13 @@ public class DatabaseManager {
         }
     }
 
-    // Returns the matching user_id for valid login credentials, otherwise -1
+    /**
+     * Retrieves the user ID for valid login credentials.
+     *
+     * @param username the username to authenticate
+     * @param password the password to authenticate
+     * @return the user ID if credentials are valid, -1 otherwise
+     */
     public static int getUserIdByCredentials(String username, String password) {
         String sql = "SELECT user_id FROM users WHERE username = ? AND password = ? LIMIT 1";
 
@@ -83,7 +130,12 @@ public class DatabaseManager {
         }
     }
 
-    // Checks whether a username is already taken
+    /**
+     * Checks whether a username already exists in the database.
+     *
+     * @param username the username to check
+     * @return true if the username is taken, false otherwise
+     */
     public static boolean userExists(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
 

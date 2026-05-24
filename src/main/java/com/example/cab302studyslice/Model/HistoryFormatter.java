@@ -6,11 +6,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-//Formats saved session data for display on the History page
+/**
+ * Utility class for formatting session data for display.
+ * Provides methods to format activities, date ranges, and time durations.
+ */
 public class HistoryFormatter {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    //Builds a short text summary of the apps used during a session
+    /**
+     * Builds a formatted summary of top activities in a session.
+     * Shows up to 4 activities sorted by duration, with a count of remaining apps.
+     *
+     * @param activities the list of activities to summarize
+     * @return formatted activity preview text
+     */
     public String buildActivityPreview(List<Activity> activities) {
         if (activities == null || activities.isEmpty()) {
             return "No activities recorded.";
@@ -38,7 +47,14 @@ public class HistoryFormatter {
         return builder.toString();
     }
 
-    //Formats the start and end time of a saved study session
+    /**
+     * Formats the time range of a session.
+     * Handles null values gracefully and provides human-readable output.
+     *
+     * @param start the session start time
+     * @param end the session end time
+     * @return formatted time range string
+     */
     public String formatSessionRange(LocalDateTime start, LocalDateTime end) {
         if (start == null && end == null) {
             return "Date not available";
@@ -52,7 +68,12 @@ public class HistoryFormatter {
         return "Ended " + end.format(DATE_TIME_FORMATTER);
     }
 
-    //Converts seconds into HH:MM:SS format
+    /**
+     * Formats seconds into HH:MM:SS format.
+     *
+     * @param totalSeconds the time in seconds
+     * @return formatted time string
+     */
     public String formatSeconds(int totalSeconds) {
         int safeSeconds = Math.max(0, totalSeconds);
         int hours = safeSeconds / 3600;

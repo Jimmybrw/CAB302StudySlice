@@ -5,17 +5,32 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.net.URL;
 
-//Handles switching between JavaFX scenes
+/**
+ * Manager for switching between JavaFX scenes.
+ * Centralizes stage management and FXML loading for scene transitions.
+ */
 public class ViewManager {
     private static Stage stage;
     private static final int WIDTH = 900;
     private static final int HEIGHT = 600;
 
+    /**
+     * Sets the primary stage for scene management.
+     * Configures the stage as non-resizable.
+     *
+     * @param primaryStage the main application stage
+     */
     public static void setStage(Stage primaryStage) {
         stage = primaryStage;
         stage.setResizable(false);
     }
-    // Load the requested FXML file and display it on the main stage
+
+    /**
+     * Switches the current scene to the specified FXML view.
+     * Loads the FXML file, applies stylesheets, and displays it on the stage.
+     *
+     * @param fxmlFile the FXML filename to load (without path prefix)
+     */
     public static void switchScene(String fxmlFile) {
         try {
             String resourcePath = "/com/example/cab302studyslice/FXML/" + fxmlFile;

@@ -6,12 +6,23 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
+/**
+ * Integration with Google Generative AI (Gemini) for session analysis.
+ * Provides methods to analyze study sessions and generate structured feedback.
+ */
 public class AiAPI {
 
     private static final String API_KEY = "AIzaSyD2SR2XTpOEQjUD-7e7VF32X5sYGLfCF3E";
     private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
+    /**
+     * Analyzes a study session and returns a friendly summary.
+     * Sends session data to the Gemini API for analysis.
+     *
+     * @param session the session to analyze
+     * @return a summary string, or an error message if the request fails
+     */
     public static String analyzeSession(SessionHistoryEntry session) {
         try {
             StringBuilder prompt = new StringBuilder();
@@ -45,6 +56,12 @@ public class AiAPI {
         }
     }
 
+    /**
+     * Extracts text content from a Gemini API response JSON.
+     *
+     * @param body the API response body
+     * @return extracted text, or error message if parsing fails
+     */
     private static String extractText(String body) {
         int start = body.indexOf("\"text\":");
         if (start == -1) return "Could not parse response.";
@@ -68,17 +85,37 @@ public class AiAPI {
         return result.toString();
     }
 
+    /**
+     * Structured data returned by AI session analysis.
+     * Contains productivity score, ranking, habits, and session statistics.
+     */
     public static class WrappedData {
+        /** Whether this is the longest session recorded */
         public boolean recordTotalTime;
+        /** The most-used application during the session */
         public String mostUsedApp;
+        /** Ranking of this session among all user sessions (1=best) */
         public int ranking;
+        /** Total number of sessions by the user */
         public int totalSessions;
+        /** Identified negative habit or distraction */
         public String badHabit;
+        /** How this session compares to others ("good" or "bad") */
         public String comparedToSessions;
+        /** Estimated consecutive productive sessions */
         public int streakCurrent;
+        /** Overall productivity score (0-100) */
         public int score;
     }
 
+    /**
+     * Analyzes a session and returns structured data for the Wrapped feature.
+     * Compares the session to user's history and generates scores/rankings.
+     *
+     * @param session the session to analyze
+     * @param allSessions all sessions by this user for context
+     * @return WrappedData with analysis results, or null if analysis fails
+     */
     public static WrappedData analyzeSessionStructured(SessionHistoryEntry session, List<SessionHistoryEntry> allSessions) {
         try {
             int totalSessions = allSessions.size();
@@ -141,16 +178,37 @@ public class AiAPI {
         }
     }
 
+    /**
+     * Extracts a string value from JSON by key using regex.
+     *
+     * @param json the JSON string
+     * @param key the key to extract
+     * @return the string value, or empty string if not found
+     */
     private static String extractJsonString(String json, String key) {
         java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"" + key + "\"\\s*:\\s*\"([^\"]*)\"").matcher(json);
         return m.find() ? m.group(1) : "";
     }
 
+    /**
+     * Extracts an integer value from JSON by key using regex.
+     *
+     * @param json the JSON string
+     * @param key the key to extract
+     * @param defaultVal the default value if extraction fails
+     * @return the integer value, or defaultVal if not found
+     */
     private static int extractJsonInt(String json, String key, int defaultVal) {
         java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"" + key + "\"\\s*:\\s*(\\d+)").matcher(json);
         return m.find() ? Integer.parseInt(m.group(1)) : defaultVal;
     }
 
+    /**
+     * Escapes special characters in a string for JSON serialization.
+     *
+     * @param text the text to escape
+     * @return the escaped text
+     */
     private static String escapeJson(String text) {
         return text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "").replace("\t", " ");
     }

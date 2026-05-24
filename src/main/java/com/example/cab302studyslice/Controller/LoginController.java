@@ -9,6 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+/**
+ * Controller for the login view.
+ * Handles user authentication, password visibility toggle, and navigation to registration.
+ */
 public class LoginController {
 
     @FXML private TextField usernameField;
@@ -21,6 +25,10 @@ public class LoginController {
     private static String registerMessage = "";
     private final AuthService authService = new AuthService();
 
+    /**
+     * Initializes the login controller.
+     * Sets up password field listeners and displays any message from the registration flow.
+     */
     @FXML
     public void initialize() {
         passwordVisible.textProperty().addListener((obs, old, val) -> passwordField.setText(val));
@@ -31,6 +39,9 @@ public class LoginController {
         }
     }
 
+    /**
+     * Toggles password visibility between masked and visible states.
+     */
     @FXML
     private void togglePassword() {
         passwordShown = !passwordShown;
@@ -42,7 +53,10 @@ public class LoginController {
         eyeButton.setText(passwordShown ? "🙈" : "👁");
     }
 
-    // Checks the login details and moves to the home page if they are correct
+    /**
+     * Validates login credentials and switches to the dashboard on success.
+     * Displays error messages for invalid credentials or missing fields.
+     */
     @FXML
     private void handleLogin() {
         String username = usernameField.getText().trim();
@@ -65,12 +79,19 @@ public class LoginController {
         }
     }
 
-    // Opens the register page
+    /**
+     * Navigates to the registration view.
+     */
     @FXML
     private void handleGoToRegister() {
         ViewManager.switchScene("register-view.fxml");
     }
 
+    /**
+     * Sets a message to be displayed on the login screen (typically from registration flow).
+     *
+     * @param message the message to display
+     */
     public static void setRegisterMessage(String message) {
         registerMessage = message;
     }
