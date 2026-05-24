@@ -40,8 +40,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-// Controller to connect the dashboard ui with the actual program features and Java file.
-//Handles starting/stopping study sessions
+/**
+ * Controller for the dashboard view.
+ * Manages study session tracking, saving, deletion, and display of user statistics.
+ * Integrates with TrackingEngine for real-time session monitoring and AiAPI for session analysis.
+ */
 public class DashboardController {
 
     // Tracking UI elements
@@ -67,6 +70,10 @@ public class DashboardController {
     private static boolean isTracking = false;
     private final SessionSaveService sessionSaveService = new SessionSaveService();
 
+    /**
+     * Loads and displays quick statistics for the current user.
+     * Fetches session history from database and calculates today's time, session count, streak, and best session.
+     */
     private void loadQuickStats() {
         int userId = User.getCurrentUserId();
         if (userId <= 0) return;
@@ -111,12 +118,22 @@ public class DashboardController {
         snapProductivity.setText(score >= 0 ? score + "/100" : "-");
     }
 
+    /**
+     * Formats seconds into a short time format (hours and minutes).
+     *
+     * @param totalSeconds the total time in seconds
+     * @return formatted string in "Xh YYm" format
+     */
     private String formatShortTime(int totalSeconds) {
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         return hours + "h " + String.format("%02d", minutes) + "m";
     }
 
+    /**
+     * Initializes the dashboard controller.
+     * Loads quick statistics, connects the tracking engine to UI updates, and syncs button state.
+     */
     @FXML
     public void initialize() {
         loadQuickStats();
@@ -142,13 +159,19 @@ public class DashboardController {
             toggleButton.setText("Stop Tracking");
         }
     }
+    /**
+     * Updates the enabled state of save and delete buttons based on session data availability.
+     */
     private void updateSessionButtons() {
         boolean hasData = hasSessionData();
         if (saveButton != null) saveButton.setDisable(!hasData);
         if (deleteButton != null) deleteButton.setDisable(!hasData);
     }
 
-    //Start or stop tracking depending on the current tracking state
+    /**
+     * Toggles tracking on or off.
+     * Starts or stops the tracking engine and updates the toggle button text accordingly.
+     */
     @FXML
     private void handleToggleTracking() {
         if (!isTracking) {
@@ -164,7 +187,13 @@ public class DashboardController {
     }
 
 
-    //Will format the completed tracking session into text for the history page
+    /**
+     * Builds a formatted text representation of the current session.
+     * Includes session name, date, total time, and per-app time breakdown.
+     *
+     * @param sessionName the name of the session
+     * @return formatted session text
+     */
     private String buildSessionText(String sessionName) {
         StringBuilder builder = new StringBuilder();
         builder.append("Session Name: ")
@@ -189,7 +218,12 @@ public class DashboardController {
         return builder.toString();
     }
 
-    //Converts seconds into HH:MM:SS format
+    /**
+     * Formats seconds into HH:MM:SS format.
+     *
+     * @param totalSeconds the total time in seconds
+     * @return formatted time string
+     */
     private String formatTime(int totalSeconds) {
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
@@ -197,10 +231,18 @@ public class DashboardController {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
+    /**
+     * Checks if the current session has any tracked data.
+     *
+     * @return true if session has tracked time and activity data, false otherwise
+     */
     private boolean hasSessionData() {
         return engine.getTotalSeconds() > 0 && !engine.getTimeSpent().isEmpty();
     }
 
+    /**
+     * Displays an error popup indicating no session data is available.
+     */
     private void showNoSessionDataPopup() {
         Stage dialog = new Stage();
         dialog.initStyle(StageStyle.TRANSPARENT);
@@ -230,7 +272,10 @@ public class DashboardController {
         dialog.showAndWait();
     }
 
-    //Save the current session after validating title, user, and tracked data
+    /**
+     * Saves the current tracking session to the database.
+     * Displays a dialog for session naming, validates data, and triggers AI analysis if successful.
+     */
     @FXML
     private void handleSaveSession() {
         if (!hasSessionData()) return;
@@ -343,6 +388,10 @@ public class DashboardController {
         dialog.showAndWait();
     }
 
+    /**
+     * Deletes the current unsaved session.
+     * Resets tracking state and clears all session data from UI.
+     */
     @FXML
     private void handleDeleteSession() {
         if (!hasSessionData()) return;
@@ -354,7 +403,10 @@ public class DashboardController {
         resetCurrentSession();
     }
 
-    //Reset the current unsaved session data from the dashboard
+    /**
+     * Resets the current session and clears all tracking data.
+     * Updates UI to reflect the reset state.
+     */
     private void resetCurrentSession() {
         engine.stopTracking();
         engine.reset();
@@ -371,7 +423,10 @@ public class DashboardController {
     // NAVIGATION BUTTONS
     // -----------------------------
 
-    //Open the custom timer popup and start countdown tracking
+    /**
+     * Opens the custom timer dialog and manages countdown tracking.
+     * Allows users to set a timer with hours, minutes, and seconds input.
+     */
     @FXML
     private void onTimerClicked() {
         Stage dialog = new Stage();
@@ -502,6 +557,13 @@ public class DashboardController {
     //  Unwrap prompt — shown after AI analysis completes in the background
     // ──────────────────────────────────────────────────────────────────────────
 
+    /**
+     * Displays a prompt to unwrap AI analysis results after a session is saved and analyzed.
+     *
+     * @param session the session that was analyzed
+     * @param data the AI-generated analysis data
+     * @param owner the owner stage for modality
+     */
     private void showUnwrapPrompt(SessionHistoryEntry session, AiAPI.WrappedData data, Stage owner) {
         Stage prompt = new Stage();
         prompt.initStyle(StageStyle.TRANSPARENT);
@@ -550,6 +612,12 @@ public class DashboardController {
         prompt.show();
     }
 
+    /**
+     * Derives a positive habit description based on the session's app usage patterns.
+     *
+     * @param session the session to analyze
+     * @return a descriptive string of the user's good habit during the session
+     */
     private String deriveGoodHabit(SessionHistoryEntry session) {
         if (session.getActivities().isEmpty()) return "Staying committed to your study goals";
         Activity top = session.getActivities().stream()
@@ -561,16 +629,28 @@ public class DashboardController {
         return pct > 50 ? "Deep focus on " + top.getAppName() : "Balanced workflow across multiple apps";
     }
 
+    /**
+     * Navigates to the timer view.
+     */
     @FXML
     private void onTrackingClicked() {
         ViewManager.switchScene("timer-view.fxml");
     }
 
+    /**
+     * Navigates to the history view.
+     */
     @FXML
     private void onExploreClicked() {
         ViewManager.switchScene("history-view.fxml");
     }
 
+    /**
+     * Creates a timer input field with specified prompt text.
+     *
+     * @param promptText the placeholder text for the field
+     * @return a configured TextField for timer input
+     */
     private TextField createTimerField(String promptText) {
         TextField timerField = new TextField();
         timerField.setPromptText(promptText);
@@ -580,6 +660,16 @@ public class DashboardController {
         return timerField;
     }
 
+    /**
+     * Parses and validates a timer field value.
+     * Displays error messages for invalid inputs (non-numeric, out of range).
+     *
+     * @param value the string value to parse
+     * @param label the field label for error messages
+     * @param maxValue the maximum allowed value
+     * @param messageLabel the label to display validation errors
+     * @return the parsed integer, null if validation fails, or 0 if empty
+     */
     private Integer parseTimerField(String value, String label, int maxValue, Label messageLabel) {
         String normalizedValue = value == null ? "" : value.trim();
         if (normalizedValue.isEmpty()) {
@@ -601,6 +691,11 @@ public class DashboardController {
         }
     }
 
+    /**
+     * Displays a notification popup when the timer countdown completes.
+     *
+     * @param owner the owner stage for modality
+     */
     private void showTimerCompletePopup(Stage owner) {
         Stage dialog = new Stage();
         dialog.initStyle(StageStyle.TRANSPARENT);
@@ -635,17 +730,27 @@ public class DashboardController {
     @FXML private Label setTimerDisplay;
     @FXML private Label liveTimerDisplay;
 
+    /**
+     * Navigates back to the dashboard view.
+     */
     @FXML
     private void goToDashboard() {
         switchScene("/com/example/cab302studyslice/dashboard-view.fxml");
     }
 
+    /**
+     * Navigates to the explore view.
+     */
     @FXML
     private void goToExplore() {
         switchScene("/com/example/cab302studyslice/explore-view.fxml");
     }
 
-
+    /**
+     * Switches the current scene to the specified FXML view.
+     *
+     * @param fxmlPath the path to the FXML file to load
+     */
     private void switchScene(String fxmlPath) {
         try {
             Stage stage = (Stage) setTimerDisplay.getScene().getWindow();

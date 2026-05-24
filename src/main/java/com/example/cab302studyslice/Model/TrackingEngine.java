@@ -5,8 +5,11 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Consumer;
 
-//Core engine that tracks study sessions, including duration
-//and applications used during the session
+/**
+ * Core engine that tracks study sessions in real-time.
+ * Monitors active window titles from a file and records time spent per application.
+ * Maintains a mapping of normalized app names to duration spent.
+ */
 public class TrackingEngine {
     //Stores the amount of time spend on each detected activity
     private final Map<String, Integer> timeSpent = new LinkedHashMap<>();
@@ -32,10 +35,19 @@ public class TrackingEngine {
         put("IDEA", "INTELLIJ IDEA");
     }};
 
+    /**
+     * Sets the UI updater callback for real-time tracking updates.
+     *
+     * @param uiUpdater a consumer that receives formatted tracking status strings
+     */
     public void setUiUpdater(Consumer<String> uiUpdater) {
         this.uiUpdater = uiUpdater;
     }
 
+    /**
+     * Starts the tracking engine.
+     * Begins monitoring the active window file in a background thread every second.
+     */
     public void startTracking() {
         if (isRunning) return;
         isRunning = true;
@@ -63,20 +75,37 @@ public class TrackingEngine {
         }).start();
     }
 
+    /**
+     * Gets the total tracked time for the current session.
+     *
+     * @return total time in seconds
+     */
     public int getTotalSeconds() {
         return totalSeconds;
     }
 
-    //returns the tracked activity data
+    /**
+     * Gets a copy of the activity time map.
+     * Maps application names to time spent in seconds.
+     *
+     * @return a copy of the time spent per application
+     */
     public Map<String, Integer> getTimeSpent() {
         return new LinkedHashMap<>(timeSpent);
     }
 
+    /**
+     * Stops the tracking engine.
+     * Signals the background tracking thread to stop monitoring.
+     */
     public void stopTracking() {
         isRunning = false;
     }
 
-    //Will clear the current session data so a new tracking session can begin clearly
+    /**
+     * Clears all accumulated session data.
+     * Resets totals and activity maps for a new tracking session.
+     */
     public void reset() {
         timeSpent.clear();
         totalSeconds = 0;

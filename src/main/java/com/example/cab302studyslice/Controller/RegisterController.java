@@ -8,6 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+/**
+ * Controller for the registration view.
+ * Handles user account creation, password visibility toggles, and validation.
+ */
 public class RegisterController {
 
     @FXML private TextField usernameField;
@@ -23,12 +27,19 @@ public class RegisterController {
     private boolean confirmPasswordShown = false;
     private final AuthService authService = new AuthService();
 
+    /**
+     * Initializes the registration controller.
+     * Sets up bidirectional text synchronization between password fields.
+     */
     @FXML
     public void initialize() {
         passwordVisible.textProperty().addListener((obs, old, val) -> passwordField.setText(val));
         confirmPasswordVisible.textProperty().addListener((obs, old, val) -> confirmPasswordField.setText(val));
     }
 
+    /**
+     * Toggles the visibility of the password field.
+     */
     @FXML
     private void togglePassword() {
         passwordShown = !passwordShown;
@@ -38,6 +49,9 @@ public class RegisterController {
         eyeButton.setText(passwordShown ? "🙈" : "👁");
     }
 
+    /**
+     * Toggles the visibility of the confirm password field.
+     */
     @FXML
     private void toggleConfirmPassword() {
         confirmPasswordShown = !confirmPasswordShown;
@@ -47,7 +61,11 @@ public class RegisterController {
         eyeButton2.setText(confirmPasswordShown ? "🙈" : "👁");
     }
 
-    // Creates a new account if the inputs are valid
+    /**
+     * Registers a new user with validation.
+     * On success, navigates to login with a success message.
+     * Displays error messages for validation failures.
+     */
     @FXML
     private void handleRegister() {
         String username = usernameField.getText().trim();
@@ -64,7 +82,9 @@ public class RegisterController {
         }
     }
 
-    // Returns to the login page
+    /**
+     * Navigates back to the login view.
+     */
     @FXML
     private void handleBackToLogin() {
         ViewManager.switchScene("login-view.fxml");

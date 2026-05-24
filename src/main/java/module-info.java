@@ -1,3 +1,7 @@
+/**
+ * StudySlice module definition.
+ * Declares dependencies and exports packages for the JavaFX-based study tracking application.
+ */
 module com.example.cab302studyslice {
     requires javafx.controls;
     requires javafx.fxml;
