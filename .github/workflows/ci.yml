@@ -2,7 +2,7 @@ name: Java CI
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ master, main, feature-add-ci ]
   pull_request:
     branches: [ master, main ]
 
