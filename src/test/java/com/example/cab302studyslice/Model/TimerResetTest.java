@@ -15,12 +15,12 @@ class TimerResetTest {
         TimerController controller = new TimerController();
 
         Method formatMethod =
-                TimerController.class.getDeclaredMethod("formatTime", long.class);
+                TimerController.class.getDeclaredMethod("formatTime", int.class);
 
         formatMethod.setAccessible(true);
 
         String formatted =
-                (String) formatMethod.invoke(controller, 0L);
+                (String) formatMethod.invoke(controller, 0);
 
         assertEquals("00:00:00", formatted);
     }
