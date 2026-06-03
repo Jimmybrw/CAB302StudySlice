@@ -1,0 +1,5 @@
+module:com.example.cab302studyslice
+com.example.cab302studyslice.Controller
+com.example.cab302studyslice.Core
+com.example.cab302studyslice.Model
+com.example.cab302studyslice.View
