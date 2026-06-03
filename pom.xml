@@ -14,13 +14,10 @@
     <!--       REPOSITORIES    -->
     <!-- ===================== -->
     <repositories>
-        <!-- Maven Central -->
         <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2</url>
         </repository>
-
-        <!-- TestFX + Monocle repository -->
         <repository>
             <id>testfx</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
@@ -136,10 +133,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ===================== -->
-        <!--     TESTFX + JAVAFX   -->
-        <!-- ===================== -->
-
         <!-- TestFX Core -->
         <dependency>
             <groupId>org.testfx</groupId>
@@ -234,6 +227,17 @@
                         --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
                         --add-opens javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED
                     </argLine>
+                </configuration>
+            </plugin>
+
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <destDir>javadoc</destDir>
+                    <reportOutputDirectory>${project.build.directory}/docs</reportOutputDirectory>
                 </configuration>
             </plugin>
 
